@@ -1,0 +1,5722 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<script>
+(function(){
+
+    const ua = navigator.userAgent || "";
+
+    if(!ua.includes("FlixTVApp/1.0")){
+
+        window.location.replace(
+            "https://www.google.com"
+        );
+
+    }
+
+})();
+</script>
+    
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Stark</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<style>
+
+/* =====================================================
+   BASE
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    background:#000;
+    color:#fff;
+    font-family:'Poppins',Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+body{
+    padding-bottom:0px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    height:65px;
+    width:100%;
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    gap:48px;
+    background:#000;
+    position:relative;
+    z-index:50;
+}
+
+.menu{
+    width:8px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    cursor:pointer;
+}
+
+.menu span{
+    width:25px;
+    height:4px;
+    background:#fff;
+    border-radius:5px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+
+.logo span{
+    color:#7CFF6B;
+}
+
+.search{
+    margin-left:auto;
+    width:44px;
+    height:44px;
+    border-radius:15px;
+    background:#111;
+    border:1px solid #292929;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+}
+
+.search-circle{
+    width:22px;
+    height:22px;
+    border:4px solid #fff;
+    border-radius:50%;
+    position:relative;
+}
+
+.search-circle:after{
+    content:"";
+    position:absolute;
+    width:10px;
+    height:4px;
+    background:#fff;
+    right:-8px;
+    bottom:-5px;
+    transform:rotate(45deg);
+    border-radius:5px;
+}
+
+
+/* =====================================================
+   MENU LATERAL
+===================================================== */
+
+.side-menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.70);
+    z-index:900;
+    opacity:0;
+    visibility:hidden;
+    transition:.3s ease;
+}
+
+.side-menu-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+.side-menu{
+    position:fixed;
+    top:0;
+    left:0;
+    width:285px;
+    max-width:82%;
+    height:100vh;
+    background:#090909;
+    border-right:1px solid #242424;
+    z-index:1000;
+    transform:translateX(-100%);
+    transition:transform .35s ease;
+    overflow-y:auto;
+    box-shadow:8px 0 30px rgba(0,0,0,.5);
+}
+
+.side-menu.show{
+    transform:translateX(0);
+}
+
+.side-menu-header{
+    height:95px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    border-bottom:1px solid #222;
+}
+
+.side-menu-logo{
+    font-size:30px;
+    font-weight:800;
+}
+
+.side-menu-logo span{
+    color:#7CFF6B;
+}
+
+.side-menu-close{
+    width:43px;
+    height:43px;
+    border-radius:12px;
+    background:#151515;
+    border:1px solid #292929;
+    color:#fff;
+    font-size:27px;
+}
+
+.side-menu-user{
+    padding:22px 20px;
+    border-bottom:1px solid #1c1c1c;
+}
+
+.side-menu-user-title{
+    font-size:18px;
+    font-weight:700;
+}
+
+.side-menu-user-text{
+    color:#777;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.side-menu-list{
+    padding:15px 12px;
+}
+
+.side-menu-item{
+    width:100%;
+    height:55px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:0 14px;
+    margin-bottom:6px;
+    border-radius:12px;
+    background:transparent;
+    border:0;
+    color:#fff;
+    font-family:'Poppins',Arial,sans-serif;
+    font-size:15px;
+    text-align:left;
+    cursor:pointer;
+}
+
+.side-menu-item:hover{
+    background:#161616;
+}
+
+.side-menu-icon{
+    width:32px;
+    text-align:center;
+    font-size:23px;
+}
+
+.side-menu-item.active{
+    background:#171717;
+}
+
+.side-menu-item.active .side-menu-icon{
+    color:#ff1010;
+}
+
+.side-menu-separator{
+    height:1px;
+    background:#202020;
+    margin:10px 18px 15px;
+}
+
+.side-menu-section-title{
+    padding:0 20px 10px;
+    color:#666;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:2px;
+}
+
+body.menu-open{
+    overflow:hidden;
+}
+
+
+/* =====================================================
+   CARRUSEL PRINCIPAL
+===================================================== */
+
+.carousel-container{
+    position:relative;
+    width:100%;
+    height:210px;
+    overflow:hidden;
+    background:#000;
+}
+
+.carousel-slide{
+    display:flex;
+    height:100%;
+    width:max-content;
+    transition:transform .5s ease-in-out;
+}
+
+.carousel-slide a{
+    flex:0 0 100vw;
+    width:100vw;
+    height:100%;
+    display:block;
+    position:relative;
+}
+
+.carousel-slide img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+}
+
+.carousel-slide a:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg,rgba(0,0,0,.65),transparent 60%),
+        linear-gradient(transparent 45%,rgba(0,0,0,.9));
+}
+
+.carousel-button{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:42px;
+    height:65px;
+    border:none;
+    border-radius:10px;
+    background:rgba(0,0,0,.45);
+    color:#fff;
+    font-size:28px;
+    z-index:10;
+}
+
+.carousel-button.left{
+    left:8px;
+}
+
+.carousel-button.right{
+    right:8px;
+}
+
+.carousel-dots{
+    position:absolute;
+    bottom:15px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:10px;
+    z-index:15;
+}
+
+.carousel-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#777;
+}
+
+.carousel-dot.active{
+    width:24px;
+    border-radius:8px;
+    background:#ff1010;
+}
+
+
+/* =====================================================
+   CATEGORIAS
+===================================================== */
+
+.smart-category{
+    margin-top:22px;
+    padding:0 20px;
+}
+
+.smart-category-title{
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #1b1b1b;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:14px;
+    gap:8px;
+    position:relative;
+}
+
+    .smart-category-title:before{
+    content:"";
+    width:5px;
+    height:24px;
+    background:#ff1010;
+    border-radius:4px;
+    margin-right:3px;
+    flex-shrink:0;
+}
+    
+.smart-category-title .category-title-name{
+    display:flex;
+    align-items:center;
+}
+
+
+/* BOTÓN VER MÁS ALINEADO CON EL NOMBRE */
+
+.smart-category-title .ver-mas-container{
+    margin-left:auto;
+    margin-top:0;
+    margin-bottom:0;
+    padding:0;
+    width:auto;
+    display:flex;
+    align-items:center;
+}
+
+.smart-category-title .ver-mas{
+    white-space:nowrap;
+}
+/* =====================================================
+   BOTÓN VER MÁS
+===================================================== */
+
+.ver-mas-container{
+    display:flex;
+    justify-content:flex-end;
+    width:100%;
+    margin-top:-5px;
+    margin-bottom:14px;
+    padding:0;
+}
+
+.ver-mas{
+    background:#111;
+    border:1px solid #333;
+    color:#fff;
+    padding:8px 15px;
+    border-radius:10px;
+    font-family:'Poppins',Arial,sans-serif;
+    font-size:13px;
+    cursor:pointer;
+
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+
+    transform-origin:center;
+    will-change:transform;
+}
+
+/* Animación al tocar */
+.ver-mas:active{
+    transform:scale(.90);
+    background:#1c1c1c;
+    border-color:#555;
+}
+
+/* Animación tipo menú lateral */
+.ver-mas-click{
+    animation:verMasClick .40s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes verMasClick{
+
+    0%{
+        transform:scale(1);
+    }
+
+    35%{
+        transform:scale(.88);
+    }
+
+    65%{
+        transform:scale(1.08);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+    
+    
+/* =====================================================
+   CARRUSELES DE CATEGORIAS
+===================================================== */
+
+.smart-carousel,
+.continuar-carousel{
+    display:flex;
+    flex-direction:row;
+    gap:6px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    padding:2px 0 18px;
+    scroll-behavior:smooth;
+}
+
+.smart-carousel::-webkit-scrollbar,
+.continuar-carousel::-webkit-scrollbar{
+    display:none;
+}
+
+    /* =====================================================
+   TOP 10
+===================================================== */
+
+.top10-item{
+    flex:0 0 auto;
+
+    display:flex;
+    align-items:center;
+
+    gap:5px;
+}
+
+
+.top10-number{
+    width:65px;
+    flex:0 0 65px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:105px;
+    font-weight:900;
+
+    line-height:0.8;
+
+    color:#111;
+
+    -webkit-text-stroke:3px #fff;
+
+    text-shadow:
+        4px 4px 0 #000,
+        6px 6px 0 #000;
+
+    flex-shrink:0;
+}
+    
+    
+    
+/* =====================================================
+   POSTER
+===================================================== */
+
+.poster{
+    position:relative;
+    flex:0 0 110px;
+    width:110px;
+    height:140px;
+    border-radius:9px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid #222;
+    box-shadow:0 3px 10px rgba(0,0,0,.5);
+}
+
+.poster a{
+    display:block;
+    width:110px;
+    height:140px;
+}
+
+.poster img{
+    width:110px;
+    height:140px;
+    display:block;
+    object-fit:cover;
+}
+
+
+/* =====================================================
+   FAVORITOS
+===================================================== */
+
+.fav-star{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:31px;
+    height:31px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.75);
+    border-radius:50%;
+    color:#fff;
+    font-size:21px;
+    z-index:10;
+    cursor:pointer;
+}
+
+.fav-star.active{
+    color:#FFD700;
+}
+
+
+/* =====================================================
+   EXTRA
+===================================================== */
+
+.smart-extra{
+    display:none;
+}
+
+
+/* =====================================================
+   BASE DE PELICULAS
+===================================================== */
+
+#basePeliculas{
+    display:none;
+}
+
+
+/* =====================================================
+   SEGUIR VIENDO
+===================================================== */
+
+.continuar-section{
+    margin-top:22px;
+    padding:0 20px;
+}
+
+.continuar-title{
+    height:42px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #1b1b1b;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:14px;
+}
+
+.continuar-title:before{
+    content:"";
+    width:5px;
+    height:24px;
+    background:#ff1010;
+    border-radius:4px;
+    margin-right:10px;
+}
+
+.continuar-card{
+    position:relative;
+    flex:0 0 110px;
+    width:110px;
+    height:140px;
+    border-radius:9px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid #222;
+    box-shadow:0 3px 10px rgba(0,0,0,.5);
+}
+
+.continuar-card a{
+    display:block;
+    width:110px;
+    height:140px;
+}
+
+.continuar-card img{
+    width:110px;
+    height:140px;
+    object-fit:cover;
+    display:block;
+}
+
+.continuar-remove{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:0;
+    background:rgba(0,0,0,.80);
+    color:#fff;
+    font-size:19px;
+    z-index:20;
+}
+
+.progreso-barra{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:4px;
+    background:#333;
+    z-index:10;
+}
+
+.progreso-barra span{
+    display:block;
+    height:100%;
+    background:#ff1010;
+    width:0%;
+}
+
+
+/* =====================================================
+   PANTALLA COMPLETA DE CATEGORIA
+===================================================== */
+
+.categoria-screen{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:470;
+    overflow-y:auto;
+    padding-bottom:90px;
+
+    /* Animación de entrada/salida */
+    transform:translateX(100%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear .38s;
+}
+
+.categoria-screen.show{
+    transform:translateX(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear 0s;
+}
+
+.categoria-header{
+    position:sticky;
+    top:0;
+    z-index:30;
+    height:75px;
+    background:rgba(0,0,0,.97);
+    border-bottom:1px solid #202020;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    gap:15px;
+}
+
+.categoria-back{
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    background:#111;
+    border:1px solid #292929;
+    color:#fff;
+    font-size:25px;
+    flex-shrink:0;
+}
+
+.categoria-header-title{
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+.categoria-count{
+    margin-left:auto;
+    color:#777;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.categoria-grid{
+    display:grid;
+    grid-template-columns:repeat(3,110px);
+    justify-content:space-between;
+    gap:20px 8px;
+    padding:20px;
+}
+
+.categoria-grid .poster{
+    width:110px;
+    height:140px;
+    flex:none;
+}
+
+.categoria-grid .poster a{
+    width:110px;
+    height:140px;
+}
+
+.categoria-grid .poster img{
+    width:110px;
+    height:140px;
+}
+
+.categoria-vacio{
+    text-align:center;
+    padding:70px 25px;
+    color:#777;
+}
+
+.categoria-vacio-icon{
+    font-size:60px;
+    color:#333;
+}
+
+    /* =====================================================
+   VER MÁS - RESPONSIVE EN PANTALLAS PEQUEÑAS
+===================================================== */
+
+@media (max-width:480px){
+
+    .categoria-screen{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+        box-sizing:border-box;
+    }
+
+    .categoria-grid{
+
+        width:100%;
+        max-width:100%;
+
+        box-sizing:border-box;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap:20px 8px;
+
+        padding-left:10px;
+        padding-right:10px;
+
+        overflow-x:hidden;
+    }
+
+    .categoria-grid .poster{
+
+        width:110px;
+        max-width:110px;
+
+        height:140px;
+
+        justify-self:center;
+    }
+
+    .categoria-grid .poster a{
+
+        width:110px;
+        height:140px;
+    }
+
+    .categoria-grid .poster img{
+
+        width:110px;
+        height:140px;
+
+        object-fit:cover;
+    }
+
+}
+    
+
+/* =====================================================
+   FAVORITOS SCREEN
+===================================================== */
+
+.favoritos-screen{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:450;
+    overflow-y:auto;
+    padding-bottom:90px;
+
+    /* Animación de entrada y salida */
+    transform:translateX(100%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear .38s;
+}
+
+.favoritos-screen.show{
+    transform:translateX(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear 0s;
+}
+
+.favoritos-header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    height:75px;
+    background:rgba(0,0,0,.96);
+    border-bottom:1px solid #202020;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    gap:15px;
+}
+
+.favoritos-back{
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    background:#111;
+    border:1px solid #292929;
+    color:#fff;
+    font-size:25px;
+}
+
+.favoritos-header-title{
+    font-size:22px;
+    font-weight:700;
+}
+
+.favoritos-count{
+    margin-left:auto;
+    color:#777;
+    font-size:13px;
+}
+
+.favoritos-grid{
+    display:grid;
+    grid-template-columns:repeat(3,110px);
+    justify-content:space-between;
+    gap:20px 8px;
+    padding:20px;
+}
+
+.favorito-card{
+    position:relative;
+    width:110px;
+    height:140px;
+    border-radius:9px;
+    overflow:hidden;
+    background:#111;
+}
+
+.favorito-card img{
+    width:110px;
+    height:140px;
+    object-fit:cover;
+}
+
+.favorito-remove{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:0;
+    background:rgba(0,0,0,.85);
+    color:#fff;
+    font-size:19px;
+    z-index:10;
+}
+
+.favoritos-vacio{
+    text-align:center;
+    padding:70px 25px;
+    color:#777;
+}
+
+.favoritos-vacio-icon{
+    font-size:60px;
+    color:#333;
+}
+
+    
+    /* =====================================================
+   FAVORITOS - RESPONSIVE EN PANTALLAS PEQUEÑAS
+===================================================== */
+
+@media (max-width:480px){
+
+    .favoritos-screen{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+        box-sizing:border-box;
+    }
+
+    .favoritos-grid{
+
+        width:100%;
+        max-width:100%;
+
+        box-sizing:border-box;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap:20px 8px;
+
+        padding-left:10px;
+        padding-right:10px;
+
+        overflow-x:hidden;
+    }
+
+    .favorito-card{
+
+        width:110px;
+        max-width:110px;
+
+        height:140px;
+
+        justify-self:center;
+    }
+
+    .favorito-card img{
+
+        width:110px;
+        height:140px;
+
+        object-fit:cover;
+    }
+
+}
+    
+
+    
+    /* =====================================================
+   SEGUIR VIENDO SCREEN
+===================================================== */
+
+.seguir-screen{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:460;
+    overflow-y:auto;
+    padding-bottom:90px;
+
+    /* Animación de entrada y salida */
+    transform:translateX(100%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear .38s;
+}
+
+.seguir-screen.show{
+    transform:translateX(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+
+    transition:
+        transform .38s cubic-bezier(.22,.61,.36,1),
+        opacity .25s ease,
+        visibility 0s linear 0s;
+}
+
+.seguir-header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    height:75px;
+    background:rgba(0,0,0,.96);
+    border-bottom:1px solid #202020;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    gap:15px;
+}
+
+.seguir-back{
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    background:#111;
+    border:1px solid #292929;
+    color:#fff;
+    font-size:25px;
+}
+
+.seguir-header-title{
+    font-size:22px;
+    font-weight:700;
+}
+
+.seguir-count{
+    margin-left:auto;
+    color:#777;
+    font-size:13px;
+}
+
+.seguir-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    width:100%;
+    max-width:100%;
+
+    box-sizing:border-box;
+
+    gap:20px 8px;
+    
+    padding-top:20px;
+    padding-left:15px;
+    padding-right:10px;
+
+    overflow-x:hidden;
+}
+
+.seguir-card{
+    position:relative;
+    width:110px;
+    height:140px;
+    border-radius:9px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid #222;
+    box-shadow:0 3px 10px rgba(0,0,0,.5);
+}
+
+.seguir-card a{
+    display:block;
+    width:110px;
+    height:140px;
+}
+
+.seguir-card img{
+    width:110px;
+    height:140px;
+    object-fit:cover;
+    display:block;
+}
+
+.seguir-remove{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:0;
+    background:rgba(0,0,0,.85);
+    color:#fff;
+    font-size:19px;
+    z-index:5;
+}
+
+.seguir-progreso{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:4px;
+    background:#333;
+    z-index:10;
+}
+
+.seguir-progreso span{
+    display:block;
+    height:100%;
+    background:#ff1010;
+    width:0%;
+}
+
+.seguir-vacio{
+    text-align:center;
+    padding:70px 25px;
+    color:#777;
+}
+
+.seguir-vacio-icon{
+    font-size:60px;
+    color:#333;
+}
+    
+    
+/* =====================================================
+   BUSCADOR
+===================================================== */
+
+.search-screen{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:500;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.search-screen.show{
+    display:block;
+}
+
+.search-box{
+    display:flex;
+    gap:10px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:#000;
+    padding-top:0;
+    padding-bottom:15px;
+    isolation:isolate;
+}
+
+/* Capa sólida para ocultar completamente
+   las películas que pasan por detrás */
+.search-box::before{
+    content:"";
+    position:absolute;
+    top:-25px;
+    left:-20px;
+    right:-20px;
+    bottom:0;
+    background:#000;
+    z-index:-1;
+}
+
+.search-input{
+    flex:1;
+    height:50px;
+    background:#111;
+    border:1px solid #333;
+    border-radius:13px;
+    color:#fff;
+    outline:none;
+    padding:0 15px;
+    font-size:16px;
+}
+
+.close{
+    width:50px;
+    height:50px;
+    border-radius:13px;
+    background:#111;
+    border:1px solid #333;
+    color:#fff;
+    font-size:27px;
+}
+
+.search-result-title{
+    display:none;
+    height:42px;
+    align-items:center;
+    font-size:17px;
+    font-weight:700;
+    border-bottom:1px solid #222;
+    margin-bottom:14px;
+}
+
+    .search-result-title:before{
+    content:"";
+    width:5px;
+    height:24px;
+    background:#ff1010;
+    border-radius:4px;
+    margin-right:10px;
+    flex-shrink:0;
+}
+    
+.search-results{
+    display:grid;
+    grid-template-columns:repeat(3,110px);
+    justify-content:space-between;
+    gap:18px 8px;
+    position:relative;
+    z-index:1;
+}
+
+.search-message,
+.placeholder-hint{
+    text-align:center;
+    color:#777;
+    padding:35px 10px;
+}
+
+
+/* =====================================================
+   BARRA
+===================================================== */
+
+.bottom{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:75px;
+    background:#080808;
+    border-top:1px solid #191919;
+    z-index:100;
+    display:flex;
+}
+
+.nav{
+    width:33.33%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+    color:#fff;
+}
+
+.nav-icon{
+    font-size:29px;
+}
+
+.nav-text{
+    font-size:13px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:380px){
+
+    .header{
+        height:72px;
+        gap:32px;
+        padding:0 18px;
+    }
+
+    .logo{
+        font-size:32px;
+    }
+
+    .carousel-container{
+        height:330px;
+    }
+
+    .smart-category,
+    .continuar-section{
+        padding:0 18px;
+    }
+
+    .smart-category-title{
+        font-size:18px;
+    }
+
+    .ver-mas{
+        padding:7px 9px;
+        font-size:10px;
+    }
+
+}
+
+@media(min-width:700px){
+
+    .carousel-container{
+        height:500px;
+    }
+
+}
+
+    /* =====================================================
+   CORRECCIÓN CAPA DEL BUSCADOR
+===================================================== */
+
+.search-screen{
+    isolation:isolate;
+}
+
+.search-box{
+    position:sticky;
+    top:0;
+    z-index:9999;
+    background:#000;
+}
+
+.search-results{
+    position:relative;
+    z-index:1;
+}
+
+.search-result-title{
+    position:relative;
+    z-index:1;
+}
+    
+    /* =====================================================
+   CONTENIDO AGREGADO
+===================================================== */
+
+.contenido-total{
+    font-size:13px;
+    font-weight:400;
+    margin-top:6px;
+    opacity:0.8;
+}
+
+.contenido-total strong{
+    font-size:13px;
+    font-weight:700;
+    margin-left:4px;
+}
+    
+    /* =====================================================
+   CORRECCIÓN RESPONSIVE DEL BUSCADOR
+===================================================== */
+
+html,
+body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+}
+
+/* Pantallas pequeñas */
+@media (max-width:480px){
+
+    #searchScreen{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+        box-sizing:border-box;
+    }
+
+    #searchScreen *{
+        box-sizing:border-box;
+        max-width:100%;
+    }
+
+}
+    
+    /* =====================================================
+   BUSCADOR - 3 COLUMNAS EN PANTALLAS PEQUEÑAS
+===================================================== */
+
+@media (max-width:480px){
+
+    #searchScreen .search-results,
+    #searchScreen .results-grid,
+    #searchScreen .movie-grid{
+
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(3, 110px);
+
+        gap:10px;
+
+        padding-left:10px;
+        padding-right:10px;
+
+        justify-content:center;
+    }
+
+
+    /* =================================================
+       MANTENER TAMAÑO DE LOS PÓSTERS
+    ================================================= */
+
+    #searchScreen .poster{
+
+        width:110px;
+        min-width:110px;
+        max-width:110px;
+
+        height:140px;
+
+        box-sizing:border-box;
+    }
+
+
+    #searchScreen .poster img{
+
+        width:110px;
+        height:140px;
+
+        object-fit:cover;
+    }
+
+}
+    
+    /* =====================================================
+   PÓSTERS RESPONSIVE AL GIRAR EL TELÉFONO
+===================================================== */
+
+@media (max-width:900px) and (orientation:landscape){
+
+    /* =============================================
+       CATEGORÍAS NORMALES
+    ============================================= */
+
+    .poster{
+
+        width:125px;
+        min-width:125px;
+        height:160px;
+
+    }
+
+    .poster img{
+
+        width:125px;
+        height:160px;
+
+        object-fit:cover;
+    }
+
+
+   /* =============================================
+   SEGUIR VIENDO
+============================================= */
+
+.seguir-grid{
+
+    width:100%;
+    box-sizing:border-box;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(125px, 1fr)
+        );
+
+    gap:20px 10px;
+
+    padding-left:15px;
+    padding-right:15px;
+
+}
+
+.seguir-card{
+
+    width:100%;
+    max-width:140px;
+
+    height:auto;
+
+    aspect-ratio:110 / 140;
+
+    justify-self:center;
+
+}
+
+.seguir-card a{
+
+    width:100%;
+    height:100%;
+
+}
+
+.seguir-card img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+}
+    
+   /* =====================================================
+   CATEGORÍAS EN PANTALLA HORIZONTAL
+===================================================== */
+
+@media (max-width:900px) and (orientation:landscape){
+
+    .categoria-grid{
+
+        width:100%;
+        box-sizing:border-box;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(125px, 1fr)
+            );
+
+        gap:20px 10px;
+
+        padding-left:15px;
+        padding-right:15px;
+
+    }
+
+    .categoria-grid .poster{
+
+        width:100%;
+        max-width:140px;
+
+        height:auto;
+        aspect-ratio:110 / 140;
+
+        justify-self:center;
+
+    }
+
+    .categoria-grid .poster a{
+
+        width:100%;
+        height:100%;
+
+    }
+
+    .categoria-grid .poster img{
+
+        width:100%;
+        height:100%;
+
+        object-fit:cover;
+
+    }
+
+}
+    
+    /* =====================================================
+   VER MÁS - PANTALLAS GRANDES
+===================================================== */
+
+@media (min-width:901px){
+
+    .categoria-grid{
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(110px, 1fr)
+            );
+    }
+
+}
+    
+    
+    /* =====================================================
+   FAVORITOS Y SEGUIR VIENDO - PANTALLAS GRANDES
+===================================================== */
+
+@media (min-width:901px){
+
+    .favoritos-grid,
+    .seguir-grid{
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(110px, 1fr)
+            );
+    }
+
+}
+    
+    
+</style>
+
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+<div class="menu"
+onclick="openMenu()">
+
+<span></span>
+<span></span>
+<span></span>
+
+</div>
+
+<div class="logo">
+    FLIX<span>TV</span>
+</div>
+
+<div class="search"
+onclick="openSearch()">
+
+<div class="search-circle"></div>
+
+</div>
+
+</header>
+
+
+<!-- =====================================================
+     MENU
+===================================================== -->
+
+<div class="side-menu-overlay"
+id="sideMenuOverlay"
+onclick="closeMenu()">
+</div>
+
+<aside class="side-menu"
+id="sideMenu">
+
+<div class="side-menu-header">
+
+<div class="side-menu-logo">
+FLIX <span>TV</span>
+</div>
+
+<button
+class="side-menu-close"
+onclick="closeMenu()">
+
+×
+
+</button>
+
+</div>
+
+
+<div class="side-menu-user">
+
+<div class="side-menu-user-title">
+Bienvenido
+</div>
+
+<div class="side-menu-user-text">
+Explora todo nuestro contenido
+</div>
+  <div class="contenido-total">
+    <span>Contenido agregado:</span>
+    <strong id="totalContenido">0</strong>
+</div>  
+    
+
+</div>
+
+
+<div class="side-menu-list">
+
+<button
+class="side-menu-item active"
+onclick="menuInicio()">
+
+<span class="side-menu-icon">⌂</span>
+
+<span>Inicio</span>
+
+</button>
+
+
+<button
+class="side-menu-item"
+onclick="compartirApp()">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 640 640"
+width="23"
+height="23"
+fill="currentColor">
+
+<path d="M416.5 88L416.5 160L352.5 160C273 160 208.5 224.5 208.5 304C208.5 397.4 291.3 438.8 309.1 446.6C311.3 447.6 313.7 448 316.2 448L318.7 448C328.5 448 336.5 440 336.5 430.2C336.5 421.9 330.6 414.7 323.7 409.9C314.8 403.7 304.5 391.7 304.5 369.4C304.5 324.4 341 287.9 386 287.9L416.5 287.9L416.5 359.9C416.5 369.6 422.3 378.4 431.3 382.1C440.3 385.8 450.6 383.8 457.5 376.9L593.5 240.9C602.9 231.5 602.9 216.3 593.5 207L457.5 71C450.6 64.1 440.3 62.1 431.3 65.8C422.3 69.5 416.5 78.3 416.5 88zM144.5 160C100.3 160 64.5 195.8 64.5 240L64.5 496C64.5 540.2 100.3 576 144.5 576L400.5 576C444.7 576 480.5 540.2 480.5 496L480.5 464C480.5 446.3 466.2 432 448.5 432C430.8 432 416.5 446.3 416.5 464L416.5 496C416.5 504.8 409.3 512 400.5 512L144.5 512C135.7 512 128.5 504.8 128.5 496L128.5 240C128.5 231.2 135.7 224 144.5 224L160.5 224C178.2 224 192.5 209.7 192.5 192C192.5 174.3 178.2 160 160.5 160L144.5 160z"/>
+
+</svg>
+
+</span>
+
+<span>Compartir App</span>
+
+</button>
+
+
+<button
+class="side-menu-item"
+onclick="menuSeguirViendo()">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+fill-rule="evenodd"
+d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+clip-rule="evenodd"/>
+
+</svg>
+
+</span>
+
+<span>Seguir viendo</span>
+
+</button>
+
+
+<button
+class="side-menu-item"
+onclick="menuFavoritos()">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+fill-rule="evenodd"
+d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+clip-rule="evenodd"/>
+
+</svg>
+
+</span>
+
+<span>Favoritos</span>
+
+</button>
+
+    <!-- =====================================================
+     REDES SOCIALES
+===================================================== -->
+
+<!-- =====================================================
+     TELEGRAM
+===================================================== -->
+
+<button
+class="side-menu-item"
+onclick="location.href='PEGA_TU_ENLACE_DE_TELEGRAM_AQUI'">
+
+<span class="side-menu-icon">
+
+<svg
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="none"
+xmlns="http://www.w3.org/2000/svg">
+
+<path
+d="M21.8 3.2 18.5 20c-.25 1.18-.91 1.47-1.85.92l-5.1-3.76-2.46 2.37c-.27.27-.5.5-1.02.5l.36-5.19 9.45-8.54c.41-.36-.09-.56-.64-.2L5.56 13.55.5 11.97c-1.1-.35-1.12-1.1.23-1.6L20.5 2.76c.91-.34 1.71.2 1.3.44Z"
+fill="#26A5E4"/>
+
+</svg>
+
+</span>
+
+<span>Telegram Pedidos</span>
+
+</button>
+
+
+<!-- =====================================================
+     TIKTOK
+===================================================== -->
+
+<button
+class="side-menu-item"
+onclick="location.href='PEGA_TU_ENLACE_DE_TIKTOK_AQUI'">
+
+<span class="side-menu-icon">
+
+<svg
+viewBox="0 0 24 24"
+width="23"
+height="23"
+xmlns="http://www.w3.org/2000/svg">
+
+<path
+d="M16.5 3c.3 1.8 1.35 3.15 3.5 3.35v3.05c-1.25.02-2.4-.3-3.5-.9v6.55c0 3.55-2.45 5.95-6 5.95-3.3 0-5.75-2.25-5.75-5.35 0-3.25 2.65-5.65 5.95-5.65.3 0 .6.02.9.08v3.1a3.5 3.5 0 0 0-.9-.13c-1.25 0-2.2.95-2.2 2.25 0 1.25.95 2.2 2.2 2.2 1.4 0 2.3-.9 2.3-2.45V3h3.5Z"
+fill="#fff"/>
+
+<path
+d="M16.5 3c.3 1.8 1.35 3.15 3.5 3.35v1.2c-1.25.02-2.4-.3-3.5-.9V3Z"
+fill="#69C9D0"/>
+
+<path
+d="M5.1 12.15a3.5 3.5 0 0 0-.65 2.05c0 1.25.95 2.2 2.2 2.2.45 0 .85-.12 1.18-.34a2.3 2.3 0 0 1-1.48.54c-1.25 0-2.2-.95-2.2-2.2 0-.9.35-1.7.95-2.25Z"
+fill="#EE1D52"/>
+
+</svg>
+
+</span>
+
+<span>TikTok</span>
+
+</button>
+    
+
+<div class="side-menu-separator"></div>
+
+<div class="side-menu-section-title">
+CATEGORÍAS
+</div>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('accion')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+fill-rule="evenodd"
+d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176 7.547 7.547 0 0 1-1.705-1.715.75.75 0 0 0-1.152-.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z"
+clip-rule="evenodd"/>
+
+</svg>
+
+</span>
+
+<span>Acción</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('terror')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 640 640"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M168.1 531.1L156.9 540.1C153.7 542.6 149.8 544 145.8 544C136 544 128 536 128 526.2L128 256C128 150 214 64 320 64C426 64 512 150 512 256L512 526.2C512 536 504 544 494.2 544C490.2 544 486.3 542.6 483.1 540.1L471.9 531.1C458.5 520.4 439.1 522.1 427.8 535L397.3 570C394 573.8 389.1 576 384 576C378.9 576 374.1 573.8 370.7 570L344.1 539.5C331.4 524.9 308.7 524.9 295.9 539.5L269.3 570C266 573.8 261.1 576 256 576C250.9 576 246.1 573.8 242.7 570L212.2 535C200.9 522.1 181.5 520.4 168.1 531.1zM288 256C288 238.3 273.7 224 256 224C238.3 224 224 238.3 224 256C224 273.7 238.3 288 256 288C273.7 288 288 273.7 288 256zM384 288C401.7 288 416 273.7 416 256C416 238.3 401.7 224 384 224C366.3 224 352 238.3 352 256C352 273.7 366.3 288 384 288z"/>
+
+</svg>
+
+</span>
+
+<span>Terror</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('romance')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z"/>
+
+</svg>
+
+</span>
+
+<span>Romance</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('infantiles')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+fill-rule="evenodd"
+d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 0 1 .75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 0 1 9.75 22.5a.75.75 0 0 1-.75-.75v-4.131A15.838 15.838 0 0 1 6.382 15H2.25a.75.75 0 0 1-.75-.75 6.75 6.75 0 0 1 7.815-6.666ZM15 6.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z"
+clip-rule="evenodd"/>
+
+<path
+d="M5.26 17.242a.75.75 0 1 0-.897-1.203 5.243 5.243 0 0 0-2.05 5.022.75.75 0 0 0 .625.627 5.243 5.243 0 0 0 5.022-2.051.75.75 0 1 0-1.202-.897 3.744 3.744 0 0 1-3.008 1.51c0-1.23.592-2.323 1.51-3.008Z"/>
+
+</svg>
+
+</span>
+
+<span>Infantiles</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('series')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M19.5 6h-15v9h15V6Z"/>
+
+<path
+fill-rule="evenodd"
+d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v11.25C1.5 17.16 2.34 18 3.375 18H9.75v1.5H6A.75.75 0 0 0 6 21h12a.75.75 0 0 0 0-1.5h-3.75V18h6.375c1.035 0 1.875-.84 1.875-1.875V4.875C22.5 3.839 21.66 3 20.625 3H3.375Zm0 13.5h17.25a.375.375 0 0 0 .375-.375V4.875a.375.375 0 0 0-.375-.375H3.375A.375.375 0 0 0 3 4.875v11.25c0 .207.168.375.375.375Z"
+clip-rule="evenodd"/>
+
+</svg>
+
+</span>
+
+<span>Series</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('animes')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 640 640"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M96 160L96 92.5C96 85.6 101.6 80 108.5 80C110.8 80 113 80.6 115 81.8L154 105.2C178.9 120.1 207.3 128 236.3 128L403.7 128C432.7 128 461.2 120.1 486 105.2L525 81.8C526.9 80.6 529.2 80 531.4 80C538.3 80 543.9 85.6 543.9 92.5L544 160C544 195.3 515.3 224 480 224L480 288L496 288C513.7 288 528 302.3 528 320C528 337.7 513.7 352 496 352L480 352L480 544C480 561.7 465.7 576 448 576C430.3 576 416 561.7 416 544L416 352L224 352L224 544C224 561.7 209.7 576 192 576C174.3 576 160 561.7 160 544L160 352L144 352C126.3 352 112 337.7 112 320C112 302.3 126.3 288 144 288L160 288L160 224C124.7 224 96 195.3 96 160zM224 288L288 288L288 224L224 224L224 288zM352 288L416 288L416 224L352 224L352 288z"/>
+
+</svg>
+
+</span>
+
+<span>Animes</span>
+
+</button>
+
+
+<button class="side-menu-item"
+onclick="menuCategoria('comedia')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+fill-rule="evenodd"
+d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm2.023 6.828a.75.75 0 1 0-1.06-1.06 3.75 3.75 0 0 1-5.304 0 .75.75 0 0 0-1.06 1.06 5.25 5.25 0 0 0 7.424 0Z"
+clip-rule="evenodd"/>
+
+</svg>
+
+</span>
+
+<span>Comedia</span>
+
+</button>
+
+
+<div class="side-menu-separator"></div>
+
+
+<button
+class="side-menu-item">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 640 640"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM269.1 370.9C297.2 399 342.8 399 370.9 370.9C380.3 361.5 395.5 361.5 404.8 370.9C414.1 380.3 414.2 395.5 404.8 404.8C357.9 451.7 282 451.7 235.1 404.8C188.2 357.9 188.2 282 235.1 235.1C282 188.2 357.9 188.2 404.8 235.1C414.2 244.5 414.2 259.7 404.8 269C395.4 278.3 380.2 278.4 370.9 269C342.8 240.9 297.2 240.9 269.1 269C241 297.1 241 342.7 269.1 370.8z"/>
+
+</svg>
+
+</span>
+
+<span>Todos los derechos reservados 2025</span>
+
+</button>
+
+</div>
+
+</aside>
+
+
+<!-- =====================================================
+     CARRUSEL
+===================================================== -->
+
+<div class="carousel-container">
+
+<button
+class="carousel-button left"
+id="prevBtn">
+
+❮
+
+</button>
+
+
+<div
+class="carousel-slide"
+id="carouselSlide">
+
+
+<a href="go:A5">
+
+<img src="https://image.tmdb.org/t/p/w780/f5H5aLVCClEFnnTUrN0i2tXXLIz.jpg">
+
+</a>
+
+
+<a href="go:A16">
+
+<img src="https://image.tmdb.org/t/p/w780/cHaEV3281874GjsiFUXFTvkd5WF.jpg">
+
+</a>
+
+
+<a href="go:A115">
+
+<img src="https://image.tmdb.org/t/p/w780/ipgPfG5kMLyyZEecP9iib97Sw6d.jpg">
+
+</a>
+
+
+<a href="go:A108">
+
+<img src="https://image.tmdb.org/t/p/w780/onBlYD8ZYw26spDAzBMg5nxDuE3.jpg">
+
+</a>
+
+
+</div>
+
+
+<button
+class="carousel-button right"
+id="nextBtn">
+
+❯
+
+</button>
+
+
+<div
+class="carousel-dots"
+id="carouselDots">
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     CATEGORIAS
+===================================================== -->
+
+<div id="contenedorCategorias"></div>
+
+
+<!-- =====================================================
+     BASE DE PELICULAS
+===================================================== -->
+
+<div id="basePeliculas">
+
+
+
+ 
+
+    
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+
+
+
+    
+    
+    /* =====================================================
+   ⭐ LISTA DE TOP 10 ⭐
+===================================================== */
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A541" title=" tron ares 2 "><span><img src="https://image.tmdb.org/t/p/w185/vV8BRsa5h88RsmP6fpqKDzGElt7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A540" title=" telefono negro 2 "><span><img src="https://image.tmdb.org/t/p/w185/gNIQ1DScjwKjmXhMIRyfZp6JdtB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A538" title="el conjuro 4"><span><img src="https://image.tmdb.org/t/p/w185/n9CXtIFdpxIqqsmEdD7CO7gb4X3.jpg" width="110px" height="140px"></span></a></div>
+
+
+    
+    
+
+
+</div>
+
+    
+    
+
+<!-- =====================================================
+     PANTALLA DE CATEGORIA
+===================================================== -->
+
+<div
+class="categoria-screen"
+id="categoriaScreen">
+
+<div class="categoria-header">
+
+<button
+class="categoria-back"
+onclick="cerrarCategoria()">
+
+❮
+
+</button>
+
+<div
+class="categoria-header-title"
+id="categoriaHeaderTitle">
+
+CATEGORÍA
+
+</div>
+
+<div
+class="categoria-count"
+id="categoriaCount">
+
+0 películas
+
+</div>
+
+</div>
+
+
+<div
+class="categoria-grid"
+id="categoriaGrid">
+</div>
+
+
+<div
+class="categoria-vacio"
+id="categoriaVacio">
+
+<div class="categoria-vacio-icon">
+
+</div>
+
+<div>
+No hay películas en esta categoría.
+</div>
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- =====================================================
+     FAVORITOS
+===================================================== -->
+
+<div
+class="favoritos-screen"
+id="favoritosScreen">
+
+<div class="favoritos-header">
+
+<button
+class="favoritos-back"
+onclick="cerrarFavoritos()">
+
+❮
+
+</button>
+
+<div class="favoritos-header-title">
+Favoritos
+</div>
+
+<div
+class="favoritos-count"
+id="favoritosCount">
+
+0 películas
+
+</div>
+
+</div>
+
+
+<div
+class="favoritos-grid"
+id="favoritosGrid">
+</div>
+
+
+<div
+class="favoritos-vacio"
+id="favoritosVacio">
+
+<div class="favoritos-vacio-icon">
+☆
+</div>
+
+<div>
+Todavía no tienes películas favoritas.
+</div>
+
+</div>
+
+</div>
+
+
+    <!-- =====================================================
+     SEGUIR VIENDO SCREEN
+===================================================== -->
+
+<div
+class="seguir-screen"
+id="seguirScreen">
+
+<div class="seguir-header">
+
+<button
+class="seguir-back"
+onclick="cerrarSeguirViendo()">
+
+❮
+
+</button>
+
+<div class="seguir-header-title">
+Seguir viendo
+</div>
+
+<div
+class="seguir-count"
+id="seguirCount">
+
+0 películas
+
+</div>
+
+</div>
+
+
+<div
+class="seguir-grid"
+id="seguirGrid">
+</div>
+
+
+<div
+class="seguir-vacio"
+id="seguirVacio">
+
+<div class="seguir-vacio-icon">
+▶
+</div>
+
+<div>
+Todavía no tienes películas para seguir viendo.
+</div>
+
+</div>
+
+</div>
+    
+    
+<!-- =====================================================
+     BUSCADOR
+===================================================== -->
+
+<div
+class="search-screen"
+id="searchScreen">
+
+<div class="search-box">
+
+<input
+class="search-input"
+id="searchInput"
+type="text"
+autocomplete="off"
+placeholder="Buscar películas o series...">
+
+<button
+class="close"
+onclick="closeSearch()">
+
+×
+
+</button>
+
+</div>
+
+
+<div
+class="search-result-title"
+id="searchResultTitle">
+
+RESULTADOS
+
+</div>
+
+
+<div
+class="search-results"
+id="searchResults">
+</div>
+
+
+<div
+class="search-message"
+id="searchMessage">
+</div>
+
+
+<div
+class="placeholder-hint"
+id="searchHint">
+
+Escribe el nombre de una película o serie
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   CARRUSEL
+===================================================== */
+
+const slides =
+document.getElementById("carouselSlide");
+
+const slideItems =
+Array.from(slides.children);
+
+const slideCount =
+slideItems.length;
+
+let slideIndex = 0;
+
+let autoSlideInterval;
+
+const dotsContainer =
+document.getElementById("carouselDots");
+
+
+for(let i=0;i<slideCount;i++){
+
+    const dot =
+    document.createElement("div");
+
+    dot.className =
+    "carousel-dot";
+
+    if(i===0)
+    dot.classList.add("active");
+
+    dot.onclick=function(){
+
+        stopAutoSlide();
+
+        slideIndex=i;
+
+        updateSlidePosition();
+
+        startAutoSlide();
+
+    };
+
+    dotsContainer.appendChild(dot);
+
+}
+
+
+slideItems.forEach(slide=>{
+
+    slides.appendChild(
+        slide.cloneNode(true)
+    );
+
+});
+
+
+function updateSlidePosition(animated=true){
+
+    slides.style.transition =
+    animated
+    ? "transform .5s ease-in-out"
+    : "none";
+
+    slides.style.transform =
+    `translateX(-${window.innerWidth * slideIndex}px)`;
+
+    updateDots();
+
+}
+
+
+function updateDots(){
+
+    document
+    .querySelectorAll(".carousel-dot")
+    .forEach((dot,index)=>{
+
+        dot.classList.toggle(
+            "active",
+            index === slideIndex % slideCount
+        );
+
+    });
+
+}
+
+
+function goNext(){
+
+    slideIndex++;
+
+    updateSlidePosition();
+
+    if(slideIndex===slideCount){
+
+        setTimeout(()=>{
+
+            slideIndex=0;
+
+            updateSlidePosition(false);
+
+        },520);
+
+    }
+
+}
+
+
+function goPrev(){
+
+    if(slideIndex===0){
+
+        slideIndex=slideCount;
+
+        updateSlidePosition(false);
+
+        setTimeout(()=>{
+
+            slideIndex--;
+
+            updateSlidePosition(true);
+
+        },20);
+
+    }else{
+
+        slideIndex--;
+
+        updateSlidePosition();
+
+    }
+
+}
+
+
+function startAutoSlide(){
+
+    stopAutoSlide();
+
+    autoSlideInterval =
+    setInterval(goNext,5000);
+
+}
+
+
+function stopAutoSlide(){
+
+    clearInterval(
+        autoSlideInterval
+    );
+
+}
+
+
+document
+.getElementById("nextBtn")
+.addEventListener("click",()=>{
+
+    stopAutoSlide();
+
+    goNext();
+
+    startAutoSlide();
+
+});
+
+
+document
+.getElementById("prevBtn")
+.addEventListener("click",()=>{
+
+    stopAutoSlide();
+
+    goPrev();
+
+    startAutoSlide();
+
+});
+
+
+updateSlidePosition(false);
+
+startAutoSlide();
+
+
+/* =====================================================
+   NORMALIZAR
+===================================================== */
+
+function normalizarTexto(texto){
+
+    return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+}
+
+
+/* =====================================================
+   FAVORITOS
+===================================================== */
+
+const FAVORITOS_KEY =
+"stark_favoritos";
+
+
+function obtenerFavoritos(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                FAVORITOS_KEY
+            )
+        ) || [];
+
+    }catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+function guardarFavoritos(lista){
+
+    localStorage.setItem(
+        FAVORITOS_KEY,
+        JSON.stringify(lista)
+    );
+
+}
+
+
+function configurarFavorito(poster){
+
+    if(!poster)
+    return;
+
+    const estrella =
+    poster.querySelector(".fav-star");
+
+    const link =
+    poster.querySelector("a");
+
+    const imagen =
+    poster.querySelector("img");
+
+    if(!estrella || !link || !imagen)
+    return;
+
+    const enlace =
+    link.getAttribute("href");
+
+    if(!enlace)
+    return;
+
+
+    function actualizar(){
+
+        const existe =
+        obtenerFavoritos().some(
+            item =>
+            item.enlace === enlace
+        );
+
+        estrella.classList.toggle(
+            "active",
+            existe
+        );
+
+        estrella.textContent =
+        existe ? "★" : "☆";
+
+    }
+
+
+    actualizar();
+
+
+    if(
+        estrella.dataset.favoritoActivo==="1"
+    )
+    return;
+
+
+    estrella.dataset.favoritoActivo="1";
+
+
+    estrella.addEventListener(
+        "click",
+        function(e){
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            let lista =
+            obtenerFavoritos();
+
+            const indice =
+            lista.findIndex(
+                item =>
+                item.enlace === enlace
+            );
+
+
+            if(indice!==-1){
+
+                lista.splice(
+                    indice,
+                    1
+                );
+
+            }else{
+
+                lista.push({
+
+                    enlace:enlace,
+
+                    nombre:
+                    link.getAttribute("title") ||
+                    imagen.getAttribute("alt") ||
+                    "Película",
+
+                    imagen:
+                    imagen.getAttribute("src")
+
+                });
+
+            }
+
+
+            guardarFavoritos(lista);
+
+            actualizar();
+
+            actualizarTodasLasEstrellas(
+                enlace
+            );
+
+        }
+    );
+
+}
+
+
+function actualizarTodasLasEstrellas(enlace){
+
+    document
+    .querySelectorAll(".poster")
+    .forEach(poster=>{
+
+        const link =
+        poster.querySelector("a");
+
+        const estrella =
+        poster.querySelector(".fav-star");
+
+        if(!link || !estrella)
+        return;
+
+        if(
+            link.getAttribute("href")===enlace
+        ){
+
+            const existe =
+            obtenerFavoritos().some(
+                item =>
+                item.enlace===enlace
+            );
+
+            estrella.classList.toggle(
+                "active",
+                existe
+            );
+
+            estrella.textContent =
+            existe ? "★" : "☆";
+
+        }
+
+    });
+
+}
+
+
+/* =====================================================
+   FAVORITOS SCREEN
+===================================================== */
+
+function menuFavoritos(){
+
+    closeMenu();
+
+    cerrarCategoria();
+
+    setTimeout(
+        abrirFavoritos,
+        250
+    );
+
+}
+
+
+function abrirFavoritos(){
+
+    starkGuardarSeccion(
+    "categoria"
+);
+    
+    document
+    .getElementById("favoritosScreen")
+    .classList.add("show");
+
+    document.body.style.overflow="hidden";
+
+    renderizarFavoritos();
+
+}
+
+
+function cerrarFavoritos(){
+
+    document
+    .getElementById("favoritosScreen")
+    .classList.remove("show");
+
+    document.body.style.overflow="";
+
+}
+
+
+function renderizarFavoritos(){
+
+    const grid =
+    document.getElementById(
+        "favoritosGrid"
+    );
+
+    const vacio =
+    document.getElementById(
+        "favoritosVacio"
+    );
+
+    const contador =
+    document.getElementById(
+        "favoritosCount"
+    );
+
+    const lista =
+    obtenerFavoritos();
+
+
+    grid.innerHTML="";
+
+
+    contador.textContent =
+    lista.length===1
+    ? "1 película"
+    : `${lista.length} películas`;
+
+
+    if(lista.length===0){
+
+        vacio.style.display="block";
+
+        return;
+
+    }
+
+
+    vacio.style.display="none";
+
+
+    lista.forEach(pelicula=>{
+
+        const tarjeta =
+        document.createElement("div");
+
+        tarjeta.className =
+        "favorito-card";
+
+
+        const boton =
+        document.createElement("button");
+
+        boton.className =
+        "favorito-remove";
+
+        boton.textContent="×";
+
+
+        boton.onclick=function(e){
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            let nuevaLista =
+            obtenerFavoritos().filter(
+                item =>
+                item.enlace !== pelicula.enlace
+            );
+
+            guardarFavoritos(
+                nuevaLista
+            );
+
+            renderizarFavoritos();
+
+            actualizarTodasLasEstrellas(
+                pelicula.enlace
+            );
+
+        };
+
+
+        const enlace =
+        document.createElement("a");
+
+        enlace.href =
+        pelicula.enlace;
+
+
+        const imagen =
+        document.createElement("img");
+
+        imagen.src =
+        pelicula.imagen;
+
+        imagen.alt =
+        pelicula.nombre;
+
+
+        enlace.appendChild(
+            imagen
+        );
+
+        tarjeta.appendChild(
+            boton
+        );
+
+        tarjeta.appendChild(
+            enlace
+        );
+
+        grid.appendChild(
+            tarjeta
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   SEGUIR VIENDO
+===================================================== */
+
+const SEGUIR_VIENDO_KEY =
+"stark_seguir_viendo";
+
+
+function obtenerSeguirViendo(){
+
+    try{
+
+        const datos =
+        JSON.parse(
+            localStorage.getItem(
+                SEGUIR_VIENDO_KEY
+            )
+        );
+
+        return Array.isArray(datos)
+        ? datos
+        : [];
+
+    }catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+function guardarSeguirViendo(lista){
+
+    localStorage.setItem(
+        SEGUIR_VIENDO_KEY,
+        JSON.stringify(lista)
+    );
+
+}
+
+
+function agregarSeguirViendo(poster){
+
+    if(!poster)
+    return;
+
+    const link =
+    poster.querySelector("a");
+
+    const imagen =
+    poster.querySelector("img");
+
+    if(!link || !imagen)
+    return;
+
+
+    const enlace =
+    link.getAttribute("href");
+
+    if(!enlace)
+    return;
+
+
+    const nombre =
+    link.getAttribute("title") ||
+    imagen.getAttribute("alt") ||
+    "Película";
+
+
+    const imagenURL =
+    imagen.getAttribute("src") ||
+    imagen.src ||
+    "";
+
+
+    let lista =
+    obtenerSeguirViendo();
+
+
+    const existente =
+    lista.find(
+        item =>
+        item.enlace===enlace
+    );
+
+
+    lista =
+    lista.filter(
+        item =>
+        item.enlace!==enlace
+    );
+
+
+    const progreso =
+    existente &&
+    typeof existente.progreso==="number"
+    ? existente.progreso
+    : 0;
+
+
+    lista.unshift({
+
+        enlace:enlace,
+
+        nombre:nombre,
+
+        imagen:imagenURL,
+
+        progreso:progreso,
+
+        actualizado:Date.now()
+
+    });
+
+
+    if(lista.length>30){
+
+        lista =
+        lista.slice(0,30);
+
+    }
+
+
+    guardarSeguirViendo(
+        lista
+    );
+
+    crearSeguirViendo();
+
+}
+
+
+function configurarSeguirViendo(poster){
+
+    if(!poster)
+    return;
+
+
+    const link =
+    poster.querySelector("a");
+
+    if(!link)
+    return;
+
+
+    if(
+        link.dataset.seguirViendo==="1"
+    )
+    return;
+
+
+    link.dataset.seguirViendo="1";
+
+
+    link.addEventListener(
+        "click",
+        function(){
+
+            agregarSeguirViendo(
+                poster
+            );
+
+        }
+    );
+
+}
+
+
+function crearSeguirViendo(){
+
+    const categorias =
+    document.getElementById(
+        "contenedorCategorias"
+    );
+
+    if(!categorias)
+    return;
+
+
+    const anterior =
+    document.querySelector(
+        ".continuar-section"
+    );
+
+
+    if(anterior)
+    anterior.remove();
+
+
+    const lista =
+    obtenerSeguirViendo();
+
+
+    if(lista.length===0)
+    return;
+
+
+    const seccion =
+    document.createElement("section");
+
+    seccion.className =
+    "continuar-section";
+
+
+    const titulo =
+    document.createElement("div");
+
+    titulo.className =
+    "continuar-title";
+
+    titulo.textContent =
+    "SEGUIR VIENDO";
+
+
+    const carrusel =
+    document.createElement("div");
+
+    carrusel.className =
+    "continuar-carousel";
+
+
+    lista.forEach(pelicula=>{
+
+        const tarjeta =
+        document.createElement("div");
+
+        tarjeta.className =
+        "continuar-card";
+
+
+        const boton =
+        document.createElement("button");
+
+        boton.className =
+        "continuar-remove";
+
+        boton.type="button";
+
+        boton.textContent="×";
+
+
+        boton.onclick=function(e){
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            eliminarSeguirViendo(
+                pelicula.enlace
+            );
+
+        };
+
+
+        const enlace =
+        document.createElement("a");
+
+        enlace.href =
+        pelicula.enlace;
+
+        enlace.title =
+        pelicula.nombre;
+
+
+        const imagen =
+        document.createElement("img");
+
+        imagen.src =
+        pelicula.imagen;
+
+        imagen.alt =
+        pelicula.nombre;
+
+        imagen.width=110;
+
+        imagen.height=140;
+
+
+        enlace.appendChild(
+            imagen
+        );
+
+
+        const barra =
+        document.createElement("div");
+
+        barra.className =
+        "progreso-barra";
+
+
+        const progresoSpan =
+        document.createElement("span");
+
+
+        let porcentaje =
+        Number(
+            pelicula.porcentaje
+        ) || 0;
+
+
+        progresoSpan.style.width =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                porcentaje
+            )
+        ) + "%";
+
+
+        barra.appendChild(
+            progresoSpan
+        );
+
+
+        tarjeta.appendChild(
+            boton
+        );
+
+        tarjeta.appendChild(
+            enlace
+        );
+
+        tarjeta.appendChild(
+            barra
+        );
+
+
+        carrusel.appendChild(
+            tarjeta
+        );
+
+    });
+
+
+    seccion.appendChild(
+        titulo
+    );
+
+    seccion.appendChild(
+        carrusel
+    );
+
+
+    categorias.insertBefore(
+        seccion,
+        categorias.firstChild
+    );
+
+}
+
+
+function eliminarSeguirViendo(
+    enlace
+){
+
+    let lista =
+    obtenerSeguirViendo();
+
+
+    lista =
+    lista.filter(
+        item =>
+        item.enlace!==enlace
+    );
+
+
+    guardarSeguirViendo(
+        lista
+    );
+
+
+    crearSeguirViendo();
+
+}
+
+
+function guardarProgresoSeguirViendo(
+    enlace,
+    tiempo,
+    duracion
+){
+
+    if(!enlace)
+    return;
+
+
+    let lista =
+    obtenerSeguirViendo();
+
+
+    const indice =
+    lista.findIndex(
+        item =>
+        item.enlace===enlace
+    );
+
+
+    if(indice===-1)
+    return;
+
+
+    tiempo =
+    Number(tiempo) || 0;
+
+    duracion =
+    Number(duracion) || 0;
+
+
+    lista[indice].progreso =
+    tiempo;
+
+
+    lista[indice].duracion =
+    duracion;
+
+
+    if(duracion>0){
+
+        lista[indice].porcentaje =
+        (tiempo/duracion)*100;
+
+    }
+
+
+    lista[indice].actualizado =
+    Date.now();
+
+
+    guardarSeguirViendo(
+        lista
+    );
+
+}
+
+
+function obtenerProgresoSeguirViendo(
+    enlace
+){
+
+    const lista =
+    obtenerSeguirViendo();
+
+
+    const pelicula =
+    lista.find(
+        item =>
+        item.enlace===enlace
+    );
+
+
+    if(!pelicula)
+    return 0;
+
+
+    return Number(
+        pelicula.progreso
+    ) || 0;
+
+}
+
+
+/* =====================================================
+   CATEGORIAS
+===================================================== */
+
+const categoriasInteligentes=[
+
+{
+    id:"accion",
+    nombre:"ACCION"
+},
+
+{
+    id:"terror",
+    nombre:"TERROR"
+},
+
+  {
+    id:"sugerencias",
+    nombre:"SUGERENCIAS"
+},  
+    
+    {
+    id:"top10",
+    nombre:"TOP 10"
+}, 
+    
+{
+    id:"romance",
+    nombre:"ROMANCE"
+},
+
+{
+    id:"infantiles",
+    nombre:"INFANTILES"
+},
+
+{
+    id:"series",
+    nombre:"SERIES"
+},
+
+{
+    id:"animes",
+    nombre:"ANIMES"
+},
+
+{
+    id:"comedia",
+    nombre:"COMEDIA"
+}
+
+];
+
+
+const peliculasIniciales=10;
+
+
+/* =====================================================
+   ABRIR PAGINA COMPLETA DE CATEGORIA
+===================================================== */
+
+function abrirCategoria(
+    categoriaId
+){
+
+    const categoria =
+    categoriasInteligentes.find(
+        item =>
+        item.id===categoriaId
+    );
+
+
+    if(!categoria)
+    return;
+
+
+    const base =
+    document.getElementById(
+        "basePeliculas"
+    );
+
+
+    const grid =
+    document.getElementById(
+        "categoriaGrid"
+    );
+
+
+    const titulo =
+    document.getElementById(
+        "categoriaHeaderTitle"
+    );
+
+
+    const contador =
+    document.getElementById(
+        "categoriaCount"
+    );
+
+
+    const vacio =
+    document.getElementById(
+        "categoriaVacio"
+    );
+
+
+    if(!base || !grid)
+    return;
+
+
+    const peliculas =
+    Array.from(
+        base.querySelectorAll(
+            `.poster[data-name="${categoriaId}"]`
+        )
+    );
+
+
+    grid.innerHTML="";
+
+
+    titulo.textContent =
+    categoria.nombre;
+
+
+    contador.textContent =
+    peliculas.length===1
+    ? "1 película"
+    : `${peliculas.length} películas`;
+
+
+    if(peliculas.length===0){
+
+        vacio.style.display="block";
+
+    }else{
+
+        vacio.style.display="none";
+
+    }
+
+
+    peliculas.forEach(
+        pelicula=>{
+
+        const copia =
+pelicula.cloneNode(true);
+
+copia.classList.remove(
+    "smart-extra"
+);
+
+/* =================================================
+   REINICIAR FAVORITO DE LA COPIA
+================================================= */
+
+const estrella =
+copia.querySelector(".fav-star");
+
+if(estrella){
+    estrella.removeAttribute(
+        "data-favorito-activo"
+    );
+}
+
+grid.appendChild(
+    copia
+);
+
+configurarFavorito(
+    copia
+);
+
+    });
+
+
+    cerrarFavoritos();
+
+    closeSearch();
+
+    closeMenu();
+
+
+    starkGuardarSeccion(
+    "categoria"
+);
+    
+    document
+    .getElementById(
+        "categoriaScreen"
+    )
+    .classList.add(
+        "show"
+    );
+
+
+    document.body.style.overflow="hidden";
+
+
+    document
+    .getElementById(
+        "categoriaScreen"
+    )
+    .scrollTop=0;
+
+}
+
+
+/* =====================================================
+   CERRAR PAGINA DE CATEGORIA
+===================================================== */
+
+function cerrarCategoria(){
+
+    const pantalla =
+    document.getElementById(
+        "categoriaScreen"
+    );
+
+    if(!pantalla)
+    return;
+
+
+    pantalla.classList.remove(
+        "show"
+    );
+
+
+    document.body.style.overflow="";
+
+}
+
+
+   /* =====================================================
+   CREAR SUGERENCIAS - CAMBIAN CADA 24 HORAS
+===================================================== */
+
+function obtenerPeliculasSugeridas(){
+
+    const base =
+    document.getElementById(
+        "basePeliculas"
+    );
+
+    if(!base)
+    return [];
+
+
+    const todasLasPeliculas =
+    Array.from(
+        base.querySelectorAll(".poster")
+    );
+
+
+    if(todasLasPeliculas.length===0)
+    return [];
+
+
+    const ahora =
+    Date.now();
+
+
+    const tiempo24Horas =
+    24 * 60 * 60 * 1000;
+
+
+    /* =================================================
+       BUSCAR SUGERENCIAS GUARDADAS
+    ================================================= */
+
+    let guardado = null;
+
+    try{
+
+        guardado =
+        JSON.parse(
+            localStorage.getItem(
+                "flixTV_sugerencias_24h"
+            )
+        );
+
+    }catch(e){
+
+        guardado = null;
+
+    }
+
+
+    /* =================================================
+       SI TODAVÍA NO HAN PASADO 24 HORAS
+       USAR LAS MISMAS PELÍCULAS
+    ================================================= */
+
+    if(
+        guardado &&
+        guardado.fecha &&
+        Array.isArray(guardado.ids) &&
+        (ahora - guardado.fecha) < tiempo24Horas
+    ){
+
+        const peliculasGuardadas =
+        guardado.ids
+        .map(id => {
+
+            return todasLasPeliculas.find(
+                pelicula =>
+                pelicula.dataset.sugerenciaId === id
+            );
+
+        })
+        .filter(Boolean);
+
+
+        if(peliculasGuardadas.length >= 10){
+
+            return peliculasGuardadas.slice(
+                0,
+                10
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       GENERAR NUEVAS SUGERENCIAS
+    ================================================= */
+
+    const mezcladas =
+    [...todasLasPeliculas];
+
+
+    /* Mezclar películas */
+
+    for(
+        let i=mezcladas.length-1;
+        i>0;
+        i--
+    ){
+
+        const j =
+        Math.floor(
+            Math.random() * (i+1)
+        );
+
+
+        [
+            mezcladas[i],
+            mezcladas[j]
+        ] =
+        [
+            mezcladas[j],
+            mezcladas[i]
+        ];
+
+    }
+
+
+    const nuevasSugerencias =
+    mezcladas.slice(
+        0,
+        10
+    );
+
+
+    /* =================================================
+       CREAR IDENTIFICADORES
+    ================================================= */
+
+    const ids =
+    nuevasSugerencias.map(
+        (pelicula,index)=>{
+
+            if(
+                !pelicula.dataset.sugerenciaId
+            ){
+
+                pelicula.dataset.sugerenciaId =
+                "sugerencia_" +
+                index +
+                "_" +
+                Math.random()
+                .toString(36)
+                .substring(2,10);
+
+            }
+
+            return pelicula.dataset.sugerenciaId;
+
+        }
+    );
+
+
+    /* =================================================
+       GUARDAR DURANTE 24 HORAS
+    ================================================= */
+
+    try{
+
+        localStorage.setItem(
+            "flixTV_sugerencias_24h",
+
+            JSON.stringify({
+
+                fecha:ahora,
+
+                ids:ids
+
+            })
+
+        );
+
+    }catch(e){
+
+        console.log(
+            "No se pudieron guardar las sugerencias."
+        );
+
+    }
+
+
+    return nuevasSugerencias;
+
+} 
+    
+/* =====================================================
+   CREAR CATEGORIAS INTELIGENTES
+===================================================== */
+
+function crearCategoriasInteligentes(){
+
+    const contenedor =
+    document.getElementById(
+        "contenedorCategorias"
+    );
+
+    const base =
+    document.getElementById(
+        "basePeliculas"
+    );
+
+
+    if(!contenedor || !base)
+    return;
+
+
+    contenedor.innerHTML="";
+
+
+    categoriasInteligentes.forEach(
+        categoria=>{
+
+        let peliculas;
+
+
+/* =================================================
+   TOP 10
+================================================= */
+
+if(categoria.id==="top10"){
+
+    peliculas =
+    Array.from(
+        base.querySelectorAll(
+            '.poster[data-name="top10"]'
+        )
+    ).slice(0,10);
+
+}
+
+
+/* =================================================
+   SUGERENCIAS
+================================================= */
+
+else if(categoria.id==="sugerencias"){
+
+    peliculas =
+    obtenerPeliculasSugeridas();
+
+}
+
+
+/* =================================================
+   CATEGORÍAS NORMALES
+================================================= */
+
+else{
+
+    peliculas =
+    Array.from(
+        base.querySelectorAll(
+            `.poster[data-name="${categoria.id}"]`
+        )
+    );
+
+}
+
+
+        if(peliculas.length===0)
+        return;
+
+
+        const seccion =
+        document.createElement("section");
+
+        seccion.className =
+        "smart-category";
+
+        seccion.dataset.category =
+        categoria.id;
+
+
+        /* =================================================
+           TITULO + BOTON VER MAS
+        ================================================= */
+
+        const titulo =
+document.createElement("div");
+
+titulo.className =
+"smart-category-title";
+
+
+const nombreCategoria =
+document.createElement("span");
+
+nombreCategoria.className =
+"category-title-name";
+
+nombreCategoria.textContent =
+categoria.nombre;
+
+
+titulo.appendChild(
+    nombreCategoria
+);
+
+
+/* =================================================
+   CONTENEDOR DEL BOTÓN VER MÁS
+================================================= */
+
+const verMasContainer =
+document.createElement("div");
+
+verMasContainer.className =
+"ver-mas-container";
+
+
+const boton =
+document.createElement("button");
+
+boton.className =
+"ver-mas";
+
+boton.type="button";
+
+boton.textContent =
+`VER MÁS (${peliculas.length})`;
+
+
+/* =================================================
+   ANIMACIÓN + ABRIR PÁGINA DE CATEGORÍA
+================================================= */
+
+boton.onclick=function(){
+
+    /* Animación de pulsación */
+    boton.classList.remove(
+        "ver-mas-click"
+    );
+
+    void boton.offsetWidth;
+
+    boton.classList.add(
+        "ver-mas-click"
+    );
+
+
+    /* Abrir pantalla completa */
+    setTimeout(function(){
+
+        abrirCategoria(
+            categoria.id
+        );
+
+    },120);
+
+};
+
+         if(
+    categoria.id==="top10" ||
+    categoria.id==="sugerencias"
+){
+    verMasContainer.style.display="none";
+}   
+            
+            
+
+verMasContainer.appendChild(
+    boton
+);
+
+   titulo.appendChild(
+    verMasContainer
+);         
+            
+        /* =================================================
+           CARRUSEL
+        ================================================= */
+
+        const carrusel =
+        document.createElement("div");
+
+        carrusel.className =
+        "smart-carousel";
+
+
+        peliculas.forEach(
+    (pelicula,index)=>{
+
+    const copia =
+    pelicula.cloneNode(true);
+
+
+    /*
+       TOP 10
+       Agregar número al lado
+       de cada película
+    */
+
+    if(categoria.id==="top10"){
+
+        const item =
+        document.createElement("div");
+
+        item.className =
+        "top10-item";
+
+
+        const numero =
+        document.createElement("div");
+
+        numero.className =
+        "top10-number";
+
+        numero.textContent =
+        index + 1;
+
+
+        item.appendChild(
+            numero
+        );
+
+        item.appendChild(
+            copia
+        );
+
+
+        carrusel.appendChild(
+            item
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+       Categorías normales
+    */
+
+    if(
+    categoria.id!=="sugerencias" &&
+    index>=peliculasIniciales
+){
+
+    copia.classList.add(
+        "smart-extra"
+    );
+
+}
+
+
+    carrusel.appendChild(
+        copia
+    );
+
+});
+
+            
+            
+
+        seccion.appendChild(
+            titulo
+        );
+
+           
+            
+        seccion.appendChild(
+            carrusel
+        );
+
+
+        contenedor.appendChild(
+            seccion
+        );
+
+
+        seccion
+        .querySelectorAll(".poster")
+        .forEach(poster=>{
+
+            configurarFavorito(
+                poster
+            );
+
+            configurarSeguirViendo(
+                poster
+            );
+
+        });
+
+    });
+
+
+    crearSeguirViendo();
+
+}
+
+
+    /* =====================================================
+   CONTADOR DE CONTENIDO AGREGADO
+===================================================== */
+
+function actualizarTotalContenido(){
+
+    const base =
+    document.getElementById(
+        "basePeliculas"
+    );
+
+    const contador =
+    document.getElementById(
+        "totalContenido"
+    );
+
+    if(!base || !contador)
+    return;
+
+    const total =
+    base.querySelectorAll(
+        ".poster"
+    ).length;
+
+    contador.textContent =
+    total.toLocaleString();
+}
+    
+    
+/* =====================================================
+   BUSCADOR
+===================================================== */
+
+function obtenerPeliculas(){
+
+    const peliculas=[];
+
+
+    document
+    .querySelectorAll(
+        "#basePeliculas .poster"
+    )
+    .forEach(poster=>{
+
+        const link =
+        poster.querySelector("a");
+
+        const imagen =
+        poster.querySelector("img");
+
+        if(!link || !imagen)
+        return;
+
+
+        const nombre =
+        link.getAttribute("title") ||
+        imagen.getAttribute("alt") ||
+        "";
+
+
+        peliculas.push({
+
+            nombre:nombre.trim(),
+
+            nombreBusqueda:
+            normalizarTexto(nombre),
+
+            imagen:imagen.src,
+
+            enlace:
+            link.getAttribute("href")
+
+        });
+
+    });
+
+
+    return peliculas;
+
+}
+
+
+function buscarPeliculas(){
+
+    const input =
+    document.getElementById(
+        "searchInput"
+    );
+
+    const resultados =
+    document.getElementById(
+        "searchResults"
+    );
+
+    const mensaje =
+    document.getElementById(
+        "searchMessage"
+    );
+
+    const titulo =
+    document.getElementById(
+        "searchResultTitle"
+    );
+
+    const hint =
+    document.getElementById(
+        "searchHint"
+    );
+
+
+    const texto =
+    normalizarTexto(
+        input.value
+    );
+
+
+    resultados.innerHTML="";
+
+    mensaje.style.display="none";
+
+    titulo.style.display="none";
+
+    hint.style.display="none";
+
+
+    if(texto===""){
+
+        hint.style.display="block";
+
+        return;
+
+    }
+
+
+    const palabras =
+    texto.split(" ");
+
+
+    const encontrados =
+    obtenerPeliculas().filter(
+        pelicula=>{
+
+        return palabras.every(
+            palabra =>
+            pelicula.nombreBusqueda
+            .includes(palabra)
+        );
+
+    });
+
+
+    if(encontrados.length===0){
+
+        mensaje.textContent =
+        "No encontramos ninguna película con ese nombre.";
+
+        mensaje.style.display="block";
+
+        return;
+
+    }
+
+
+    titulo.style.display="flex";
+
+
+    encontrados.forEach(pelicula=>{
+
+        const tarjeta =
+        document.createElement("div");
+
+        tarjeta.className =
+        "poster";
+
+
+        const estrella =
+        document.createElement("div");
+
+        estrella.className =
+        "fav-star";
+
+        estrella.textContent="☆";
+
+
+        const link =
+        document.createElement("a");
+
+        link.href =
+        pelicula.enlace;
+
+        link.title =
+        pelicula.nombre;
+
+
+        const imagen =
+        document.createElement("img");
+
+        imagen.src =
+        pelicula.imagen;
+
+        imagen.alt =
+        pelicula.nombre;
+
+        imagen.width=110;
+
+        imagen.height=140;
+
+
+        link.appendChild(
+            imagen
+        );
+
+        tarjeta.appendChild(
+            estrella
+        );
+
+        tarjeta.appendChild(
+            link
+        );
+
+        resultados.appendChild(
+            tarjeta
+        );
+
+
+        configurarFavorito(
+            tarjeta
+        );
+
+        configurarSeguirViendo(
+            tarjeta
+        );
+
+    });
+
+}
+
+   /* =====================================================
+   SUGERENCIAS ANIMADAS DEL BUSCADOR
+===================================================== */
+
+let sugerenciasBuscador = [];
+let sugerenciaIndice = 0;
+let sugerenciaPosicion = 0;
+let sugerenciaBorrando = false;
+let sugerenciaTimer = null;
+let sugerenciaActiva = false;
+
+
+/* =====================================================
+   OBTENER NOMBRES DE LA BASE
+===================================================== */
+
+function cargarSugerenciasBuscador(){
+
+    const peliculas =
+    obtenerPeliculas();
+
+    sugerenciasBuscador =
+    [...new Set(
+        peliculas
+        .map(pelicula => pelicula.nombre.trim())
+        .filter(nombre => nombre !== "")
+    )];
+
+}
+
+
+/* =====================================================
+   ANIMACIÓN
+===================================================== */
+
+function animarSugerencia(){
+
+    const input =
+    document.getElementById(
+        "searchInput"
+    );
+
+    if(!input)
+    return;
+
+
+    if(input.value !== ""){
+
+        return;
+
+    }
+
+
+    if(!sugerenciasBuscador.length){
+
+        sugerenciaTimer =
+        setTimeout(
+            animarSugerencia,
+            1000
+        );
+
+        return;
+
+    }
+
+
+    const nombre =
+    sugerenciasBuscador[
+        sugerenciaIndice
+    ];
+
+
+    const textoCompleto =
+    "Buscar · " + nombre;
+
+
+    /* =============================================
+       ESCRIBIR
+    ============================================= */
+
+    if(!sugerenciaBorrando){
+
+        sugerenciaPosicion++;
+
+        input.placeholder =
+        textoCompleto.substring(
+            0,
+            sugerenciaPosicion
+        );
+
+
+        if(
+            sugerenciaPosicion >=
+            textoCompleto.length
+        ){
+
+            sugerenciaBorrando=true;
+
+            sugerenciaTimer =
+            setTimeout(
+                animarSugerencia,
+                1500
+            );
+
+            return;
+
+        }
+
+
+        sugerenciaTimer =
+        setTimeout(
+            animarSugerencia,
+            65
+        );
+
+        return;
+
+    }
+
+
+    /* =============================================
+       BORRAR
+    ============================================= */
+
+    sugerenciaPosicion--;
+
+    input.placeholder =
+    textoCompleto.substring(
+        0,
+        sugerenciaPosicion
+    );
+
+
+    if(sugerenciaPosicion<=0){
+
+        sugerenciaBorrando=false;
+
+        sugerenciaIndice++;
+
+        if(
+            sugerenciaIndice >=
+            sugerenciasBuscador.length
+        ){
+
+            sugerenciaIndice=0;
+
+        }
+
+        sugerenciaTimer =
+        setTimeout(
+            animarSugerencia,
+            400
+        );
+
+        return;
+
+    }
+
+
+    sugerenciaTimer =
+    setTimeout(
+        animarSugerencia,
+        40
+    );
+
+}
+
+
+/* =====================================================
+   INICIAR SUGERENCIAS
+===================================================== */
+
+function iniciarSugerenciasBuscador(){
+
+    clearTimeout(
+        sugerenciaTimer
+    );
+
+    cargarSugerenciasBuscador();
+
+    sugerenciaIndice=0;
+
+    sugerenciaPosicion=0;
+
+    sugerenciaBorrando=false;
+
+    sugerenciaActiva=true;
+
+    const input =
+    document.getElementById(
+        "searchInput"
+    );
+
+    if(input){
+
+        input.placeholder="";
+
+    }
+
+    animarSugerencia();
+
+}
+
+
+/* =====================================================
+   DETENER / REANUDAR
+===================================================== */
+
+document
+.getElementById("searchInput")
+.addEventListener(
+    "input",
+    function(){
+
+        if(this.value !== ""){
+
+            clearTimeout(
+                sugerenciaTimer
+            );
+
+            this.placeholder="";
+
+            return;
+
+        }
+
+
+        if(sugerenciaActiva){
+
+            clearTimeout(
+                sugerenciaTimer
+            );
+
+            sugerenciaPosicion=0;
+
+            sugerenciaBorrando=false;
+
+            animarSugerencia();
+
+        }
+
+    }
+); 
+    
+
+document
+.getElementById("searchInput")
+.addEventListener(
+    "input",
+    buscarPeliculas
+);
+
+
+/* =====================================================
+   BUSCADOR
+===================================================== */
+
+function openSearch(){
+
+    cerrarCategoria();
+    
+    starkGuardarSeccion(
+    "categoria"
+);
+
+    const screen =
+    document.getElementById(
+        "searchScreen"
+    );
+
+    const input =
+    document.getElementById(
+        "searchInput"
+    );
+
+
+    screen.classList.add("show");
+
+input.value="";
+
+iniciarSugerenciasBuscador();
+
+document.getElementById(
+    "searchResults"
+).innerHTML="";
+
+    document.getElementById(
+        "searchMessage"
+    ).style.display="none";
+
+    document.getElementById(
+        "searchResultTitle"
+    ).style.display="none";
+
+    document.getElementById(
+        "searchHint"
+    ).style.display="block";
+
+
+    setTimeout(
+        ()=>input.focus(),
+        150
+    );
+
+}
+
+
+function closeSearch(){
+
+    document
+    .getElementById(
+        "searchScreen"
+    )
+    .classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function openMenu(){
+
+    document
+    .getElementById(
+        "sideMenu"
+    )
+    .classList.add(
+        "show"
+    );
+
+
+    document
+    .getElementById(
+        "sideMenuOverlay"
+    )
+    .classList.add(
+        "show"
+    );
+
+
+    document.body.classList.add(
+        "menu-open"
+    );
+
+}
+
+
+function closeMenu(){
+
+    document
+    .getElementById(
+        "sideMenu"
+    )
+    .classList.remove(
+        "show"
+    );
+
+
+    document
+    .getElementById(
+        "sideMenuOverlay"
+    )
+    .classList.remove(
+        "show"
+    );
+
+
+    document.body.classList.remove(
+        "menu-open"
+    );
+
+}
+
+
+/* =====================================================
+   MENU INICIO
+===================================================== */
+
+function menuInicio(){
+
+    cerrarFavoritos();
+
+    cerrarCategoria();
+
+    closeSearch();
+
+    closeMenu();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================================
+   MENU BUSCAR
+===================================================== */
+
+function menuBuscar(){
+
+    closeMenu();
+
+    cerrarFavoritos();
+
+    cerrarCategoria();
+
+    setTimeout(
+        openSearch,
+        250
+    );
+
+}
+
+
+/* =====================================================
+   MENU SEGUIR VIENDO
+===================================================== */
+
+function menuSeguirViendo(){
+
+    closeMenu();
+
+    cerrarFavoritos();
+
+    cerrarCategoria();
+
+    closeSearch();
+
+    setTimeout(
+        function(){
+
+            abrirSeguirViendo();
+
+        },
+        250
+    );
+
+}
+
+    
+    /* =====================================================
+   PANTALLA COMPLETA SEGUIR VIENDO
+===================================================== */
+
+function abrirSeguirViendo(){
+
+    starkGuardarSeccion(
+        "seguir"
+    );
+
+
+    const screen =
+    document.getElementById(
+        "seguirScreen"
+    );
+
+
+    if(!screen)
+    return;
+
+
+    screen.classList.add(
+        "show"
+    );
+
+
+    document.body.style.overflow="hidden";
+
+
+    renderizarSeguirViendoScreen();
+
+
+    screen.scrollTop=0;
+
+}
+
+
+/* =====================================================
+   CERRAR SEGUIR VIENDO
+===================================================== */
+
+function cerrarSeguirViendo(){
+
+    const screen =
+    document.getElementById(
+        "seguirScreen"
+    );
+
+
+    if(!screen)
+    return;
+
+
+    screen.classList.remove(
+        "show"
+    );
+
+
+    document.body.style.overflow="";
+
+}
+
+
+/* =====================================================
+   RENDERIZAR SEGUIR VIENDO EN PANTALLA COMPLETA
+===================================================== */
+
+function renderizarSeguirViendoScreen(){
+
+    const grid =
+    document.getElementById(
+        "seguirGrid"
+    );
+
+
+    const vacio =
+    document.getElementById(
+        "seguirVacio"
+    );
+
+
+    const contador =
+    document.getElementById(
+        "seguirCount"
+    );
+
+
+    if(!grid || !vacio || !contador)
+    return;
+
+
+    const lista =
+    obtenerSeguirViendo();
+
+
+    grid.innerHTML="";
+
+
+    contador.textContent =
+    lista.length===1
+    ? "1 película"
+    : `${lista.length} películas`;
+
+
+    if(lista.length===0){
+
+        vacio.style.display="block";
+
+        return;
+
+    }
+
+
+    vacio.style.display="none";
+
+
+    lista.forEach(
+        pelicula=>{
+
+        const tarjeta =
+        document.createElement("div");
+
+
+        tarjeta.className =
+        "seguir-card";
+
+
+        /* =============================================
+           BOTÓN ELIMINAR
+        ============================================= */
+
+        const boton =
+        document.createElement("button");
+
+
+        boton.className =
+        "seguir-remove";
+
+
+        boton.type="button";
+
+
+        boton.textContent="×";
+
+
+        boton.onclick=function(e){
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+
+            eliminarSeguirViendo(
+                pelicula.enlace
+            );
+
+
+            renderizarSeguirViendoScreen();
+
+        };
+
+
+        /* =============================================
+           ENLACE
+        ============================================= */
+
+        const enlace =
+        document.createElement("a");
+
+
+        enlace.href =
+        pelicula.enlace;
+
+
+        enlace.title =
+        pelicula.nombre;
+
+
+        /* =============================================
+           IMAGEN
+        ============================================= */
+
+        const imagen =
+        document.createElement("img");
+
+
+        imagen.src =
+        pelicula.imagen;
+
+
+        imagen.alt =
+        pelicula.nombre;
+
+
+        imagen.width=110;
+
+        imagen.height=140;
+
+
+        enlace.appendChild(
+            imagen
+        );
+
+
+        /* =============================================
+           BARRA DE PROGRESO
+        ============================================= */
+
+        const barra =
+        document.createElement("div");
+
+
+        barra.className =
+        "seguir-progreso";
+
+
+        const progreso =
+        document.createElement("span");
+
+
+        let porcentaje =
+        Number(
+            pelicula.porcentaje
+        ) || 0;
+
+
+        porcentaje =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                porcentaje
+            )
+        );
+
+
+        progreso.style.width =
+        porcentaje + "%";
+
+
+        barra.appendChild(
+            progreso
+        );
+
+
+        /* =============================================
+           CONSTRUIR TARJETA
+        ============================================= */
+
+        tarjeta.appendChild(
+            boton
+        );
+
+
+        tarjeta.appendChild(
+            enlace
+        );
+
+
+        tarjeta.appendChild(
+            barra
+        );
+
+
+        grid.appendChild(
+            tarjeta
+        );
+
+    });
+
+}
+    
+    
+    
+
+/* =====================================================
+   MENU CATEGORIA
+===================================================== */
+
+function menuCategoria(
+    categoria
+){
+
+    closeMenu();
+
+    cerrarFavoritos();
+
+    closeSearch();
+
+    setTimeout(
+        function(){
+
+            abrirCategoria(
+                categoria
+            );
+
+        },
+        300
+    );
+
+}
+    
+    /* =====================================================
+   COMPARTIR APP
+===================================================== */
+
+function compartirApp(){
+
+    const enlace =
+        "PEGA_TU_ENLACE_AQUI";
+
+    if(
+        navigator.share
+    ){
+
+        navigator.share({
+
+            title:
+            "Mi App",
+
+            text:
+            "Descarga nuestra App aqui",
+
+            url:
+            enlace
+
+        });
+
+    }else{
+
+        navigator.clipboard.writeText(
+            enlace
+        );
+
+        alert(
+            "Enlace copiado"
+        );
+
+    }
+
+}
+    
+    
+/* =====================================================
+   ESC
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key==="Escape"){
+
+            closeMenu();
+
+            closeSearch();
+
+            cerrarFavoritos();
+
+            cerrarCategoria();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ACTIVAR SEGUIMIENTO
+===================================================== */
+
+function activarSeguimientoPeliculas(){
+
+    document
+    .querySelectorAll(
+        "#basePeliculas .poster"
+    )
+    .forEach(poster=>{
+
+        configurarSeguirViendo(
+            poster
+        );
+
+        configurarFavorito(
+            poster
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+crearCategoriasInteligentes();
+
+activarSeguimientoPeliculas();
+
+crearSeguirViendo();
+    
+ actualizarTotalContenido();
+
+
+/* =====================================================
+   API GLOBAL PARA EL REPRODUCTOR
+===================================================== */
+
+window.StarkSeguirViendo = {
+
+    agregar:function(
+        enlace,
+        nombre,
+        imagen
+    ){
+
+        let lista =
+        obtenerSeguirViendo();
+
+
+        lista =
+        lista.filter(
+            item =>
+            item.enlace!==enlace
+        );
+
+
+        lista.unshift({
+
+            enlace:enlace,
+
+            nombre:nombre || "Película",
+
+            imagen:imagen || "",
+
+            progreso:0,
+
+            duracion:0,
+
+            porcentaje:0,
+
+            actualizado:Date.now()
+
+        });
+
+
+        if(lista.length>30){
+
+            lista =
+            lista.slice(0,30);
+
+        }
+
+
+        guardarSeguirViendo(
+            lista
+        );
+
+
+        crearSeguirViendo();
+
+    },
+
+
+    guardarProgreso:function(
+        enlace,
+        tiempo,
+        duracion
+    ){
+
+        guardarProgresoSeguirViendo(
+            enlace,
+            tiempo,
+            duracion
+        );
+
+
+        crearSeguirViendo();
+
+    },
+
+
+    obtenerProgreso:function(
+        enlace
+    ){
+
+        return obtenerProgresoSeguirViendo(
+            enlace
+        );
+
+    },
+
+
+    eliminar:function(
+        enlace
+    ){
+
+        eliminarSeguirViendo(
+            enlace
+        );
+
+    }
+
+};
+
+    
+/* =====================================================
+   BOTÓN ATRÁS DE ANDROID
+===================================================== */
+
+let starkNavegacionInterna = false;
+
+
+/* =====================================================
+   ESTADO INICIAL
+===================================================== */
+
+if(
+    !history.state ||
+    history.state.stark !== "inicio"
+){
+
+    history.replaceState(
+        {
+            stark:"inicio",
+            scrollY:window.scrollY
+        },
+        "",
+        location.href
+    );
+
+}
+
+
+/* =====================================================
+   ABRIR UNA SECCIÓN
+   Guarda la posición actual antes de entrar
+===================================================== */
+
+function starkGuardarSeccion(seccion){
+
+    /* Guardar posición actual */
+    const posicion =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        0;
+
+    /* Guardar también en sessionStorage */
+    sessionStorage.setItem(
+        "stark_scroll_inicio",
+        String(posicion)
+    );
+
+    /* Guardar estado Inicio */
+    history.replaceState(
+        {
+            stark:"inicio",
+            scrollY:posicion
+        },
+        "",
+        location.href
+    );
+
+    /* Crear estado de la sección */
+    history.pushState(
+        {
+            stark:seccion
+        },
+        "",
+        location.href
+    );
+
+    starkNavegacionInterna=true;
+}
+
+/* =====================================================
+   CERRAR TODAS LAS SECCIONES
+===================================================== */
+
+function starkCerrarSecciones(){
+
+    cerrarCategoria();
+
+    cerrarFavoritos();
+    
+    cerrarSeguirViendo();
+
+    closeSearch();
+
+    closeMenu();
+
+    document.body.style.overflow="";
+
+}
+
+
+/* =====================================================
+   RESTAURAR POSICIÓN ANTERIOR
+===================================================== */
+
+function starkRestaurarPosicion(posicion){
+
+    let posicionFinal =
+        Number(posicion);
+
+    /* Si history no trae la posición,
+       usamos sessionStorage */
+    if(
+        !Number.isFinite(posicionFinal) ||
+        posicionFinal < 0
+    ){
+
+        posicionFinal =
+            Number(
+                sessionStorage.getItem(
+                    "stark_scroll_inicio"
+                )
+            ) || 0;
+
+    }
+
+    /* Segundo respaldo */
+    const posicionGuardada =
+        Number(
+            sessionStorage.getItem(
+                "stark_scroll_inicio"
+            )
+        ) || 0;
+
+    if(
+        posicionFinal===0 &&
+        posicionGuardada>0
+    ){
+
+        posicionFinal =
+            posicionGuardada;
+
+    }
+
+    /* Esperar a que el WebView cierre
+       completamente la pantalla */
+    requestAnimationFrame(function(){
+
+        requestAnimationFrame(function(){
+
+            window.scrollTo({
+                top:posicionFinal,
+                left:0,
+                behavior:"auto"
+            });
+
+            /* Segundo intento para WebView */
+            setTimeout(function(){
+
+                window.scrollTo(
+                    0,
+                    posicionFinal
+                );
+
+            },100);
+
+        });
+
+    });
+
+}
+
+
+/* =====================================================
+   BOTÓN / GESTO ATRÁS DEL TELÉFONO
+===================================================== */
+
+window.addEventListener(
+    "popstate",
+    function(e){
+
+        const estado =
+        e.state &&
+        e.state.stark
+        ? e.state.stark
+        : "inicio";
+
+
+        /* =============================================
+           VOLVER AL INICIO
+        ============================================= */
+
+        if(estado==="inicio"){
+
+            /* -----------------------------------------
+               Obtener posición guardada
+            ----------------------------------------- */
+
+            let posicion = 0;
+
+
+            if(
+                e.state &&
+                typeof e.state.scrollY !== "undefined"
+            ){
+
+                posicion =
+                    Number(
+                        e.state.scrollY
+                    ) || 0;
+
+            }
+
+
+            /* -----------------------------------------
+               Respaldo para WebView
+            ----------------------------------------- */
+
+            if(posicion===0){
+
+                posicion =
+                    Number(
+                        sessionStorage.getItem(
+                            "stark_scroll_inicio"
+                        )
+                    ) || 0;
+
+            }
+
+
+            /* -----------------------------------------
+               Cerrar cualquier pantalla abierta
+            ----------------------------------------- */
+
+            starkCerrarSecciones();
+
+
+            /* -----------------------------------------
+               Restaurar posición
+            ----------------------------------------- */
+
+            setTimeout(function(){
+
+                starkRestaurarPosicion(
+                    posicion
+                );
+
+            },50);
+
+
+            starkNavegacionInterna=false;
+
+            return;
+
+        }
+
+
+        /* =============================================
+           SI EL ESTADO NO ES INICIO
+        ============================================= */
+
+        starkCerrarSecciones();
+
+        starkNavegacionInterna=false;
+
+    }
+);
+
+    
+    
+</script>
+
+</body>
+</html>
