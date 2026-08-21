@@ -1650,11 +1650,15 @@ body{
 @media (min-width:901px){
 
     .categoria-grid{
+        display:grid !important;
         grid-template-columns:
             repeat(
                 auto-fit,
                 minmax(110px, 1fr)
-            );
+            ) !important;
+
+        width:100% !important;
+        max-width:100% !important;
     }
 
 }
@@ -1668,11 +1672,15 @@ body{
 
     .favoritos-grid,
     .seguir-grid{
+        display:grid !important;
         grid-template-columns:
             repeat(
                 auto-fit,
                 minmax(110px, 1fr)
-            );
+            ) !important;
+
+        width:100% !important;
+        max-width:100% !important;
     }
 
 }
