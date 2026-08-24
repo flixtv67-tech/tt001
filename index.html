@@ -1854,7 +1854,78 @@ body{
 
 }
     
-    
+    /* =====================================================
+   📺 SMART TV - GRID COMPLETO
+   VER MÁS + FAVORITOS + SEGUIR VIENDO
+   ===================================================== */
+
+@media screen and (min-width:901px){
+
+    .categoria-grid,
+    .favoritos-grid,
+    .seguir-grid{
+
+        width:100% !important;
+        max-width:none !important;
+        box-sizing:border-box !important;
+
+        display:grid !important;
+
+        /*
+           La cantidad de columnas se calcula
+           automáticamente según el ancho de la TV.
+        */
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(140px, 1fr)
+            ) !important;
+
+        gap:20px 12px !important;
+
+        padding-left:20px !important;
+        padding-right:20px !important;
+    }
+
+
+    .categoria-grid .poster,
+    .favoritos-grid .poster,
+    .seguir-grid .poster{
+
+        width:140px !important;
+        min-width:140px !important;
+        max-width:140px !important;
+
+        height:180px !important;
+
+        justify-self:center !important;
+
+        flex:none !important;
+    }
+
+
+    .categoria-grid .poster a,
+    .favoritos-grid .poster a,
+    .seguir-grid .poster a{
+
+        width:140px !important;
+        height:180px !important;
+    }
+
+
+    .categoria-grid .poster img,
+    .favoritos-grid .poster img,
+    .seguir-grid .poster img{
+
+        width:140px !important;
+        height:180px !important;
+
+        object-fit:cover !important;
+
+        display:block !important;
+    }
+
+}
     
     
 </style>
