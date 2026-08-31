@@ -1,7 +1,12 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Descargar APK</title><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>Descargar FLIX TV</title>
+
+<style>
 *{
     margin:0;
     padding:0;
@@ -26,6 +31,7 @@ html{
 
 body{
     min-height:100vh;
+
     background:
         radial-gradient(
             circle at 50% -15%,
@@ -396,6 +402,14 @@ header{
 
     font-weight:900;
 
+    text-decoration:none;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     transition:
         transform .2s ease,
         box-shadow .2s ease;
@@ -579,8 +593,20 @@ header{
 .feature-icon svg{
     width:23px;
     height:23px;
+
+    display:block;
+
+    flex:none;
 }
 
+    /* SOLO DESCARGA SEGURA */
+.safe-icon{
+    color:#34A853;
+
+    background:
+        rgba(52,168,83,.10);
+}
+      
 .feature h3{
     font-size:16px;
 
@@ -682,54 +708,6 @@ footer{
 
 
 /* =========================
-   TOAST
-========================= */
-
-.toast{
-    position:fixed;
-
-    left:50%;
-
-    bottom:25px;
-
-    transform:
-        translate(-50%,30px);
-
-    opacity:0;
-
-    pointer-events:none;
-
-    padding:
-        13px 18px;
-
-    border-radius:12px;
-
-    background:#181818;
-
-    border:
-        1px solid
-        rgba(255,255,255,.1);
-
-    box-shadow:
-        0 15px 40px
-        rgba(0,0,0,.5);
-
-    font-size:12px;
-
-    transition:.3s;
-
-    z-index:100;
-}
-
-.toast.show{
-    opacity:1;
-
-    transform:
-        translate(-50%,0);
-}
-
-
-/* =========================
    ANIMACIONES
 ========================= */
 
@@ -821,68 +799,191 @@ footer{
     }
 }
 
-</style></head><body><div class="background-glow glow-left"></div><div class="background-glow glow-right"></div><!-- =========================
+</style>
+</head>
+
+
+<body>
+
+<div class="background-glow glow-left"></div>
+
+<div class="background-glow glow-right"></div>
+
+
+<!-- =========================
      HEADER
-========================= --><header><div class="header-logo">
+========================= -->
 
-    <!--
-        COLOCA TU LOGO AQUÍ
+<header>
 
-        Archivo:
-        logo.png
+    <div class="header-logo">
 
-        Debe estar junto a index.html.
-    -->
+        <img
+            src="logo.png"
+            alt="Logo"
+        >
 
-    <img
-        src="logo.png"
-        alt="Logo"
-    >
+    </div>
 
-</div>
+</header>
 
-</header><main><!-- =========================
+
+<main>
+
+
+<!-- =========================
      APP
-========================= --><section class="hero"><div class="badge">
+========================= -->
 
-    <span class="badge-dot"></span>
-
-    Descarga oficial
-
-</div>
+<section class="hero">
 
 
-<div class="app-card">
+    <div class="badge">
+
+        <span class="badge-dot"></span>
+
+        Descarga oficial
+
+    </div>
 
 
-    <!-- INFORMACIÓN DE LA APP -->
-
-    <div class="app-information">
+    <div class="app-card">
 
 
-        <div class="app-logo">
+        <!-- INFORMACIÓN DE LA APP -->
 
-            <img
-                src="logo.png"
-                alt="Aplicación"
-            >
+        <div class="app-information">
+
+
+            <div class="app-logo">
+
+                <img
+                    src="logo.png"
+                    alt="FLIX TV"
+                >
+
+            </div>
+
+
+            <div class="app-details">
+
+                <h2>
+                    FLIX TV
+                </h2>
+
+                <p>
+                    Aplicación oficial
+                </p>
+
+                <span class="version">
+                    Versión 1.0.0
+                </span>
+
+            </div>
+
 
         </div>
 
 
-        <div class="app-details">
+        <!-- DATOS APK -->
 
-            <h2>
-                FLIX TV
-            </h2>
+        <div class="apk-info">
 
-            <p>
-                Aplicación oficial
-            </p>
 
-            <span class="version">
-                Versión 3.0.0
+            <div class="info-item">
+
+                <strong>
+                    APK
+                </strong>
+
+                <span>
+                    Formato
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    Android
+                </strong>
+
+                <span>
+                    Plataforma
+                </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    Gratis
+                </strong>
+
+                <span>
+                    Descarga
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- BOTÓN DE DESCARGA -->
+
+        <a
+            class="download-button"
+            href="https://github.com/flixtv67-tech/tt001/releases/download/v1.0.0/FlixTV.apk"
+        >
+
+            <span class="button-shine"></span>
+
+
+            <span class="download-content">
+
+                <svg
+                    class="download-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+
+                    <path d="M12 3v12"/>
+
+                    <path d="m7 10 5 5 5-5"/>
+
+                    <path d="M5 21h14"/>
+
+                </svg>
+
+
+                DESCARGAR APK
+
             </span>
+
+        </a>
+
+
+        <!-- TEXTO DEBAJO DEL BOTÓN -->
+
+        <p class="download-description">
+
+            Obtén la última versión de la aplicación
+            directamente en tu dispositivo Android.
+            Rápido, sencillo y preparado para instalar.
+
+        </p>
+
+
+        <div class="download-note">
+
+            Instalación manual en dispositivos Android
 
         </div>
 
@@ -890,253 +991,166 @@ footer{
     </div>
 
 
-    <!-- DATOS APK -->
-
-    <div class="apk-info">
+</section>
 
 
-        <div class="info-item">
+<!-- =========================
+     CARACTERÍSTICAS
+========================= -->
 
-            <strong>
-                APK
-            </strong>
-
-            <span>
-                Formato
-            </span>
-
-        </div>
+<section class="section">
 
 
-        <div class="info-item">
-
-            <strong>
-                Android
-            </strong>
-
-            <span>
-                Plataforma
-            </span>
-
-        </div>
+    <h2 class="section-title">
+        Todo listo para ti
+    </h2>
 
 
-        <div class="info-item">
-
-            <strong>
-                Gratis
-            </strong>
-
-            <span>
-                Descarga
-            </span>
-
-        </div>
-
-
-    </div>
-
-
-    <!-- BOTÓN DE DESCARGA -->
-
-    <button
-        class="download-button"
-        onclick="descargarAPK()"
-    >
-
-        <span class="button-shine"></span>
-
-
-        <span class="download-content">
-
-
-            <svg
-                class="download-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-
-                <path d="M12 3v12"/>
-
-                <path d="m7 10 5 5 5-5"/>
-
-                <path d="M5 21h14"/>
-
-            </svg>
-
-
-            DESCARGAR APK
-
-
-        </span>
-
-    </button>
-
-
-    <!-- TEXTO SOLICITADO -->
-
-    <p class="download-description">
-
-        Obtén la última versión de la aplicación
-        directamente en tu dispositivo Android.
-        Rápido, sencillo y preparado para instalar.
-
+    <p class="section-description">
+        Una descarga sencilla y una experiencia rápida.
     </p>
 
 
-    <div class="download-note">
-
-        Instalación manual en dispositivos Android
-
-    </div>
+    <div class="features">
 
 
-</div>
+<!-- DESCARGA SEGURA -->
 
-</section><!-- =========================
-     CARACTERÍSTICAS
-========================= --><section class="section"><h2 class="section-title">
-    Todo listo para ti
-</h2>
+<div class="feature">
+
+    <div class="feature-icon safe-icon">
+          
+          
+
+                <!-- ICONO ESCUDO + PLAY -->
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+
+                    <path
+                        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
+                    />
+
+                    <path
+                        d="m10 8 5 4-5 4V8Z"
+                    />
+
+                </svg>
+
+            </div>
 
 
-<p class="section-description">
-    Una descarga sencilla y una experiencia rápida.
-</p>
+            <div>
 
+                <h3>
+                    Descarga segura
+                </h3>
 
-<div class="features">
+                <p>
+                    Pulsa el botón y descarga
+                    la aplicación directamente.
+                </p>
 
+            </div>
 
-    <div class="feature">
-
-
-        <div class="feature-icon">
-
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-
-                <path
-                    d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"
-                />
-
-                <path
-                    d="m9 12 2 2 4-4"
-                />
-
-            </svg>
 
         </div>
 
 
-        <div>
 
-            <h3>
-                Descarga sencilla
-            </h3>
+        <!-- RÁPIDA -->
 
-            <p>
-                Pulsa el botón y descarga
-                la aplicación directamente.
-            </p>
+        <div class="feature">
+
+
+            <div class="feature-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+
+                    <path
+                        d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"
+                    />
+
+                </svg>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Rápida
+                </h3>
+
+                <p>
+                    Página optimizada para cargar
+                    rápidamente en dispositivos móviles.
+                </p>
+
+            </div>
+
 
         </div>
 
 
-    </div>
+
+        <!-- ANDROID -->
+
+        <div class="feature">
 
 
+            <div class="feature-icon">
 
-    <div class="feature">
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
 
+                    <rect
+                        x="5"
+                        y="2"
+                        width="14"
+                        height="20"
+                        rx="2"
+                    />
 
-        <div class="feature-icon">
+                    <path d="M12 18h.01"/>
 
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
+                </svg>
 
-                <path
-                    d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"
-                />
-
-            </svg>
-
-        </div>
-
-
-        <div>
-
-            <h3>
-                Rápida
-            </h3>
-
-            <p>
-                Página optimizada para cargar
-                rápidamente en dispositivos móviles.
-            </p>
-
-        </div>
+            </div>
 
 
-    </div>
+            <div>
 
+                <h3>
+                    Android
+                </h3>
 
+                <p>
+                    Diseñada para utilizarse
+                    en dispositivos Android.
+                </p>
 
-    <div class="feature">
+            </div>
 
-
-        <div class="feature-icon">
-
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-
-                <rect
-                    x="5"
-                    y="2"
-                    width="14"
-                    height="20"
-                    rx="2"
-                />
-
-                <path d="M12 18h.01"/>
-
-            </svg>
-
-        </div>
-
-
-        <div>
-
-            <h3>
-                Android
-            </h3>
-
-            <p>
-                Diseñada para utilizarse
-                en dispositivos Android.
-            </p>
 
         </div>
 
@@ -1144,224 +1158,139 @@ footer{
     </div>
 
 
-</div>
+</section>
 
-</section><!-- =========================
+
+<!-- =========================
      INSTALACIÓN
-========================= --><section class="section"><h2 class="section-title">
-    ¿Cómo instalar?
-</h2>
+========================= -->
+
+<section class="section">
 
 
-<p class="section-description">
-    Sigue estos sencillos pasos.
-</p>
+    <h2 class="section-title">
+        ¿Cómo instalar?
+    </h2>
 
 
-<div class="steps">
+    <p class="section-description">
+        Sigue estos sencillos pasos.
+    </p>
 
 
-    <div class="step">
+    <div class="steps">
 
-        <div class="step-number">
-            01
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <div>
+
+                <h3>
+                    Descarga el APK
+                </h3>
+
+                <p>
+                    Pulsa el botón de descarga
+                    para comenzar.
+                </p>
+
+            </div>
+
         </div>
 
-        <div>
 
-            <h3>
-                Descarga el APK
-            </h3>
 
-            <p>
-                Pulsa el botón de descarga
-                para comenzar.
-            </p>
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <div>
+
+                <h3>
+                    Abre el archivo
+                </h3>
+
+                <p>
+                    Cuando termine la descarga,
+                    abre el archivo APK.
+                </p>
+
+            </div>
 
         </div>
+
+
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <div>
+
+                <h3>
+                    Permite la instalación
+                </h3>
+
+                <p>
+                    Si Android lo solicita,
+                    permite la instalación desde esta fuente.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="step">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <div>
+
+                <h3>
+                    ¡Listo!
+                </h3>
+
+                <p>
+                    Instala la aplicación y comienza
+                    a utilizarla.
+                </p>
+
+            </div>
+
+        </div>
+
 
     </div>
 
 
-
-    <div class="step">
-
-        <div class="step-number">
-            02
-        </div>
-
-        <div>
-
-            <h3>
-                Abre el archivo
-            </h3>
-
-            <p>
-                Cuando termine la descarga,
-                abre el archivo APK.
-            </p>
-
-        </div>
-
-    </div>
+</section>
 
 
-
-    <div class="step">
-
-        <div class="step-number">
-            03
-        </div>
-
-        <div>
-
-            <h3>
-                Permite la instalación
-            </h3>
-
-            <p>
-                Si Android lo solicita,
-                permite la instalación desde esta fuente.
-            </p>
-
-        </div>
-
-    </div>
+</main>
 
 
-
-    <div class="step">
-
-        <div class="step-number">
-            04
-        </div>
-
-        <div>
-
-            <h3>
-                ¡Listo!
-            </h3>
-
-            <p>
-                Instala la aplicación y comienza
-                a utilizarla.
-            </p>
-
-        </div>
-
-    </div>
-
-
-</div>
-
-</section></main><!-- =========================
+<!-- =========================
      FOOTER
-========================= --><footer>© 2026 • Todos los derechos reservados.
+========================= -->
 
-</footer><!-- AVISO --><div
-    class="toast"
-    id="toast"
->
-    Enlace de descarga todavía no configurado.
-</div><script>
+<footer>
 
-/*
-====================================================
-             CONFIGURACIÓN DEL APK
-====================================================
+    © 2026 • FLIX TV
 
-Cuando tengas el enlace del APK cambia:
-
-const APK_URL = "";
-
-Por ejemplo:
-
-const APK_URL =
-"https://tusitio.com/aplicacion.apk";
-
-====================================================
-*/
-
-const APK_URL = "https://github.com/flixtv67-tech/tt001/releases/download/v1.0.0/FlixTV.apk";
-
-function descargarAPK(){
-
-    /*
-       Si todavía no existe un enlace,
-       mostramos un aviso.
-    */
-
-    if(!APK_URL){
-
-        mostrarToast(
-            "El enlace de descarga todavía no está configurado."
-        );
-
-        return;
-
-    }
+</footer>
 
 
-    /*
-       Crear enlace de descarga.
-    */
-
-    const enlace =
-        document.createElement("a");
-
-
-    enlace.href =
-        APK_URL;
-
-    enlace.target =
-        "_blank";
-
-    enlace.rel =
-        "noopener";
-
-    enlace.download =
-        "";
-
-
-    document.body.appendChild(
-        enlace
-    );
-
-
-    enlace.click();
-
-
-    enlace.remove();
-
-}
-
-
-function mostrarToast(texto){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        texto;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    setTimeout(() => {
-
-        toast.classList.remove(
-            "show"
-        );
-
-    },3000);
-
-}
-
-</script></body>
+</body>
 </html>
