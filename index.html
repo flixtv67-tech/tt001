@@ -24,12 +24,156 @@
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <title>Stark</title>
+    
+    <script>
+if(localStorage.getItem("perfilSeleccionado")){
+    document.documentElement.classList.add("perfil-ya-elegido");
+}
+</script>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
 rel="stylesheet">
 
 <style>
 
+    /* 👤 AVATAR EN MENÚ LATERAL */
+
+.perfil-menu-icono{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    overflow:hidden;
+    flex-shrink:0;
+    border:2px solid #333;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+.perfil-menu-icono img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+    
+.perfil-ya-elegido #perfilOverlay{
+    display:none;
+}
+      
+    
+   /* =====================================================
+   🗑️ BOTÓN LIMPIAR CACHÉ
+   ===================================================== */
+
+.limpiar-cache{
+    cursor:pointer;
+    color:#fff;
+}
+
+.limpiar-cache-icono{
+    font-size:18px;
+    margin-right:12px;
+}
+
+.limpiar-cache:active{
+    transform:scale(.97);
+}
+    
+    /* =====================================================
+   🗑️ MODAL LIMPIAR CACHÉ
+   ===================================================== */
+
+.limpiar-cache-overlay{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100000;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .25s ease,
+               visibility .25s ease;
+}
+
+.limpiar-cache-overlay.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.limpiar-cache-box{
+    width:calc(100% - 40px);
+    max-width:380px;
+    background:#111;
+    border:1px solid #292929;
+    border-radius:16px;
+    padding:24px 20px 20px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.7);
+    transform:scale(.85);
+    transition:transform .25s ease;
+}
+
+.limpiar-cache-overlay.show
+.limpiar-cache-box{
+    transform:scale(1);
+}
+
+.limpiar-cache-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.limpiar-cache-title{
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.limpiar-cache-text{
+    color:#bbb;
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:22px;
+}
+
+.limpiar-cache-botones{
+    display:flex;
+    gap:10px;
+}
+
+.limpiar-cache-botones button{
+    flex:1;
+    height:45px;
+    border:0;
+    border-radius:10px;
+    font-family:'Poppins',Arial,sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.limpiar-cache-cancelar{
+    background:#292929;
+    color:#fff;
+}
+
+.limpiar-cache-confirmar{
+    background:#ff1010;
+    color:#fff;
+}
+
+.limpiar-cache-botones button:active{
+    transform:scale(.96);
+}
+ 
+    
 /* =====================================================
    BASE
 ===================================================== */
@@ -178,8 +322,12 @@ body{
 }
 
 .side-menu-logo{
+    flex:1;
+    display:flex;
+    align-items:center;
     font-size:30px;
     font-weight:800;
+    min-width:0;
 }
 
 .side-menu-logo span{
@@ -304,33 +452,14 @@ body.menu-open{
     box-sizing: border-box;
 }
 
-/* 🔵 CUADRADO AZUL */
-.aviso-label {
-    height: 30px;
-    min-width: 78px;
-    background: #006eff;
-    color: #fff;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 14px;
-    font-weight: 700;
-
-    margin: 0;
-    padding: 0;
-
-    box-sizing: border-box;
-    flex-shrink: 0;
-}
 
 /* 🔴 BARRA ROJA */
 .marquee {
-    height: 28px;
+    height: 29px;
     flex: 1;
 
-    background: #ff0014;
+    background: #FF0A28;
     color: #fff;
 
     overflow: hidden;
@@ -368,6 +497,197 @@ body.menu-open{
     100% {
         transform: translateX(-100%);
     }
+}
+    
+    
+    /* =====================================================
+   🔔 AVISO MODAL - CAPA SUPERIOR
+   ===================================================== */
+
+.aviso-modal-overlay{
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+
+    width:100vw !important;
+    height:100vh !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    background:rgba(0,0,0,.72) !important;
+
+    z-index:999999 !important;
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+.aviso-modal-overlay.show{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+
+.aviso-modal{
+    position:relative !important;
+
+    width:calc(100% - 40px);
+    max-width:380px;
+
+    background:#111 !important;
+
+    border:1px solid #292929;
+    border-radius:16px;
+
+    padding:24px 20px 20px;
+
+    text-align:center;
+
+    box-shadow:0 10px 40px rgba(0,0,0,.8);
+
+    transform:scale(.85);
+
+    transition:transform .25s ease;
+}
+
+.aviso-modal-overlay.show .aviso-modal{
+    transform:scale(1);
+}
+
+.aviso-modal-icon{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.aviso-modal-title{
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.aviso-modal-text{
+    color:#bbb;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:20px;
+    white-space:pre-line;
+    text-align:left;
+    padding-left:10px;
+}
+
+.aviso-modal-button{
+    width:100%;
+    height:45px;
+
+    border:0;
+    border-radius:10px;
+
+    background:#ff1010;
+    color:#fff;
+
+    font-family:'Poppins',Arial,sans-serif;
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.aviso-modal-button:active{
+    transform:scale(.96);
+    background:#d90000;
+}
+    
+    /* =====================================================
+   👤 SELECCIÓN DE PERFIL
+   ===================================================== */
+
+.perfil-overlay{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.90);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100000;
+}
+
+.perfil-box{
+    width:calc(100% - 40px);
+    max-width:380px;
+    background:#111;
+    border:1px solid #292929;
+    border-radius:16px;
+    padding:25px 20px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.8);
+}
+
+.perfil-title{
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.perfil-subtitle{
+    color:#999;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.perfil-iconos{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.perfil-icono{
+    width:75px;
+    height:75px;
+    margin:auto;
+    border-radius:50%;
+    background:#222;
+    border:2px solid #333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.perfil-icono img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.perfil-icono:active{
+    transform:scale(.90);
+}
+
+.perfil-icono:hover{
+    border-color:#ff1010;
+    background:#1d1d1d;
+}
+
+.perfil-nombre{
+    color:#bbb;
+    font-size:12px;
+    margin-top:6px;
 }
     
 /* =====================================================
@@ -967,6 +1287,78 @@ body.menu-open{
 
 }
     
+    /* =====================================================
+   📺 SMART TV - GRID COMPLETO
+   VER MÁS + FAVORITOS + SEGUIR VIENDO
+   ===================================================== */
+
+@media screen and (min-width:901px){
+
+    .categoria-grid,
+    .favoritos-grid,
+    .seguir-grid{
+
+        width:100% !important;
+        max-width:none !important;
+        box-sizing:border-box !important;
+
+        display:grid !important;
+
+        /*
+           La cantidad de columnas se calcula
+           automáticamente según el ancho de la TV.
+        */
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(140px, 1fr)
+            ) !important;
+
+        gap:20px 12px !important;
+
+        padding-left:20px !important;
+        padding-right:20px !important;
+    }
+
+
+    .categoria-grid .poster,
+    .favoritos-grid .poster,
+    .seguir-grid .poster{
+
+        width:140px !important;
+        min-width:140px !important;
+        max-width:140px !important;
+
+        height:180px !important;
+
+        justify-self:center !important;
+
+        flex:none !important;
+    }
+
+
+    .categoria-grid .poster a,
+    .favoritos-grid .poster a,
+    .seguir-grid .poster a{
+
+        width:140px !important;
+        height:180px !important;
+    }
+
+
+    .categoria-grid .poster img,
+    .favoritos-grid .poster img,
+    .seguir-grid .poster img{
+
+        width:140px !important;
+        height:180px !important;
+
+        object-fit:cover !important;
+
+        display:block !important;
+    }
+
+}
 
 /* =====================================================
    FAVORITOS SCREEN
@@ -1854,79 +2246,7 @@ body{
 
 }
     
-    /* =====================================================
-   📺 SMART TV - GRID COMPLETO
-   VER MÁS + FAVORITOS + SEGUIR VIENDO
-   ===================================================== */
-
-@media screen and (min-width:901px){
-
-    .categoria-grid,
-    .favoritos-grid,
-    .seguir-grid{
-
-        width:100% !important;
-        max-width:none !important;
-        box-sizing:border-box !important;
-
-        display:grid !important;
-
-        /*
-           La cantidad de columnas se calcula
-           automáticamente según el ancho de la TV.
-        */
-        grid-template-columns:
-            repeat(
-                auto-fit,
-                minmax(140px, 1fr)
-            ) !important;
-
-        gap:20px 12px !important;
-
-        padding-left:20px !important;
-        padding-right:20px !important;
-    }
-
-
-    .categoria-grid .poster,
-    .favoritos-grid .poster,
-    .seguir-grid .poster{
-
-        width:140px !important;
-        min-width:140px !important;
-        max-width:140px !important;
-
-        height:180px !important;
-
-        justify-self:center !important;
-
-        flex:none !important;
-    }
-
-
-    .categoria-grid .poster a,
-    .favoritos-grid .poster a,
-    .seguir-grid .poster a{
-
-        width:140px !important;
-        height:180px !important;
-    }
-
-
-    .categoria-grid .poster img,
-    .favoritos-grid .poster img,
-    .seguir-grid .poster img{
-
-        width:140px !important;
-        height:180px !important;
-
-        object-fit:cover !important;
-
-        display:block !important;
-    }
-
-}
-    
+     
     
 </style>
 
@@ -1934,7 +2254,103 @@ body{
 
 <body>
 
+<!-- =====================================================
+     🔔 AVISO MODAL
+     ===================================================== -->
 
+<div class="aviso-modal-overlay" id="avisoModal">
+
+    <div class="aviso-modal">
+
+        <div class="aviso-modal-icon">
+            
+        </div>
+
+        <div class="aviso-modal-title" id="avisoModalTitulo">
+            AVISO
+        </div>
+
+        <div class="aviso-modal-text" id="avisoModalTexto">
+            Mantenimiento preventivo en 3 dias tonar nota durara 2 horas
+            
+        </div>
+
+        <button
+            class="aviso-modal-button"
+            onclick="cerrarAviso()">
+            OK
+        </button>
+
+    </div>
+
+</div>
+    
+    <!-- =====================================================
+     👤 SELECCIÓN DE PERFIL
+     ===================================================== -->
+
+<div id="perfilOverlay" class="perfil-overlay">
+
+    <div class="perfil-box">
+
+        <div class="perfil-title">
+            Elige tu perfil
+        </div>
+
+        <div class="perfil-subtitle">
+            Selecciona tu icono
+        </div>
+
+        <div class="perfil-iconos">
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil1')">
+                    <img src="https://img.magnific.com/vetores-premium/expressao-facial-de-personagens-de-desenhos-animados-de-monstros-engracados-ilustracao-de-criatura-bonita-e-feliz_6996-5507.jpg" alt="Perfil 1">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil2')">
+                    <img src="https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-assustador-com-um-olho-e-oculos-vector-halloween-ilustracao-de-monstro_6996-6248.jpg" alt="Perfil 2">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil3')">
+                    <img src="https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-com-muitos-olhos-ilustracao-de-monstro-vetorial-de-halloween-otimo-para-design-de-embalagem_6996-6232.jpg" alt="Perfil 3">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil4')">
+                    <img src="https://img.magnific.com/vetores-premium/monstro-verde-chorando-expressao-facial-de-personagem-ilustracao-de-desenho-animado-vetorial_338371-2143.jpg" alt="Perfil 4">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil5')">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOkXAToWd5vbP8-qRV4UzVpdR759jNaXAis6WEcPhz-A&s=10" alt="Perfil 5">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+            <div class="perfil-item">
+                <div class="perfil-icono" onclick="seleccionarPerfil('perfil6')">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtql0k-JYl9Wi_B2jSHeby9rDIukwvG0Rpcdfcby2qqw&s=10" alt="Perfil 6">
+                </div>
+                <div class="perfil-nombre">Perfil</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    
 <!-- =====================================================
      HEADER
 ===================================================== -->
@@ -1979,9 +2395,19 @@ id="sideMenu">
 <div class="side-menu-header">
 
 <div class="side-menu-logo">
-FLIX <span>TV</span>
+
+    <div class="side-menu-logo-text">
+        FLIX <span>TV</span>
+    </div>
+
+    <div class="perfil-menu-icono" onclick="cambiarPerfil()">
+    <img id="perfilMenuImagen" src="" alt="Perfil">
 </div>
 
+</div>
+ 
+    
+    
 <button
 class="side-menu-close"
 onclick="closeMenu()">
@@ -2360,6 +2786,26 @@ clip-rule="evenodd"/>
 
 </button>
 
+<div class="side-menu-separator"></div>    
+    
+  <div class="side-menu-section-title">
+AJUSTES DE LA APP
+</div>  
+    
+    
+   <!-- =====================================================
+     🗑️ LIMPIAR CACHÉ
+     ===================================================== -->
+
+<div class="side-menu-item limpiar-cache"
+     onclick="limpiarCache()">
+
+    <span class="limpiar-cache-icono">🗑️</span>
+
+    <span>Limpiar caché</span>
+
+</div> 
+    
 
 <div class="side-menu-separator"></div>
 
@@ -2382,10 +2828,10 @@ clip-rule="evenodd"/>
 
 
 <div class="aviso-container">
-    <div class="aviso-label">AVISO :</div>
+    
 
     <div class="marquee">
-        <span>Disfruta de todas nuestras peliculas y series</span>
+        <span> Bienvenidos a Flix tv Disfruta de todas nuestras peliculas y series </span>
     </div>
 </div>
     
@@ -2408,6 +2854,10 @@ id="prevBtn">
 <div
 class="carousel-slide"
 id="carouselSlide">
+    
+    
+    
+  
 
 
 <a href="go:A5">
@@ -2438,6 +2888,60 @@ id="carouselSlide">
 </a>
 
 
+ <a href="go:A245">
+
+<img src="https://image.tmdb.org/t/p/w780/bxIhpZWEKJbT5jJy71fOuU8WOXW.jpg">
+
+</a>
+
+
+
+<a href="go:A161">
+
+<img src="https://image.tmdb.org/t/p/w780/zXqDDiA52yIaR0Xp5LPUILnsex5.jpg">
+
+</a>
+
+
+
+
+<a href="go:A126">
+
+<img src="https://image.tmdb.org/t/p/w780/xxCLyIMF4Z5zW12VxIzY4xZ2qYP.jpg">
+
+</a>
+
+
+<a href="go:A539">
+
+<img src="https://image.tmdb.org/t/p/w780/hZ7wp5WcoSwz66iTeWK4L93lv8m.jpg">
+
+</a>
+
+
+<a href="go:A405">
+
+<img src="https://image.tmdb.org/t/p/w780/osZ0386UBcn9RchyFXXjz7BF3wi.jpg">
+
+</a>
+
+
+<a href="go:A403">
+
+<img src="https://image.tmdb.org/t/p/w780/hc1uqJ66U0SwnZWPuAvcDmkcGFm.jpg">
+
+</a>
+
+
+
+<a href="go:A394">
+
+<img src="https://image.tmdb.org/t/p/w780/kuse5h6YOQk5bpYEtnjgwGnk9dX.jpg">
+
+</a>   
+    
+    
+    
 </div>
 
 
@@ -2473,39 +2977,630 @@ id="carouselDots">
 
 
 
- 
-
-    
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
-
 
 
     
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A542" title=" el abismo secreto "><span><img src="https://image.tmdb.org/t/p/w185/3s0jkMh0YUhIeIeioH3kt2X4st4.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A541" title=" tron ares 2 "><span><img src="https://image.tmdb.org/t/p/w185/vV8BRsa5h88RsmP6fpqKDzGElt7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A540" title=" telefono negro 2 "><span><img src="https://image.tmdb.org/t/p/w185/gNIQ1DScjwKjmXhMIRyfZp6JdtB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A538" title="el conjuro 4"><span><img src="https://image.tmdb.org/t/p/w185/n9CXtIFdpxIqqsmEdD7CO7gb4X3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A535" title="alien planeta tierra"><span><img src="https://image.tmdb.org/t/p/w185/yueXS3q8BtoWekcHOATFHicLl3e.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A534" title="culpa nuestra"><span><img src="https://image.tmdb.org/t/p/w185/6kmi6vmp6iOn4KzI7WfnVtAeJhU.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A522" title="lord of mysteries"><span><img src="https://image.tmdb.org/t/p/w185/dkY73BH8fM37NZpYtsJayuxFUZu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A467" title="la hora de la desaparicion"><span><img src="https://image.tmdb.org/t/p/w185/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A466" title="los 4 fantasticos primeros pasos"><span><img src="https://image.tmdb.org/t/p/w185/ckfiXWGEMWrUP53cc6QyHijLlhl.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A523" title="kaiju numero 8"><span><img src="https://image.tmdb.org/t/p/w185/z0Sv8woHs7hgLlbQeYKoQV1FDp9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A471" title="trust "><span><img src="https://image.tmdb.org/t/p/w185/n9GS1mUAVMiC3gBn9rb8jrDoK4D.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A413" title="F1 la pelicula"><span><img src="https://image.tmdb.org/t/p/w185/yKIG63pXN89EfbTA7yKpwxAU1rf.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A411" title="exterminio la evolucion"><span><img src="https://image.tmdb.org/t/p/w185/hVKHzr4GwSw0FepqhqQ0DDiYHNY.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A410" title="rescate implacable"><span><img src="https://image.tmdb.org/t/p/w185/aG50Ad3UV8cCQWpNWSHHUqgKGNB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A421" title="thunderbolts"><span><img src="https://image.tmdb.org/t/p/w185/zLbhKNJGDSfBCXFNtypM7ZuPTaW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A412" title="karate kid leyendas"><span><img src="https://image.tmdb.org/t/p/w185/5LB5GJzcaEBEb3IhjqnYNsqY5Zs.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A468" title="culpa mia londres"><span><img src="https://image.tmdb.org/t/p/w185/b7kLNR6Ol8QbAN5z1f08qoIEFGB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A469" title="los tipos malos 2"><span><img src="https://image.tmdb.org/t/p/w185/mZmnKDhIS2yNmtfzde5vtdCYzBF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A409" title="elio"><span><img src="https://image.tmdb.org/t/p/w185/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A408" title="amenaza en el aire"><span><img src="https://image.tmdb.org/t/p/w185/8T6nkYb4W8BIeafmFffyfsRciTL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A407" title="capitan america un nuevo mundo"><span><img src="https://image.tmdb.org/t/p/w185/xVwP4GCbEfO66JSSyonnAhU3Fad.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A405" title="como entrenar a tu dragon live action"><span><img src="https://image.tmdb.org/t/p/w185/41dfWUWtg1kUZcJYe6Zk6ewxzMu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A404" title="megan 2.0"><span><img src="https://image.tmdb.org/t/p/w185/oekamLQrwlJjRNmfaBE4llIvkir.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A415" title="demon slayer castillo infinito"><span><img src="https://image.tmdb.org/t/p/w185/sUsVimPdA1l162FvdBIlmKBlWHx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A414" title="contraataque"><span><img src="https://image.tmdb.org/t/p/w185/kxnFdLJhi37ZVFDCL1ka0yeQVU5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A403" title="jurassic world renace"><span><img src="https://image.tmdb.org/t/p/w185/2sbGd7kDhMicDkT097FR9a2JyGU.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A402" title="superman"><span><img src="https://image.tmdb.org/t/p/w185/fvUJb08yatV2b3NUSwuYdQKYoFd.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A401" title="los pitufos 2025"><span><img src="https://image.tmdb.org/t/p/w185/zBdQclxQnEDOhDOjkKgKPW6jEHh.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A400" title="una pelicula de minecratf"><span><img src="https://image.tmdb.org/t/p/w185/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A399" title="Riesgo bajo cero venganza / nobody"><span><img src="https://image.tmdb.org/t/p/w185/4go0vKTZOtvnzc2Tfr0p4K6Qoy6.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A537" title="el ritual"><span><img src="https://image.tmdb.org/t/p/w185/9022CYEGqYETCeXN1oE3uwYJWub.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A398" title="nadie 2 / nobody"><span><img src="https://image.tmdb.org/t/p/w185/veNa8xu5EadO5N67matLM1MMcD5.jpg" width="110px" height="140px"></span></a></div>
+  
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A397" title="happy gilmore 2"><span><img src="https://image.tmdb.org/t/p/w185/ynT06XivgBDkg7AtbDbX1dJeBGY.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A396" title="lilo y stitch"><span><img src="https://image.tmdb.org/t/p/w185/Y6pjszkKQUZ5uBbiGg7KWiCksJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A395" title="mision imposible sentencia final"><span><img src="https://image.tmdb.org/t/p/w185/haOjJGUV00dKlZaJWgjM1UD1cJV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A394" title="destino final 6"><span><img src="https://image.tmdb.org/t/p/w185/f0156SDAw1GfrdZnSbSwkOst9aO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A406" title="mufasa el rey leon"><span><img src="https://image.tmdb.org/t/p/w185/lk4NNdeQrb6zbRSogDSdE6qmjk8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A536" title="tren bala"><span><img src="https://image.tmdb.org/t/p/w185/rlpRAsmO1WGPKg86qjOC2u0aZzQ.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A446" title="yo antes de ti"><span><img src="https://image.tmdb.org/t/p/w185/5a1WZVJP5cvJjcPLRMi4TNphLng.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A539" title=" moana 2 "><span><img src="https://image.tmdb.org/t/p/w185/8TvGHArrS47RES046An1NcD9s3E.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A1" title="Bad boys 4 hasta la muerte"><span><img src="https://image.tmdb.org/t/p/w185/v3mNrzuCfnrnRYtVbw6Tbj9h9hX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A2" title="Furiosa de la saga mad max"><span><img src="https://image.tmdb.org/t/p/w185/hstQNWXBkZUVMH7VB3VqDDhX6cX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A3" title="Beekeeper / beekeper /sentencia de muerte"><span><img src="https://image.tmdb.org/t/p/w185/lINM7cYGwWY6pl7aQXazrfNpw3S.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A4" title="Creed 3 / III"><span><img src="https://image.tmdb.org/t/p/w185/pe2hq4LAMPAN2VetxS4SoQcC30j.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A5" title="guerra mundial z / war world z"><span><img src="https://image.tmdb.org/t/p/w185/4byy44MYVawAzApUlwInklsj0mL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A6" title="Avengers endgame / vengadores endgame / marvel"><span><img src="https://image.tmdb.org/t/p/original/br6krBFpaYmCSglLBWRuhui7tPc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A7" title="Shang chi y la leyenda de los diez anillos/ marvel"><span><img src="https://image.tmdb.org/t/p/original/aEUYugjHTxWEPmn8zacTTwQQPT0.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A8" title="Top Gun maverick"><span><img src="https://image.tmdb.org/t/p/w185/bA1XVOT1UHszYrWmCDkq3yN1ROy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A9" title="Operacion kandahar / escape bajo fuego"><span><img src="https://image.tmdb.org/t/p/w185/f5I5mk0nZzVBRJmeG6kl8aHdAgm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A10" title="el justicero 3 / the equalizer 3"><span><img src="https://image.tmdb.org/t/p/w185/eJKmexmCLwuxOxlAURSMnBVkfmY.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A11" title="el reino del planeta de los simios"><span><img src="https://image.tmdb.org/t/p/w185/2131HjmrcP7yW1lP17RbHHvs1z9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A12" title="Tron legacy / tron el legado "><span><img src="https://image.tmdb.org/t/p/w185/m3tkTgatN1IuwKGAFnsiLakRQLh.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A13" title="Maze runner 1 / corredor de laberinto"><span><img src="https://image.tmdb.org/t/p/w185/2uwLI4wSyB0uZoZsCocUvesyX7x.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A14" title="Sin escape / golpe de estado"><span><img src="https://image.tmdb.org/t/p/w185/5lD3a5DP7LRqBvDjduELvqK9xJo.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A15" title="El Gángster, El Policia y El Diablo "><span><img src="https://image.tmdb.org/t/p/w185/bljsIiyPLhtdO46YS0mX4ao2R94.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A16" title="Avatar 2 el sentido del agua / camino de agua"><span><img src="https://image.tmdb.org/t/p/w185/bqOqQ2Tawum3eHKNrc94P4EeaZB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A17" title="chappie / robot"><span><img src="https://image.tmdb.org/t/p/w185/6zmKkfSvo4tBtvGSjn5PofWIvP9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A18" title="el duro / Road house"><span><img src="https://image.tmdb.org/t/p/w185/kdefKfrKIqwfwUWuPmTY4fMEr1Q.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A19" title="La guerra del mañana"><span><img src="https://image.tmdb.org/t/p/w185/tzp6VzED2TBc02bkYoYnQa6r2OK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A20" title="Godzilla y kong el nuevo imperio"><span><img src="https://image.tmdb.org/t/p/w185/lluGBHiORAC74piEPbCaITpdv2U.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A21" title="Un lugar en silencio 1 / un lugar tranquilo 1"><span><img src="https://image.tmdb.org/t/p/w185/up1Awcd25rJHDy267K1IYNSslne.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A22" title="Un lugar en silencio dia 1 / Un lugar tranquilo dia 1"><span><img src="https://image.tmdb.org/t/p/w185/1JuWdGdR0kGJuQWEwYkhx4MlOFt.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A23" title="tarot de la muerte"><span><img src="https://image.tmdb.org/t/p/w185/r8kgyBIT5umT330gISJH5hqRhhy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A24" title="It eso / payaso it 1"><span><img src="https://image.tmdb.org/t/p/w185/zSo9i3K3ZC1r35XaTyrh8SkFxRU.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A25" title="el aro 2 / the ring 2 / la señal "><span><img src="https://image.tmdb.org/t/p/w185/eAaFemSoU1dfpxDvdl9WLkmKYW2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A26" title="Estacion zombie / train to busan"><span><img src="https://image.tmdb.org/t/p/w185/gQDPQxUNep5TPgFPRRORAWFQueQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A27" title="insidious la puerta roja"><span><img src="https://image.tmdb.org/t/p/w185/im4yhz8A9LvXgu1nBPSIBtaBIf6.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A28" title="La cabaña en el bosque "><span><img src="https://image.tmdb.org/t/p/w185/40Sjxp3rXLC3UV2Wbgxxu4HwMJK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A29" title="Five nights af Freddys"><span><img src="https://image.tmdb.org/t/p/w185/e6vO5pYAJT7A4W4KGNhWuHP5eHg.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A30" title="saw x"><span><img src="https://image.tmdb.org/t/p/w185/nzVkXj1IX0BNoYzpTVogtkcCStf.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A31" title="La monja 2"><span><img src="https://image.tmdb.org/t/p/w185/hbP1KNvyNX8av2sVsOix1za9T4C.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A32" title="Vigilantes"><span><img src="https://image.tmdb.org/t/p/w185/rdspkGeXrprR2GxQqlRSHCJl617.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A33" title="Ruega por nosotros"><span><img src="https://image.tmdb.org/t/p/w185/llHklmHQEDwTgbwGrPvQ5ouSy2k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A34" title="telefono negro / black phone"><span><img src="https://image.tmdb.org/t/p/w185/1D2R2wIgbTyXTPzmyJIKSbVN9wG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A35" title="Strangers los extraños 1"><span><img src="https://image.tmdb.org/t/p/w185/1rTRllZNEAX30dTxYL1hONR6gPj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A36" title="Atrapados en el abismo / profundo"><span><img src="https://image.tmdb.org/t/p/w185/4RzKDZ881gWYzEa0nhczimOY35D.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A37" title="Pasajero 666"><span><img src="https://image.tmdb.org/t/p/w185/im1sYcEskurUCIknzAcytaLoPzE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A38" title="mama"><span><img src="https://image.tmdb.org/t/p/w185/9nYzxKmVlMKEhzUHnQBz326OBWR.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A39" title="Slenderman"><span><img src="https://image.tmdb.org/t/p/w185/huSncs4RyvQDBmHjBBYHSBYJbSJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A40" title="No vayas a colgar / no cuelgues"><span><img src="https://image.tmdb.org/t/p/w185/oQW9ZZe681McgrCzjbTSemSJEU2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A41" title="Atraves de mi ventana"><span><img src="https://image.tmdb.org/t/p/w185/3F5MkMadQOWiZNVaNuOuw6UaK7a.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A42" title="culpa mia"><span><img src="https://image.tmdb.org/t/p/w185/1jvCVdlgInyItAUEvvvCakm1Yxz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A43" title="Atraves del mar"><span><img src="https://image.tmdb.org/t/p/w185/hisRiTK0zCP1sXtlCSrmFRVOVlz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A44" title="Stand de los besos 1 / mi primer beso 1"><span><img src="https://image.tmdb.org/t/p/w185/eVRw197B6UOR27oPeHQSQQShTsL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A45" title="Stand de los besos 2 / mi primer beso 2"><span><img src="https://image.tmdb.org/t/p/w185/cwCR4d9sB98eeiXr76K0wpJsKhk.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A46" title="Stand de los besos 3 / mi primer beso 3"><span><img src="https://image.tmdb.org/t/p/w185/jdD6Rd8XMXPFZmCXLKWPthd1HsV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A47" title="After aquí acaba todo"><span><img src="https://image.tmdb.org/t/p/w185/jO3VGQi5sHIj2BGS963g1F74yCq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A48" title="After aquí empieza todo"><span><img src="https://image.tmdb.org/t/p/w185/5kZxlS9vLExy3hZA5GfNFg8oJgZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A49" title="After almas perdidas"><span><img src="https://image.tmdb.org/t/p/w185/cAvUp7ngPyuhx1nLjmCOTCBNo91.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A50" title="El titanic"><span><img src="https://image.tmdb.org/t/p/w185/VMOt5scbGmBKDvkfHjZN6Ki54i.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A51" title="Toda una vida en un año"><span><img src="https://image.tmdb.org/t/p/w185/xGDbQI7Gtgurt9W5ez6Tim2lpS2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A52" title="A dos metros de ti"><span><img src="https://image.tmdb.org/t/p/w185/4F5LggLzv2VIa0MJT2ETN8bWtr2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A53" title="sex appeal"><span><img src="https://image.tmdb.org/t/p/w185/fqa0Q0G4NXOixgxTsBOsIxDyfEc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A54" title="Violet y finch"><span><img src="https://image.tmdb.org/t/p/w185/v5e9v5m8qXYklTpqThbNRStlgS3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A55" title="Mi novio es un zombie / memorias de un zombie"><span><img src="https://image.tmdb.org/t/p/w185/adO9vyTFs02uAQRDbDE2akKrhfg.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A56" title="La idea de tenerte / la idea de ti"><span><img src="https://image.tmdb.org/t/p/w185/gDwozlXGEg1bvszDlfEMbLRvPgR.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A57" title="Cualquiera menos tu / con todos menos contigo"><span><img src="https://image.tmdb.org/t/p/w185/gvpU4eMgDC6LpWLxnqGW3uMFDx3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A58" title="Entre dos mundos / entre la vida y la muerte"><span><img src="https://image.tmdb.org/t/p/w185/jnzGZhk3KdqZHmJ6HUcZxPyB8aZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A59" title="Pequeño Manhattan / Abc del amor"><span><img src="https://image.tmdb.org/t/p/w185/uphY0n0Nm47l4MHzqYNoaZJuzBJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A60" title="La cita perfecta"><span><img src="https://image.tmdb.org/t/p/w185/XJyP0OnaSbmNLpEdyPLAz6oRCF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A61" title="Mi villano favorito 4 / Gru 4 / minions"><span><img src="https://image.tmdb.org/t/p/w185/iE9Pi1hkiLUm88uF7o9L9Yzl4lW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A62" title="Rango"><span><img src="https://image.tmdb.org/t/p/w185/99Dpm7Ep8OelbNyEVBlln50EHGj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A63" title="Spiderman cruzando el multiverso"><span><img src="https://image.tmdb.org/t/p/w185/qqXTerrQYwg9pIMhb1GFbxa3WUz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A64" title="Jefe bebe"><span><img src="https://image.tmdb.org/t/p/w185/vigQXmK1tHQGPzRGj4GObnrEMm1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A65" title="Cars 1"><span><img src="https://image.tmdb.org/t/p/w185/wOqJQy2zqdmWdqlO9eK6RDP0Eoo.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A66" title="Rio 1"><span><img src="https://image.tmdb.org/t/p/w185/oTDXscP9yo4EwjCYdXuW4g54cbN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A67" title="Moana / vaiana"><span><img src="https://image.tmdb.org/t/p/w185/a4Jj3Tk2AZvmUYWx0H92HGfktKo.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A68" title="Buscando a nemo"><span><img src="https://image.tmdb.org/t/p/w185/jPhak722pNGxQIXSEfeWIUqBrO5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A69" title="Monster inc SA"><span><img src="https://image.tmdb.org/t/p/w185/jTE3BLVCpYaR71L2U8SHV22HvEr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A70" title="Bolt"><span><img src="https://image.tmdb.org/t/p/w185/9WS6Hcph9hhfu0lSaW4PODQryDA.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A71" title="Hotel Transilvania transformania"><span><img src="https://image.tmdb.org/t/p/w185/xNF8AxJc966FWk4SYqXxGHaZLHZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A72" title="Kung fu panda 4"><span><img src="https://image.tmdb.org/t/p/w185/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A73" title="Spiderman un nuevo universo"><span><img src="https://image.tmdb.org/t/p/w185/xRMZikjAHNFebD1FLRqgDZeGV4a.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A74" title="Aviones / dostin fumigavion"><span><img src="https://image.tmdb.org/t/p/w185/6S5JjRheyl3oyLmJVcxcQ8yqDU3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A75" title="Los increíbles 2"><span><img src="https://image.tmdb.org/t/p/w185/7uintpyNlSF32hj5Bua85VuAp2R.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A76" title="Zootopia"><span><img src="https://image.tmdb.org/t/p/w185/9LRFNLthb0jfWC0HUDUWjYgpP9F.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A77" title="Shrek 1"><span><img src="https://image.tmdb.org/t/p/w185/o04jZs5SXhbvhqO4981W7KJXOWZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A78" title="Garfield la pelicula / fuera de casa"><span><img src="https://image.tmdb.org/t/p/w185/6QR2FOCQr41gSduN70WulRIhJb7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A79" title="Toy story 4"><span><img src="https://image.tmdb.org/t/p/w185/yF1vPDuHVrAUMX5dy1tVMbAjkEL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A80" title="Emojis la pelicula"><span><img src="https://image.tmdb.org/t/p/w185/k4oufeiJoVPFu0lbnjIf8SQq51Q.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A81" title="Estamos muertos"><span><img src="https://image.tmdb.org/t/p/w185/z8uCc246KwiODy1M4Jc7MeimB96.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A82" title="Peaky blinders"><span><img src="https://image.tmdb.org/t/p/w185/se86cWSwdSftjJH8OStW7Yu3ZPC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A83" title="The las of us / the last of us"><span><img src="https://image.tmdb.org/t/p/w185/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A84" title="Reacher"><span><img src="https://image.tmdb.org/t/p/w185/r3M676oPdEBwjpjHAUAoEWobcBM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A85" title="Merlina / miercoles / wednesday"><span><img src="https://image.tmdb.org/t/p/w185/wFvfqUNUSxjT3zDOKhryKiV9YEt.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A86" title="Euphoria"><span><img src="https://image.tmdb.org/t/p/w185/99d6KB1KMbeIVaUfYGor1e5dlbn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A87" title="La casa del dragón / house of the dragon"><span><img src="https://image.tmdb.org/t/p/w185/z2yahl2uefxDCl0nogcRBstwruJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A88" title="Agente nocturno"><span><img src="https://image.tmdb.org/t/p/w185/uYNgC4Zd9NMcpMVug9NTgeIqfTy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A89" title="El juego del calamar / squid game"><span><img src="https://image.tmdb.org/t/p/w185/74qMRUy0lwkBBi39vsQVerIDkHj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A90" title="Misa de media noche"><span><img src="https://image.tmdb.org/t/p/w185/4ZQiVDFQgGO791f9pAcsPUeOtFe.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A91" title="Eric"><span><img src="https://image.tmdb.org/t/p/w185/9OV6McrRh1BAnrak3yVP9xYuUId.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A92" title="Berlín"><span><img src="https://image.tmdb.org/t/p/w185/g7CXBHbGenMqGo9wnHsK8sBLCJb.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A93" title="Baki hanma vs kengan ashura"><span><img src="https://image.tmdb.org/t/p/w185/etbHJxil0wHvYOCmibzFLsMcl2C.jpg" width="110px" height="140px"></span></a></div>                                                                                                                                   
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A94" title="demon slayer / kimetsu no yaiba"><span><img src="https://image.tmdb.org/t/p/w185/i78pnWKV3VEjJIoSU1td6DVPhqr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A95" title="Black clover la película"><span><img src="https://image.tmdb.org/t/p/w185/jm2BckEhy1upr4iPpOZ6WTx1tWw.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A96" title="Las quintillizas"><span><img src="https://image.tmdb.org/t/p/w185/9uYC7QQfMyBwd4O8uRSQXHQu3FV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A97" title="Suzume"><span><img src="https://image.tmdb.org/t/p/w185/yStW1TXF5s7Tbtu9KjIZEaWl6HL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A98" title="Shitara slime"><span><img src="https://image.tmdb.org/t/p/w185/xITip9n9uMAUA0TU6niMXU2tbh0.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A99" title="Konosuba"><span><img src="https://image.tmdb.org/t/p/w185/5aaAySq2nI9kYQZzom7ymvoN2Kh.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A100" title="Violet evergarden"><span><img src="https://image.tmdb.org/t/p/w185/yNrfz5Mc7IFszxAbivV1Kq0gZrW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A101" title="Your name"><span><img src="https://image.tmdb.org/t/p/w185/q719jXXEzOoYaps6babgKnONONX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A102" title="Spy x family código blanco"><span><img src="https://image.tmdb.org/t/p/w185/riv537dUuKib4KXC6Rg7CINs4xO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A103" title="Sword art online progressive"><span><img src="https://image.tmdb.org/t/p/w185/a8B3bagkYRULdmnhgKMcxXaVcFm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A104" title="Solo leveling la pelicula"><span><img src="https://image.tmdb.org/t/p/w185/dblIFen0bNZAq8icJXHwrjfymDW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A105" title="Amigos de armas / juego de armas / war dogs"><span><img src="https://image.tmdb.org/t/p/w185/zbuZYpGlXwkSlOMJ4IbUEHxZ03h.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A106" title="Feliz día de tu muerte"><span><img src="https://image.tmdb.org/t/p/w185/xLu1qmpTCW0qAYCZ3MylNyQ52Lv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A107" title="El gigante de hierro"><span><img src="https://image.tmdb.org/t/p/w185/jNYoBF1FtSgYBC1LnVHV6XrwZZt.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A108" title="Uncharted"><span><img src="https://image.tmdb.org/t/p/w185/tlZpSxYuBRoVJBOpUrPdQe9FmFq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A109" title="Alita batle ángel"><span><img src="https://image.tmdb.org/t/p/w185/xRWht48C2V8XNfzvPehyClOvDni.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A110" title="Cazadores en tierras inhóspitas / Badland Hunters"><span><img src="https://image.tmdb.org/t/p/w185/jPGbcbMlzGUECukPhkEMVt1Kvs5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A111" title="Twister / Tornados 2024"><span><img src="https://image.tmdb.org/t/p/w185/g7yg6jJj4Z377j5h6S3MBRmjQ7U.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A112" title="El último conjuro"><span><img src="https://image.tmdb.org/t/p/w185/3HYfBLfywke32i08KibzbugGpKy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A113" title="I.S.S"><span><img src="https://image.tmdb.org/t/p/w185/isWYpt5iUrDnDtMVKJ40hUR4Gl9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A114" title="El señor de la guerra"><span><img src="https://image.tmdb.org/t/p/w185/les82GdgNILBVP0MyjZFH869Xhz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A115" title="Deadpool vs lobezno"><span><img src="https://image.tmdb.org/t/p/w185/oIyqK0pUCZn3VTtyX5vf6J1lnwI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A116" title="Guerra civil / civil war"><span><img src="https://image.tmdb.org/t/p/w185/16uqIeLMLCz5PI7vyyfgr2W0MIX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A117" title="Llaman ala puerta"><span><img src="https://image.tmdb.org/t/p/w185/4Zna9CvyzaAgejsErmyXmHC64Dd.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A118" title="Blue beetle"><span><img src="https://image.tmdb.org/t/p/w185/iyev5udSI2NecJHpl3EstYeQBJ7.jpg" width="110px" height="140px"></span></a></div>
+ <div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A119" title="Terminator 1"><span><img src="https://image.tmdb.org/t/p/w185/9KI49SBnwAOzGcMw1onIki7vd2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A120" title="El especialista resureccion"><span><img src="https://image.tmdb.org/t/p/w185/y1JPE0tTPFgfxJFSpLgHavWuvnu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A121" title="Rambo / 5"><span><img src="https://image.tmdb.org/t/p/w185/kTQ3J8oTTKofAVLYnds2cHUz9KO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A122" title="Iron man 1"><span><img src="https://image.tmdb.org/t/p/w185/zxvi393rrPrpCFomF9kxtFOOGL3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A123" title="Apocalypto"><span><img src="https://image.tmdb.org/t/p/w185/cRY25Q32kDNPFDkFkxAs6bgCq3L.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A124" title="Thor un mundo oscuro / marvel"><span><img src="https://image.tmdb.org/t/p/w185/gPAmH41VpK5UPaNhAiNJePzrL8z.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A125" title="Shazam la furia de los dioses"><span><img src="https://image.tmdb.org/t/p/w185/xCxwaQeoIr4FcjlPgHfzog0x4B8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A126" title="Megalodon 2"><span><img src="https://image.tmdb.org/t/p/w185/30MUcuI6p4toyfCV349wZleqG5d.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A127" title="La momia"><span><img src="https://image.tmdb.org/t/p/w185/aGRMxB5ve2nSKsq8ww6PyUwhWpP.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A128" title="Invicto 2 / Undisputed II: Last Man Standing"><span><img src="https://image.tmdb.org/t/p/w185/dQYWGpcEZ6ZLVoW87tjr2FbgSx8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A129" title="Fractura / fractured"><span><img src="https://image.tmdb.org/t/p/w185/x70sRlURZdk8yHsctTBilQNKCls.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A" title=""><span><img src="https://image.tmdb.org/t/p/w185/AcwmKWzrJ9tMPjU8jU9XlEpmsmZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A131" title="Deadpool 1"><span><img src="https://image.tmdb.org/t/p/w185/3E53WEZJqP6aM84D8CckXx4pIHw.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A132" title="Godzilla vs kong"><span><img src="https://image.tmdb.org/t/p/w185/pgqgaUx1cJb5oZQQ5v0tNARCeBp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A133" title="Ong bak 2"><span><img src="https://image.tmdb.org/t/p/w185/sGyB8kVPQsofyQV1T0jE2d6k4q4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A134" title="Gigantes de acero / acero puro / real steel"><span><img src="https://image.tmdb.org/t/p/w185/ubHhEiVQfE0UMa2NQRrzCiXhhZg.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A135" title="Ong bak 1"><span><img src="https://image.tmdb.org/t/p/w185/spREee22GTx3oN9gqziy4sFTkW1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A136" title="Triple 9"><span><img src="https://image.tmdb.org/t/p/w185/q2kIq9yzEkOVhl1aeo0alJHtdfz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A137" title="Rapidos y furiosos reto Tokio"><span><img src="https://image.tmdb.org/t/p/w185/qcVQ4yBdvCRWUtwCkQZyl0D5DNs.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A138" title="Viaje al centro de la tierra"><span><img src="https://image.tmdb.org/t/p/w185/q2EeJI0U2j0fMPtXNCyskbKH1mZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A139" title="Contagio of fear / contagio de miedo"><span><img src="https://image.tmdb.org/t/p/w185/hIuTxfAcALibR1BedHRU6GufA46.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A140" title="Escuadrón suicida / suicide squad"><span><img src="https://image.tmdb.org/t/p/w185/9ymhU7NclJr29MpZnBQbJurYbuc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A141" title="Jurassic world el reino caído / Fallen Kingdom"><span><img src="https://image.tmdb.org/t/p/w185/6AnLLWvYkBTaOXxEJ2LKjvYvUSC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A142" title="Deadpool 2"><span><img src="https://image.tmdb.org/t/p/w185/fgPTa4IS07Pygz0Q1WJnRgOP7r7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A143" title="venom 2"><span><img src="https://image.tmdb.org/t/p/w185/srF7rdGwVVhTICJmcdscJSOigEP.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A144" title="Thor amor y trueno"><span><img src="https://image.tmdb.org/t/p/w185/4gHWDa9hngo4RJy4BImChkMHooi.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A145" title="John wick 2"><span><img src="https://image.tmdb.org/t/p/w185/yIa04BbZMO4pIZ1cvnYB4cZVakd.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A146" title="Mad Max furia en la carretera"><span><img src="https://image.tmdb.org/t/p/w185/fnY0VRsb31A5RLVCBjuR6EFUlo2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A147" title="Yo robot / mr robot"><span><img src="https://image.tmdb.org/t/p/w185/juwDCRwheIQjNGk4roVMAsTkU3W.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A148" title="Proyecto extracción / Hidden Strike"><span><img src="https://image.tmdb.org/t/p/w185/wqwDKolEd9lhrPGWwqTCpwJc2aT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A149" title="Pandora"><span><img src="https://image.tmdb.org/t/p/w185/elTrkTm5GjynK3H26cpOZsWDYjy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A150" title="Geo tormenta / Geostorm"><span><img src="https://image.tmdb.org/t/p/w185/4rJGCqrO8MSPdokdMoJB5sxeZ4i.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A151" title="Venom"><span><img src="https://image.tmdb.org/t/p/w185/p4if93blsrhU5NUlHxUlEySTPak.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A152" title="John WICK 1"><span><img src="https://image.tmdb.org/t/p/w185/d7YxLE6ohg7TnDLYr6DEvyAxnC8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A153" title="Misión de rescate 2 / tyler rake 2"><span><img src="https://image.tmdb.org/t/p/w185/8OctnTGzLXlg8ii5ZPZpKtOV7cq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A154" title="Mision imposible 3"><span><img src="https://image.tmdb.org/t/p/w185/vKGYCpmQyV9uHybWDzXuII8Los5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A155" title="John cárter entre dos mundos"><span><img src="https://image.tmdb.org/t/p/w185/lCxz1Yus07QCQQCb6I0Dr3Lmqpx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A156" title="Spectral"><span><img src="https://image.tmdb.org/t/p/w185/ptW67F2eMTF2AruIG197obOGGOE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A157" title="John wick 4"><span><img src="https://image.tmdb.org/t/p/w185/3BcrJT9AHR9SKerlY3WQAXgisfu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A158" title="The amazing Spiderman 2"><span><img src="https://image.tmdb.org/t/p/w185/dGjoPttcbKR5VWg1jQuNFB247KL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A159" title="Ant man quantumania"><span><img src="https://image.tmdb.org/t/p/w185/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A160" title="Resident evil Apocalipsis"><span><img src="https://image.tmdb.org/t/p/w185/yzNQSLlZb7NAkA4C5uADfNDJ7hm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A161" title="Spiderman lejos de casa"><span><img src="https://image.tmdb.org/t/p/w185/o59zDVJDIehGcWZsMUGU5SN0V0D.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A162" title="Spiderman sin camino a casa"><span><img src="https://image.tmdb.org/t/p/w185/8Ww5OYw6z8jJNTGcNXoiBswphzc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A163" title="Resident evil 4 ultratumba ressurreccion"><span><img src="https://image.tmdb.org/t/p/w185/j7obkD5UQUydpBOBRpToLWIWkwq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A164" title="La guerra de los mundos el ataque"><span><img src="https://image.tmdb.org/t/p/w185/h0xF7q5k07BRVJz9Z3A8dGdbpLR.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A165" title="Estación zombi 2 / peninsula"><span><img src="https://image.tmdb.org/t/p/w185/fWurWMli9bK9rNEUlPK1tITog5A.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A166" title="Free guy"><span><img src="https://image.tmdb.org/t/p/w185/xmbU4JTUm8rsdtn7Y3Fcm30GpeT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A167" title="Atlas"><span><img src="https://image.tmdb.org/t/p/w185/qFTsoeMg1gGL5OTG0jecBAqlrlM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A168" title="The amazing Spiderman 1"><span><img src="https://image.tmdb.org/t/p/w185/fSbqPbqXa7ePo8bcnZYN9AHv6zA.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A169" title="Duna 1"><span><img src="https://image.tmdb.org/t/p/w185/d5NXSklXo0qyIYkgV94XAgMIckC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A170" title="Duna 2 / parte 2"><span><img src="https://image.tmdb.org/t/p/w185/xCHmhHeO7aOCMlzcNukGH6Q7EiD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A171" title="Baby driver / el aprendiz del crimen"><span><img src="https://image.tmdb.org/t/p/w185/tYzFuYXmT8LOYASlFCkaPiAFAl0.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A172" title="Megalodon 1"><span><img src="https://image.tmdb.org/t/p/w185/wGdXR0Oca2cjQrZeAkzPWKNsD08.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A173" title="Hombre en llamas / el fuego de la venganza"><span><img src="https://image.tmdb.org/t/p/w185/4dK4HJ20zBhfDcA5eHM9ueofRSv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A174" title="Camino entre las tumbas / caminando"><span><img src="https://image.tmdb.org/t/p/w185/nb0L57p0r25ehV46trx86537ByP.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A175" title="Los ilusionistas 2 / los jinetes / ahora me ves 2"><span><img src="https://image.tmdb.org/t/p/w185/9Orn6qHO5zXL6FcOmHKd1tcm7CK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A176" title="Sisu"><span><img src="https://image.tmdb.org/t/p/w185/pnQYjDxqZ3C6reI8N0MfNi4NMkZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A177" title="El ejército de los muertos"><span><img src="https://image.tmdb.org/t/p/w185/4jnqLxUxWXKme5IlsOTveU53QNJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A178" title="Seguridad nacional 2003"><span><img src="https://image.tmdb.org/t/p/w185/kSUI6xl9mHLRGxRgmJTJ4WbftID.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A179" title="Scary movie 2"><span><img src="https://image.tmdb.org/t/p/w185/7Eb1JWK0Cb0rbfsYjwfc9g0PbQH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A180" title="Era una vez en Hollywood"><span><img src="https://image.tmdb.org/t/p/w185/abGUZXIPQa2nIa4J88WTxdygWKs.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A181" title="Soy leyenda"><span><img src="https://image.tmdb.org/t/p/w185/pO1SrJgf5BumqcIRkYviSGIFdmX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A182" title="El aprendiz del brujo"><span><img src="https://image.tmdb.org/t/p/w185/oDis2UZbitaypC81nzgHsX6R04P.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A184" title="Drácula mar de sangre"><span><img src="https://image.tmdb.org/t/p/w185/5TU7BRyCaZtZXZposeHEAiFRPxJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A185" title="Bird box Barcelona"><span><img src="https://image.tmdb.org/t/p/w185/3rlU3gwaKobcdrmIBTRfyGcE6ew.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A186" title="Megan"><span><img src="https://image.tmdb.org/t/p/w185/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A187" title="Winnie the Pooh: Blood and Honey / sangre y miel"><span><img src="https://image.tmdb.org/t/p/w185/lfetuG7lq3MVRt6jb1kfX7Va2H.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A188" title="Scream 6"><span><img src="https://image.tmdb.org/t/p/w185/wDWwtvkRRlgTiUr6TyLSMX8FCuZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A189" title="La huérfana el origen"><span><img src="https://image.tmdb.org/t/p/w185/1xOSjSzY4k2MLRZ1phzYb0VJYaS.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A190" title="Bird box a ciegas"><span><img src="https://image.tmdb.org/t/p/w185/rGfGfgL2pEPCfhIvqHXieXFn7gp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A191" title="Terrifier 2"><span><img src="https://image.tmdb.org/t/p/w185/mUEojN1bfXS8mk4D6Pf0Q1JYwMJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A192" title="Noche sin paz"><span><img src="https://image.tmdb.org/t/p/w185/hqBeKurpfqoV5msTH5XttGLwFUv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A193" title="El exorcismo de dios"><span><img src="https://image.tmdb.org/t/p/w185/aSfvsaIdtF5eXf8IsvIYdzhI3XL.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A194" title="Annabelle 1"><span><img src="https://image.tmdb.org/t/p/w185/yLsuU2P2SpDYFwtZQ7dtfVAf6TE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A195" title="Annabelle 2"><span><img src="https://image.tmdb.org/t/p/w185/y0ORPgx46CTrd19bC03Bo8D8tUH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A196" title="Annabelle 3"><span><img src="https://image.tmdb.org/t/p/w185/3ZZB2UHGK2iqj4XYgmivkeCgGJn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A197" title="La purga 3"><span><img src="https://image.tmdb.org/t/p/w185/2eVnqEQy4n98ujEdFkdddYEgpqW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A198" title="The boy 1 / el niño 1"><span><img src="https://image.tmdb.org/t/p/w185/kW2vgzhyWXQu5UxNzebPokipBqH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A199" title="The boy 2 / el niño 2"><span><img src="https://image.tmdb.org/t/p/w185/hiGQ0Eae8hLQIQWJ1RvwtrhNT4i.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A200" title="Hablame"><span><img src="https://image.tmdb.org/t/p/w185/rS8fjd6dYcf64v3ZhAE6fKrxoaF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A201" title="La oscura separación"><span><img src="https://image.tmdb.org/t/p/w185/45QrllTjfFQ4qMywA3YjQkd88yi.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A202" title="Baba yaga"><span><img src="https://image.tmdb.org/t/p/w185/sQF8UV3LrYtELqcJluckTOl9q4D.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A203" title="Alíen el octavo pasajero"><span><img src="https://image.tmdb.org/t/p/w185/56tGM7W7wszcuLU2CqfdHryXu0H.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A204" title="La masacre de Texas"><span><img src="https://image.tmdb.org/t/p/w185/AkqrXCpEydbWKakViyy8DVV5n8x.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A205" title="La maldicion / the grudge"><span><img src="https://image.tmdb.org/t/p/w185/2fptCAZsBwvbSQ6QBGyqby6pwi3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A206" title="Avenida cloverfield / calle cloverfield 10 "><span><img src="https://image.tmdb.org/t/p/w185/ksLwEavVceUxYyF8LOjTewmpTp4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A207" title="Rec 1"><span><img src="https://image.tmdb.org/t/p/w185/2efS9dKJvH0fKoWbgYEdC905GYG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A208" title="Rec 2"><span><img src="https://image.tmdb.org/t/p/w185/i7wr12YmZfJxXv2R6ksvSffyhAT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A209" title="Presencias del mal"><span><img src="https://image.tmdb.org/t/p/w185/aLbL9fsxUbnrI4ZMW0jY0zkoOvP.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A210" title="el titere / silencio desde el mal"><span><img src="https://image.tmdb.org/t/p/w185/rvcUVdATIHKZt7BSSttUkKbeBXN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A211" title="Amanecer de los muertos"><span><img src="https://image.tmdb.org/t/p/w185/usIWLtJIPxEJuqe3OQElUEKpf11.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A212" title="Constantine"><span><img src="https://image.tmdb.org/t/p/w185/9bIvXIAf2i7NRMnrGowMhJJzPuY.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A213" title="El faro"><span><img src="https://image.tmdb.org/t/p/w185/uatQKdDuwUFW1zTAISZcnDOqjjE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A214" title="Vigilantes"><span><img src="https://image.tmdb.org/t/p/w185/bYUERLWkxFAZlj4OfLPy3sFq9qW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A215" title="En la hierba alta"><span><img src="https://image.tmdb.org/t/p/w185/hBq8SkRduhzF8B4nwBNbEE1zuOp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A216" title="Gonjiam hospital maldito"><span><img src="https://image.tmdb.org/t/p/w185/KPrZ8lbgbMD7gr1pkMKoNbtcCK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A217" title="Arrastrame al infierno"><span><img src="https://image.tmdb.org/t/p/w185/l7RuQEkg2yTF04mHrE7kBKf7S3A.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A218" title="Legion de angeles"><span><img src="https://image.tmdb.org/t/p/w185/39vqW5mUZtX0artpqeY4CoIJ4sl.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A219" title="El manicomio"><span><img src="https://image.tmdb.org/t/p/w185/khNZDcR7ftoM74dQUtCDWvDp5KT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A220" title="No mires"><span><img src="https://image.tmdb.org/t/p/w185/uwiNswgjQy6PgLBLVtF8I2AT2mH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A221" title="1922"><span><img src="https://image.tmdb.org/t/p/w185/q4FQOiSRhTLWulHl5Vpg37FMArH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A222" title="La cura siniestra"><span><img src="https://image.tmdb.org/t/p/w185/wR0uOInQjDUUYzFAQCuZXN6vYrO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A223" title="Alien abduccion"><span><img src="https://image.tmdb.org/t/p/w185/ycHxr4JiUN6HPQOVJ1dmBNe4nIb.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A224" title="Asi en la tierra como en el infierno"><span><img src="https://image.tmdb.org/t/p/w185/t979TJIaqOdZBokMWqMHZrfJLzW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A225" title="Terror en silent hill 2"><span><img src="https://image.tmdb.org/t/p/w185/vKmgfYy1LEClcifcTJdBBoopRDe.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A226" title="Terror en silent hill 1"><span><img src="https://image.tmdb.org/t/p/w185/7mexPK2xZCNYrRDrNkw5tzcPkxU.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A227" title="Eliminar amigo 2"><span><img src="https://image.tmdb.org/t/p/w185/dQM2LDOmolIGt7WzcHl6ZSUAdci.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A228" title="El atrapa sueños"><span><img src="https://image.tmdb.org/t/p/w185/3F4rrXcrS0XN5vQ5PRMvxg0yLou.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A229" title="Ven a jugar"><span><img src="https://image.tmdb.org/t/p/w185/9lwliMeRlnMZDYVsjoabTlFRLaQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A230" title="Juguetes de terror"><span><img src="https://image.tmdb.org/t/p/w185/nlu8YdfUNRrxonk1fvgr2jyXkBm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A231" title="La piramide"><span><img src="https://image.tmdb.org/t/p/w185/a2N5St0TCmyJy2F8IwPlo2lEbiJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A232" title="Extincion"><span><img src="https://image.tmdb.org/t/p/w185/PEcT8Klq6bZ1jbvhtxGzsrbCba.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A233" title="Del otro lado de la puerta"><span><img src="https://image.tmdb.org/t/p/w185/hOZItBnneK6BbzFUlWzqsaIt6xn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A234" title="Contagio en alta mar"><span><img src="https://image.tmdb.org/t/p/w185/101kemQtied9Ny7SjC4i0oGFvKV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A235" title="Te veo"><span><img src="https://image.tmdb.org/t/p/w185/uSRGkkGrE6ugEp8J3Q4H7dYqixj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A236" title="Ala verga con los zombies / zombie camp / campamento zombies"><span><img src="https://image.tmdb.org/t/p/w185/qxYhEeYxRb4MDwTCnCR6QD82gb1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A237" title="El telefono del señor harrigans"><span><img src="https://image.tmdb.org/t/p/w185/aERrzPJyUYAhmbies50dMz21W4u.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A238" title="NOP"><span><img src="https://image.tmdb.org/t/p/w185/k2VcJW03s9tQEIy4PlQS576CXDX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A239" title="La purga por siempre"><span><img src="https://image.tmdb.org/t/p/w185/zWiXxOTM3NeYcj3dzbtoGqIIJPz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A240" title="Sonrie"><span><img src="https://image.tmdb.org/t/p/w185/mNd2W2aEtLBoiSljVT5THbe4RCv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A241" title="El visitante"><span><img src="https://image.tmdb.org/t/p/w185/5ckk0dggJYpGhuoZ18VylEXVu1P.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A242" title="Vivo / #vivo"><span><img src="https://image.tmdb.org/t/p/w185/tmGOSFUjCjWJ6ASxfCbCjEyamx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A243" title="Zombieland 1"><span><img src="https://image.tmdb.org/t/p/w185/bsQZDSRHrRkkLWC1PgMT89dr9xA.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A244" title="El despertar de los muertos"><span><img src="https://image.tmdb.org/t/p/w185/pl3gEKM12J93WrUoAXkZNHzTiRR.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A245" title="Zombieland 2"><span><img src="https://image.tmdb.org/t/p/w185/mIUGQ89isLNj4IRujDsXrZFIZCQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A246" title="La hora de tu muerte"><span><img src="https://image.tmdb.org/t/p/w185/jYwCTKSmvAey3PDvrj7TCZuso5q.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A247" title="Día del juicio final"><span><img src="https://image.tmdb.org/t/p/w185/ltVbyAXDVXLrfkYCZLzM9GPSoA2.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A248" title="Anaconda 1"><span><img src="https://image.tmdb.org/t/p/w185/uj0ZYr2ZvAFT0uPuBdaLb9yYZQv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A249" title="Gemelo siniestro"><span><img src="https://image.tmdb.org/t/p/w185/1q0FiJOpVX4EoZngtl8XQK9ggrz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A250" title="Anaconda 2"><span><img src="https://image.tmdb.org/t/p/w185/p18mhFJ9Wk5S9Bvs5w8hAGcOdZr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A251" title="Turno de día"><span><img src="https://image.tmdb.org/t/p/w185/kKcsME7Bjlo9EvKp51MkgQ8tgQD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A252" title="La morgue / La autopsia de Jane Doe"><span><img src="https://image.tmdb.org/t/p/w185/2IecKV3c7AiOlQTFiRW1aDKC02O.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A253" title="la bestia"><span><img src="https://image.tmdb.org/t/p/w185/s7xRJ3HfYuZfldXD4YODurbCYtS.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A254" title="La invitacion"><span><img src="https://image.tmdb.org/t/p/w185/oHVR6249rkhCJkdBc7vk166KLMF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A255" title="Jeepers creepers"><span><img src="https://image.tmdb.org/t/p/w185/tAurRQhvQnoBlYVQK1ks6Rf2MNv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A256" title="Wifi ralph"><span><img src="https://image.tmdb.org/t/p/w185/1K6YdJqNDjapI21ZNQMbD35blkw.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A257" title="Los increibles 1"><span><img src="https://image.tmdb.org/t/p/w185/al1jusd4T7JPatZlj4BuYkDDOzr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A258" title="Isla larva la pelicula"><span><img src="https://image.tmdb.org/t/p/w185/uHdxICUIRGoJjK67aOp3ykvL8ZW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A259" title="Valiente / brave / indomable"><span><img src="https://image.tmdb.org/t/p/w185/1zchaxDvlMVzzIKAfREWuqJVJIM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A260" title="Las locuras del emperador"><span><img src="https://image.tmdb.org/t/p/w185/latMqJxTsmeDIv7oTUTpUMfbl58.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A261" title="Intensamente 1 / inside out / Del reves Inside Out"><span><img src="https://image.tmdb.org/t/p/w185/ewEX6VcVohyrQ52usZb1XovN1Bj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A262" title="Aladin"><span><img src="https://image.tmdb.org/t/p/w185/trnyoKkkvvjZvRvCMrNDtSf25nH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A263" title="Como entrenar a tu dragon 1"><span><img src="https://image.tmdb.org/t/p/w185/8ekxsUORMAsfmSc8GzHmG8gWPbp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A264" title="Como entrenar a tu dragon 2"><span><img src="https://image.tmdb.org/t/p/w185/bXcRw7FL8QzUZOvY2fZdwDv5ymQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A265" title="Como entrenar a tu dragon 3"><span><img src="https://image.tmdb.org/t/p/w185/5YzBwkRI19ZPL82e8mJxLWZJ6hn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A266" title="Como entrenar a tu dragon 4"><span><img src="https://image.tmdb.org/t/p/w185/n12wESAYZNqa88h4EzdD25bJRYR.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A267" title="Onward / unidos"><span><img src="https://image.tmdb.org/t/p/w185/pucg0VlSfIafkuevrqtcMj6XcOX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A268" title="Espias a escondidas"><span><img src="https://image.tmdb.org/t/p/w185/wg4CRxx04UbIOip2j7bMzIP5i20.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A269" title="Deathroke caballeros y dragones"><span><img src="https://image.tmdb.org/t/p/w185/nCJGThrH249sLUAzIS80xM7BEKz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A270" title="Primal"><span><img src="https://image.tmdb.org/t/p/w185/9jIatSC61s5Y3d5Q63yIeZFvP7u.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A271" title="Chiken little"><span><img src="https://image.tmdb.org/t/p/w185/AsDUBjrECTVstxCSGvPbwpA0I0M.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A272" title="Wall-E"><span><img src="https://image.tmdb.org/t/p/w185/fLXLNDsOBZxpNleWF9Z4hubxBUQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A273" title="El gato con botas el ultimo deseo"><span><img src="https://image.tmdb.org/t/p/w185/b5Jb7GoQaqIXy4VEdnQa0UrQZI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A274" title="Atlantis el imperio perdido"><span><img src="https://image.tmdb.org/t/p/w185/uR7AKWMDTwyAub5r4QoPPiJImvx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A275" title="Los croods 1"><span><img src="https://image.tmdb.org/t/p/w185/sqnr0R1WeOJD91zw7Ogh3w9ukGy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A276" title="Scooby du animada"><span><img src="https://image.tmdb.org/t/p/w185/zD8LFCoOPe4ooBTkedl1sGSYRGO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A277" title="Shrek 3"><span><img src="https://image.tmdb.org/t/p/w185/2ogCqOTY7VlKcOHzELeLP71BGLJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A278" title="Shrek 4"><span><img src="https://image.tmdb.org/t/p/w185/11K03KebrdD8nUlGFJX3rSL3KHK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A279" title="Shrek 2"><span><img src="https://image.tmdb.org/t/p/w185/knRt4E8KyfwEv0SVu9LsLvD28IQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A280" title="Toy story 1"><span><img src="https://image.tmdb.org/t/p/w185/jvn7wy3RSNEXnFSXLpH2of2LcV6.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A281" title="Toy story 2"><span><img src="https://image.tmdb.org/t/p/w185/xVhEI1WCgNCCa5I86AqiwuZoog3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A282" title="Toy story 3"><span><img src="https://image.tmdb.org/t/p/w185/AbbXspMOwdvwWZgVN0nabZq03Ec.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A283" title="Rio 2"><span><img src="https://image.tmdb.org/t/p/w185/xx1k3kCfIs95eAMa1pglXv74cRp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A284" title="Numero 9"><span><img src="https://image.tmdb.org/t/p/w185/hRzsKmr3NxRIbKwr4myGKylMaXB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A285" title="La era del hielo 1"><span><img src="https://image.tmdb.org/t/p/w185/qhpwT5YmS2Y3oyXGK9BdoGKXIQI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A286" title="La era del hielo 2"><span><img src="https://image.tmdb.org/t/p/w185/gs84R3mH9dUz56jvE6KcosRSNub.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A287" title="La era del hielo 3"><span><img src="https://image.tmdb.org/t/p/w185/vZ5AZyX9aMuq1ZbzXfCrm0mSvwn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A288" title="La era del hielo 4"><span><img src="https://image.tmdb.org/t/p/w185/iwib3jxIbKRNMPsuByrRWoV7dkN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A289" title="La era del hielo 5 choque de mundos"><span><img src="https://image.tmdb.org/t/p/w185/atny2pOR1h0emUjhI7wWquftAFb.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A290" title="Coco"><span><img src="https://image.tmdb.org/t/p/w185/fewd6rP8UJF2tpSKv2n9E1GLQj3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A291" title="Ratatuille / Ratatouille"><span><img src="https://image.tmdb.org/t/p/w185/nGUelOVetiRpY2wTBMHTbrTIGYC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A292" title="HOME no hay lugar como el hogar"><span><img src="https://image.tmdb.org/t/p/w185/Armg3cyAsawMovDubF1YK5fVrRr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A293" title="Los pingüinos de Madagascar"><span><img src="https://image.tmdb.org/t/p/w185/fNYuRLCmTpIyjq4Zrp7YeBB1QEA.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A294" title="Hotel Transilvania 2"><span><img src="https://image.tmdb.org/t/p/w185/zx7XQFf0wOQAEiJeBPr0w052Yw9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A295" title="Hotel Transilvania 3"><span><img src="https://image.tmdb.org/t/p/w185/ggP9OUjqCJSyYRpHpL48tIE6qwC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A296" title="Kung fu panda 1"><span><img src="https://image.tmdb.org/t/p/w185/qfVZpfEEmpKm0ukRs4A8ZGjnawK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A297" title="Kung fu panda 2"><span><img src="https://image.tmdb.org/t/p/w185/aNji9U9SPTecmoqGippQUBEyouy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A298" title="Kung fu panda 3"><span><img src="https://image.tmdb.org/t/p/w185/sgAgaZKVXvhHQ2BmUFAoLPUEv6b.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A299" title="Aviones 2"><span><img src="https://image.tmdb.org/t/p/w185/pZbuCIMWulgQEWdZDzga3n6L8LW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A300" title="Frozen una aventura congelada"><span><img src="https://image.tmdb.org/t/p/w185/gPtWAIpnpF5LF0WxMc4e9t51TeB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A301" title="Las aventuras del Sr pebody y sherman"><span><img src="https://image.tmdb.org/t/p/w185/jslyF6EUJcU47cGhY2zc1S8TmLx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A302" title="Away"><span><img src="https://image.tmdb.org/t/p/w185/ksxwLRirKQhyqiqL70sfQrZEOhx.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A303" title="Grandes heroes super giro"><span><img src="https://image.tmdb.org/t/p/w185/9GcwnETsh24AKZ2wIamJIy80ts4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A304" title="Las aventuras del capitan calzoncillos"><span><img src="https://image.tmdb.org/t/p/w185/zTUEB0XR3quV1trwbzt9OoYDVQg.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A305" title="Cars 2"><span><img src="https://image.tmdb.org/t/p/w185/6mVvjymPpuzE0VYAWAUCBxBAQVW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A306" title="Cars 3"><span><img src="https://image.tmdb.org/t/p/w185/jJ8TnHvWHaVadW5JJjGYsM07j9i.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A307" title="Ralph el demoledor"><span><img src="https://image.tmdb.org/t/p/w185/lTpE4JQ2C09NicqvDhwi70IRz62.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A308" title="Mascotas 2"><span><img src="https://image.tmdb.org/t/p/w185/dqGsG2uNV9JGgrfODbTafPUukci.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A309" title="El viaje de Arlo / un gran dinosaurio"><span><img src="https://image.tmdb.org/t/p/w185/1WKI6PM79XjK2LVS1B4yoG3wNHw.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A310" title="Up una aventura de altura"><span><img src="https://image.tmdb.org/t/p/w185/vSdpOU6rDK7IpmOD7iAvlZdMUCc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A311" title="Pajaro loco la película"><span><img src="https://image.tmdb.org/t/p/w185/3fe4fVFJ2QzwKHOo24QwkpuA6OI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A312" title="Mi villano favorito"><span><img src="https://image.tmdb.org/t/p/w185/7ml02WwUzz4jlZJdiEI4ZIYHj1J.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A313" title="Monster university"><span><img src="https://image.tmdb.org/t/p/w185/4rLfeHGIyDEQsqR22iajGSLFNME.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A314" title="Turbo"><span><img src="https://image.tmdb.org/t/p/w185/lDARMqluCrWaFgybY9KHLY96L3n.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A315" title="Los minions"><span><img src="https://image.tmdb.org/t/p/w185/nmqLwaTfgyWLQWbYd82w159cAqJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A316" title="El grinch"><span><img src="https://image.tmdb.org/t/p/w185/eCHNCoat9L0Q3p4XjBQqV2Zn7Ux.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A317" title="Lluvia de hamburguesas 2"><span><img src="https://image.tmdb.org/t/p/w185/l1o3J00LWiPOklNzi4elOh30xL8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A318" title="Bob esponja al rescate"><span><img src="https://image.tmdb.org/t/p/w185/fi2pg2mtAZwhq3qVuAs6PztjnHT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A319" title="El extraño mundo de jack"><span><img src="https://image.tmdb.org/t/p/w185/sPAPFeEi820pZtm2Y77tv8vQJnM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A320" title="Ferdinand"><span><img src="https://image.tmdb.org/t/p/w185/nYj1UJRIxBaNDB9uhsUrvrMTbBG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A321" title="La fiesta de las salchichas"><span><img src="https://image.tmdb.org/t/p/w185/4YiHAxavhMLaBqOzx7ZirmOwNkD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A322" title="el diario de noah"><span><img src="https://image.tmdb.org/t/p/w185/tpYGO4BC1EGy5strj15xy1vB3jP.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A323" title="como si fuera la primera vez"><span><img src="https://image.tmdb.org/t/p/w185/uSmbFFjAG086HgBjcSaGXqhuhWz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A324" title="Quien quiere ser millonario"><span><img src="https://image.tmdb.org/t/p/w185/ub7iEniSi23Ms3RcF551Sozb1MH.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A325" title="hasta que te encontre"><span><img src="https://image.tmdb.org/t/p/w185/kFhnAQv0ntMlVE4EtYeBzOGWO1w.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A326" title="la chica de al lado / la vecina de al lado"><span><img src="https://image.tmdb.org/t/p/w185/lpFkU7VmWvtBOf6FnWV3bCLoXVW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A327" title="ascenso"><span><img src="https://image.tmdb.org/t/p/w185/rlrmLtl8MiQ2b1oMu9AL8ME9Alv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A328" title="focus maestro de la estafa"><span><img src="https://image.tmdb.org/t/p/w185/2eDOdZd2KsLtgf6fpWdKJgjswsF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A329" title="jefa por accidente"><span><img src="https://image.tmdb.org/t/p/w185/ufNSy3LTqNfqu3lp5o6cjouZXSD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A330" title="17 otra vez"><span><img src="https://image.tmdb.org/t/p/w185/hbvp398CBCgO6gArDkKuqeO4WXJ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A331" title="musica amigos y fiesta"><span><img src="https://image.tmdb.org/t/p/w185/4iUAMj3iieLAVyKSkhOy0rSAomV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A332" title="una esposa de mentira"><span><img src="https://image.tmdb.org/t/p/w185/gOHWm21Gg9OqUS2jVhia5ZFacUM.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A333" title="la propuesta"><span><img src="https://image.tmdb.org/t/p/w185/7pSdQ7KngvmwtqAgdGFTl5W4fWE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A334" title="50 sombras muy oscuras"><span><img src="https://image.tmdb.org/t/p/w185/eXxEz9GNVzbSUFvO5cEbpVsJbpw.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A335" title="maravilloso desastre"><span><img src="https://image.tmdb.org/t/p/w185/6OD0yBusMHXSQDdVFSrTlcFc3PO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A336" title="tengo ganas de ti"><span><img src="https://image.tmdb.org/t/p/w185/z13I3sWzOoKBDAEpJ7iK9bSznQn.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A337" title="tres metros sobre el cielo"><span><img src="https://image.tmdb.org/t/p/w185/1s88rmiX1ohLqzSJsGLy20K2oh7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A338" title="500 dias con ella"><span><img src="https://image.tmdb.org/t/p/w185/3ZKBGqeNcommoWBs0IkGPTvNAOk.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A339" title="el es asi / alguien como el"><span><img src="https://image.tmdb.org/t/p/w185/gTboh2Tf7zKlXWJk4UdOL1G8ki7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A340" title="romper el circulo"><span><img src="https://image.tmdb.org/t/p/w185/e0S9UXyuHE1JAoHZmyqRJISpyoS.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A341" title="la otra cara de la luna"><span><img src="https://image.tmdb.org/t/p/w185/cDtJXZrmKxe8sZuALkLXNogRwiN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A342" title="cuando te encuentre"><span><img src="https://image.tmdb.org/t/p/w185/cvNI7Jgxe6sCmkSL9KwVtvfOeEG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A343" title="el diario de la princesa 1"><span><img src="https://image.tmdb.org/t/p/w185/s4DYhsEnziYlJy91bbxv1ZhTJFG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A344" title="el diario de la princesa 2"><span><img src="https://image.tmdb.org/t/p/w185/i6QA4hKcfbVSXt7H7KGCbdT4Mr9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A345" title="desafiantes"><span><img src="https://image.tmdb.org/t/p/w185/wvJbx3pg1EUatQgazl34ylIh5cD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A346" title="destinos opuestos"><span><img src="https://image.tmdb.org/t/p/w185/kb6IzkcovQTupxpQsEelMqrVO8W.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A347" title="la teoria del todo"><span><img src="https://image.tmdb.org/t/p/w185/sVKeuoy82eR02iMIqRAepqMCoag.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A348" title="juego de gemelas"><span><img src="https://image.tmdb.org/t/p/w185/9y2hFxWxtZfO1WrYUu5cjWNc9QD.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A349" title="amor a media noche"><span><img src="https://image.tmdb.org/t/p/w185/jDNSClwYEVwmXfJgYDERvuALlXT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A350" title="el gran gatsby"><span><img src="https://image.tmdb.org/t/p/w185/fnViTJJt6pUq44QGBhk4FJqr82o.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A351" title="fabricantes de lagrimas"><span><img src="https://image.tmdb.org/t/p/w185/i91SgC0uQa3fb68foFS3zgaMUuD.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A352" title="conoces a joe black"><span><img src="https://image.tmdb.org/t/p/w185/z2jzFfXTXnZ7oytCiIEieSXDb1b.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A353" title="clouds"><span><img src="https://image.tmdb.org/t/p/w185/3KHej2PybAotpllXTsSx1xm4qnF.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A354" title="fuufu ijou koibito miman / mas que una pareja pero no amantes"><span><img src="https://image.tmdb.org/t/p/w185/6EAdTgsmJbXxTCEV8uEUDDHDkjB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A355" title="presunto inocente"><span><img src="https://image.tmdb.org/t/p/w185/6jYbbIs9D6OWkFnerqyMZ9YCHRI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A356" title="fallout"><span><img src="https://image.tmdb.org/t/p/w185/AnsSKR9LuK0T9bAOcPVA3PUvyWj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A357" title="from"><span><img src="https://image.tmdb.org/t/p/w185/jfw5WoRnPGJQrDdaSOB5QqpjytC.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A358" title="king the land"><span><img src="https://image.tmdb.org/t/p/w185/oqpzn6xcqqZpk3DB3z3sT6UFkZp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A359" title="monarch el legado de los monstruos"><span><img src="https://image.tmdb.org/t/p/w185/8ZSrqUsa1JN9FkIQU8iTFOMw4D5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A360" title="loki"><span><img src="https://image.tmdb.org/t/p/w185/oJdVHUYrjdS2IqiNztVIP4GPB1p.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A361" title="the witcher"><span><img src="https://image.tmdb.org/t/p/w185/zrPpUlehQaBf8YX2NrVrKK8IEpf.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A362" title="superman y lois"><span><img src="https://image.tmdb.org/t/p/w185/vlv1gn98GqMnKHLSh0dNciqGfBl.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A363" title="sex education"><span><img src="https://image.tmdb.org/t/p/w185/4Bph0hhnDH6dpc0SZIV522bLm4P.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A364" title="chucky"><span><img src="https://image.tmdb.org/t/p/w185/7KbhQpg6OV2o58SoulRbEtK9HYT.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A365" title="1899"><span><img src="https://image.tmdb.org/t/p/w185/qmpUDEgZawIlDU5HP3IJ9HjnpI3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A366" title="jefreey dahmer"><span><img src="https://image.tmdb.org/t/p/w185/vlUMBgKO1HOwPMJwHnHzr99BHwN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A367" title="gravity falls"><span><img src="https://image.tmdb.org/t/p/w185/9p4QW6YxqTw2w1qaal0384cJQB5.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A368" title="venom 3 el ultimo baile"><span><img src="https://image.tmdb.org/t/p/w185/bHB8Fv28cOk5sNxRwWaLoT6Pnrv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A369" title="terrifier 3"><span><img src="https://image.tmdb.org/t/p/w185/nLaO7NUipz1KdYmXy4uf9Snpl8V.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="romance"><div class="fav-star">☆</div><a href="go:A370" title="joker 2"><span><img src="https://image.tmdb.org/t/p/w185/aciP8Km0waTLXEYf5ybFK5CSUxl.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A371" title="robot salvaje"><span><img src="https://image.tmdb.org/t/p/w185/sDoXpaKZmrzCSJH63zZvQQ9A7VK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A372" title="alien romulus"><span><img src="https://image.tmdb.org/t/p/w185/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A373" title="intensamente 2"><span><img src="https://image.tmdb.org/t/p/w185/25bcRmQOMUdAgWF9AkxvlJDKRiq.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A374" title="pablo escobar el patron del mal"><span><img src="https://image.tmdb.org/t/p/w185/5u02bo70uzUFpEV9Pd0lFkLA9Es.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A375" title="el chacal"><span><img src="https://image.tmdb.org/t/p/w185/qfQ3G5bwQrBLkhClNF2nnxJpzR0.jpg" width="110px" height="140px"></span></a></div>    
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A376" title="chespiritosinquererqueriendo"><span><img src="https://image.tmdb.org/t/p/w185/bLyhzXAWvOn0L17NbCYP2aZ4sPt.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A377" title="suits"><span><img src="https://image.tmdb.org/t/p/w185/9mHddTgEFfAaW3KU3nK6oas7jPH.jpg" width="110px" height="140px"></span></a></div> 
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A378" title="tulsa king"><span><img src="https://image.tmdb.org/t/p/w185/7pPmaSMKk1VVQH0oS7tceROYcZa.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A379" title="chernobyl"><span><img src="https://image.tmdb.org/t/p/w185/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A380" title="one piece"><span><img src="https://image.tmdb.org/t/p/w185/rVX05xRKS5JhEYQFObCi4lAnZT4.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A381" title="avatar la leyenda de aang"><span><img src="https://image.tmdb.org/t/p/w185/e1TsV9JZeLvY6lEoq9llPcnuc68.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A382" title="the walking dead daryl dixon"><span><img src="https://image.tmdb.org/t/p/w185/AjnMXY6DH3nTDLYxdqksAH9Ft3n.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A383" title="the walking dead dead city"><span><img src="https://image.tmdb.org/t/p/w185/wq3vuQzQgbS83zX3malAFWMsSwX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A384" title="fubar"><span><img src="https://image.tmdb.org/t/p/w185/6fM34tcGFp3A0csyxJJomknZB4b.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A385" title="the walking dead"><span><img src="https://image.tmdb.org/t/p/w185/ng3cMtxYKt1OSQYqFlnKWnVsqNO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A386" title="solo leveling serie"><span><img src="https://image.tmdb.org/t/p/w185/a7i9OdTUo9jZ1XoraCRIQNJ6ACX.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A387" title="spy x family"><span><img src="https://image.tmdb.org/t/p/w185/gHZqglFWJTFwx6rnTq4vkPRnuxu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A388" title="demon slayer / kimetsu no yaiba"><span><img src="https://image.tmdb.org/t/p/w185/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg" width="110px" height="140px"></span></a></div>  
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A389" title="las quintillisas"><span><img src="https://image.tmdb.org/t/p/w185/vzUO8Lomn90wOw5Vhrqo23lpVV8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A390" title="tensei shitara slime datta ken"><span><img src="https://image.tmdb.org/t/p/w185/pzujcdPAoH361NObVrtbA7zACE7.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A391" title="Alya Sometimes Hides Her Feelings in Russian"><span><img src="https://image.tmdb.org/t/p/w185/hfnzByZIRj6rx8xaxzS2zDilei1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A392" title="mushoku tensei"><span><img src="https://image.tmdb.org/t/p/w185/fHXI3fJN0ZOVw2OmLmY2t9VgV83.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="series"><div class="fav-star">☆</div><a href="go:A393" title="mr robot"><span><img src="https://image.tmdb.org/t/p/w185/kv1nRqgebSsREnd7vdC2pSGjpLo.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A416" title="terminator 2"><span><img src="https://image.tmdb.org/t/p/w185/10xtoK2SFv6ADIeWxr3mcrjko72.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A417" title="terminator 3"><span><img src="https://image.tmdb.org/t/p/w185/8BVkb4QLETn8Tvyl3eHsaE4Hs6x.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A418" title="terminator salvacion"><span><img src="https://image.tmdb.org/t/p/w185/gw6JhlekZgtKUFlDTezq3j5JEPK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A419" title="terminator genesis"><span><img src="https://image.tmdb.org/t/p/w185/5N5PnUoywvOduFb4Qw6HD2LkMtu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A420" title="terminator destino oscuro"><span><img src="https://image.tmdb.org/t/p/w185/k7PuHoj2oE7nEHExwliF2FSXFnr.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A422" title="exterminio 1/ 28 dias despues"><span><img src="https://image.tmdb.org/t/p/w185/tGy6qJsqQvl7ZqEF2cinwFeWGWW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="terror"><div class="fav-star">☆</div><a href="go:A423" title="exterminio 2 / 28 semanas despues"><span><img src="https://image.tmdb.org/t/p/w185/t5O7QkiKyKcCE3UihKsAjlJ9aF8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A424" title="jurassic park"><span><img src="https://image.tmdb.org/t/p/w185/h831eszSFmEyr94WKcgscqPIRbh.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A425" title="jurassic park 2"><span><img src="https://image.tmdb.org/t/p/w185/80pXV9DEd81rBGqmlPBLbvr6h9a.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A426" title="jurassic park 3"><span><img src="https://image.tmdb.org/t/p/w185/5GM4Nqc79PFE3IOqNKwmOxAWkX1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A427" title="jurassic world"><span><img src="https://image.tmdb.org/t/p/w185/lWhnr4ehIiRMudbF6YCEViatbaN.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A428" title="jurassic world dominion"><span><img src="https://image.tmdb.org/t/p/w185/jbAvCACjLf1ZG0unB2tdmx5HAf1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A429" title="avatar"><span><img src="https://image.tmdb.org/t/p/w185/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A430" title="destino final 1"><span><img src="https://image.tmdb.org/t/p/w185/i8mX18nqIYQSXNMnDLeRlGfKMaG.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A431" title="destino final 2"><span><img src="https://image.tmdb.org/t/p/w185/w1dJluO5aKK7Puz7qNXoQeUh4Cb.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A432" title="destino final 3"><span><img src="https://image.tmdb.org/t/p/w185/3PEVkIBOii1fxQxaQ0iKODGnBUp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A433" title="destino final 4"><span><img src="https://image.tmdb.org/t/p/w185/1UUqqfAw6YTa2tJqPrFJWwA0Imu.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A434" title="destino final 5"><span><img src="https://image.tmdb.org/t/p/w185/nA1ZpbVO34BQupmLpzi0uY6x3J5.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A435" title="mision imposible 1"><span><img src="https://image.tmdb.org/t/p/w185/xCpmxw3UUjv4PGzbIPOHeoKAV0l.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A436" title="mision imposible 2"><span><img src="https://image.tmdb.org/t/p/w185/mskE3W88cjMRrnKQye8pjmJu3O1.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A437" title="mision imposible 4"><span><img src="https://image.tmdb.org/t/p/w185/eLku3cT1DDf9wXuX6hpWS3OLbX0.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A438" title="mision imposible 5"><span><img src="https://image.tmdb.org/t/p/w185/ww0IX7Xla6tHgrwYSupfXcksV3n.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A439" title="mision imposible 6"><span><img src="https://image.tmdb.org/t/p/w185/6fSdqrkkhSHi2hD6WFTi2LF43Al.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A440" title="mision imposible 7 sentencia mortal"><span><img src="https://image.tmdb.org/t/p/w185/exULwCJOesU2v05CWNXmx8G5Ed9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A441" title="happy gilmore"><span><img src="https://image.tmdb.org/t/p/w185/epFP29rGrLPseuKxpz3mGKr23Do.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A442" title="top gun"><span><img src="https://image.tmdb.org/t/p/w185/xUuHj3CgmZQ9P2cMaqQs4J0d4Zc.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A443" title="Batman vs superman el origen de la justicia"><span><img src="https://image.tmdb.org/t/p/w185/mS3t9puIjLKgoex82cu9d6G0835.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A444" title="la liga de la justicia de zack snyder"><span><img src="https://image.tmdb.org/t/p/w185/ys9eIkMAn5TVmsldLuAsrR7Nkfw.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A445" title="el hombre de acero / superman"><span><img src="https://image.tmdb.org/t/p/w185/5JW44QGgpEWx4aWXM0uVSi2xtrI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A447" title="el hombre araña / spiderman"><span><img src="https://image.tmdb.org/t/p/w185/gh4cZbhZxyTbgxQPxD0dOudNPTn.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A448" title="el hombre araña 2 / spiderman 2"><span><img src="https://image.tmdb.org/t/p/w185/aGuvNAaaZuWXYQQ6N2v7DeuP6mB.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A449" title="el hombre araña 3 / spiderman 3"><span><img src="https://image.tmdb.org/t/p/w185/qFmwhVUoUSXjkKRmca5yGDEXBIj.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A450" title="Rapidos y furiosos 1 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/zFR949B0hxdgi0vljf8tCJiZ65z.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A451" title="Rapidos y furiosos 2 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/8o3Py5qAgOUm0seWHmxpLwQmb1L.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A452" title="Rapidos y furiosos 4 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/bBioDtcG94rhvWnBE45yPUdgExi.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A453" title="Rapidos y furiosos 5 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/mtRhCiT4hZzaP6c3DJqec1Jjm0i.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A454" title="Rapidos y furiosos 6 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/8883pxkiVDQOC1PorvWiBKN3Yyu.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A455" title="Rapidos y furiosos 7 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/jP0DU7uNkpnelNvH1LI3MCHEFgz.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A456" title="Rapidos y furiosos 8 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/q0iFgE8Ad8AAeabKor4czkWiuRL.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A457" title="Rapidos y furiosos 9 / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/aGAbQMMfhFogEX8rzh5t98aeHoG.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A458" title="Rapidos y furiosos x (10) / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/AcwmKWzrJ9tMPjU8jU9XlEpmsmZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A459" title="Rapidos y furiosos hobbs y shaw / fast furios"><span><img src="https://image.tmdb.org/t/p/w185/jo7coSoPKpflDQNkJ6ucKXniNMq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A460" title="hombres de negro 1"><span><img src="https://image.tmdb.org/t/p/w185/gkcT1QmvspJ34rKgFUvv0ho0VrD.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A461" title="hombres de negro 2"><span><img src="https://image.tmdb.org/t/p/w185/zX1Hi0j7Yn4jv2eDHyIMlHP8lDb.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A462" title="hombres de negro 3"><span><img src="https://image.tmdb.org/t/p/w185/tgS52JXKh04tODt43ieT2pZsLE6.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A463" title="hombres de negro 4 internacional"><span><img src="https://image.tmdb.org/t/p/w185/8ckkLm4VmKvQAkYF20H5IqW4GNh.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A464" title="death note"><span><img src="https://image.tmdb.org/t/p/w185/tCZFfYTIwrR7n94J6G14Y4hAFU6.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="animes"><div class="fav-star">☆</div><a href="go:A465" title="chainsaw man"><span><img src="https://image.tmdb.org/t/p/w185/npdB6eFzizki0WaZ1OvKcJrWe97.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A470" title="los tipos malos "><span><img src="https://image.tmdb.org/t/p/w185/czxHSOXyKd6zEvIOvUTxAwqOjcK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A472" title="son como niños 1"><span><img src="https://image.tmdb.org/t/p/w185/poUK5Gg7IkPokaBTjadzjPfJgKw.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A473" title="son como niños 2 "><span><img src="https://image.tmdb.org/t/p/w185/dPYfCNERtVySmPmEHbfSXTyFg3v.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A476" title="que paso ayer 3"><span><img src="https://image.tmdb.org/t/p/w185/1goOfrB3ZRnoJenHHIDqiskMi9q.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A475" title="que paso ayer 2"><span><img src="https://image.tmdb.org/t/p/w185/dzaVnS19yDTkkGZRlf89sND75i7.jpg" width="110px" height="140px"></span></a></div>
+
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A474" title="que paso ayer  "><span><img src="https://image.tmdb.org/t/p/w185/kZaaJQEi7n3mrBct1H3l2g45Ijb.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A477" title="mi pobre angelito "><span><img src="https://image.tmdb.org/t/p/w185/rFi0qLi5q9oB6znNaGysAQRjSLQ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A478" title="mi pobre angelito  2"><span><img src="https://image.tmdb.org/t/p/w185/48Wa6L2QzY47nWqtRCgiqYlecc9.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A479" title="mi pobre angelito  3"><span><img src="https://image.tmdb.org/t/p/w185/fSGpthbpPjtWN8d9xa3e3hOZuu8.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A480" title="mi pobre angelito  4"><span><img src="https://image.tmdb.org/t/p/w185/m98P4uFAe5EfKPavhN1Jbcx4i2D.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A481" title="mi pobre angelito  5"><span><img src="https://image.tmdb.org/t/p/w185/eDIxrCFPuVCwOVPFFZdzxPIc5gI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A482" title="mi pobre angelito  6"><span><img src="https://image.tmdb.org/t/p/w185/hUFvrrAEZC57aJ79u28HPYChjQa.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A483" title="y donde estan las rubias"><span><img src="https://image.tmdb.org/t/p/w185/Al8wUCFEYrIUTiOJJvqtAnf4ywm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A484" title="irene yo y mi otro yo"><span><img src="https://image.tmdb.org/t/p/w185/6DpK8Jq0WoUeJB09GQmGoZa19g4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A485" title="proyecto x"><span><img src="https://image.tmdb.org/t/p/w185/owF9NIcQOPFAOjp2pni8BsVlnRq.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A486" title="mi abuelo es un peligro"><span><img src="https://image.tmdb.org/t/p/w185/7r9pn1g3lY95DjiwzxpmNqlJzeO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A487" title="ese es mi hijo / desmadre de padre"><span><img src="https://image.tmdb.org/t/p/w185/cjIWPGHQDxmaFLbmn4HUHRunC2f.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A488" title="las vacaciones de mr bean"><span><img src="https://image.tmdb.org/t/p/w185/67boPPEDTXpLi7X18SGKzV45A1T.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A489" title="bad boys 1"><span><img src="https://image.tmdb.org/t/p/w185/7qUOFhepnfazNOAwKK1vcHe9O0o.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A490" title="bad boys 2"><span><img src="https://image.tmdb.org/t/p/w185/yg3UqCPOClHih5p1o1u9R03gke4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A491" title="bad boys 3"><span><img src="https://image.tmdb.org/t/p/w185/y95lQLnuNKdPAzw9F9Ab8kJ80c3.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A492" title="transformers "><span><img src="https://image.tmdb.org/t/p/w185/aS7D2qkMtLWWXnKVVOz9KSWhRJV.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A493" title="transformers 2"><span><img src="https://image.tmdb.org/t/p/w185/qzEIlhHivIcpKhKVOkb61eBz2Mv.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A494" title="transformers 3"><span><img src="https://image.tmdb.org/t/p/w185/7667g63UHujNOxNWmcoCNeLEsRM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A495" title="transformers 4"><span><img src="https://image.tmdb.org/t/p/w185/2WnlEzbgfRYlrZSoojLhFjXZGI4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A496" title="transformers 5"><span><img src="https://image.tmdb.org/t/p/w185/mXEBnMqFwTJCrddVhknCH9fq3fB.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A497" title="transformers 6 el despertar de las bestias"><span><img src="https://image.tmdb.org/t/p/w185/yu24fXpro7jx4XFlgEWwElW1kgW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="accion"><div class="fav-star">☆</div><a href="go:A498" title="transformers uno"><span><img src="https://image.tmdb.org/t/p/w185/a2RkdhXTWL2li8UQfgwLicjlmme.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A499" title="sonic"><span><img src="https://image.tmdb.org/t/p/w185/A7hhUj9Fq6E6FhGsENJTCmnCmt4.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A500" title="sonic 2"><span><img src="https://image.tmdb.org/t/p/w185/sJiHVM0A3OXDVxl4Z6a7ihMPHfm.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="infantiles"><div class="fav-star">☆</div><a href="go:A501" title="sonic 3"><span><img src="https://image.tmdb.org/t/p/w185/rqvtiGmHubDElsKxlCWPuCTkwPI.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A502" title="los rompe bodas"><span><img src="https://image.tmdb.org/t/p/w185/4ggYJCTPg2xs6AEYdce3OeoqRew.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A503" title="el profesor chiflado 2"><span><img src="https://image.tmdb.org/t/p/w185/kttIcTsaLmBuDluAeKdtoh31AcE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A504" title="jumanji"><span><img src="https://image.tmdb.org/t/p/w185/m67M2wXLKblJLuJlvF7qaGrGfCa.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A505" title="jumanji 2"><span><img src="https://image.tmdb.org/t/p/w185/1uQaSgtHyTN3r2fecL0mSs6geQO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A506" title="jumanji 3"><span><img src="https://image.tmdb.org/t/p/w185/a8R5yw0vShsgHSjeikVcPdkaWAW.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A507" title="paul"><span><img src="https://image.tmdb.org/t/p/w185/y3fEPKUbpO1Yym1UyyPbwpp0XhO.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A508" title="una noche en el museo"><span><img src="https://image.tmdb.org/t/p/w185/2KnxqvCQnpUUQTXlruNeXq8iPeF.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A509" title="una noche en el museo 2"><span><img src="https://image.tmdb.org/t/p/w185/mVF0hEkM5PhUtp7KVzltAlG2ykn.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A510" title="click"><span><img src="https://image.tmdb.org/t/p/w185/oL0k5JA53PyoHSZqKb3cNkhwBCE.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A511" title="supercool /superbad"><span><img src="https://image.tmdb.org/t/p/w185/2trQoPSKYnDjtWHVfPvPuJz4JkK.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A512" title="pixeles"><span><img src="https://image.tmdb.org/t/p/w185/5yQliDYCBFx8LcPUWW09ef6LHBp.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A513" title="todopoderoso"><span><img src="https://image.tmdb.org/t/p/w185/eYJCAioZObOiUDz8LMTAqJqmX7R.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A514" title="un golpe con estilo"><span><img src="https://image.tmdb.org/t/p/w185/a1whsOKBYQuDI8tWSy8SrrvPiXZ.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A515" title="el lobo de wall street"><span><img src="https://image.tmdb.org/t/p/w185/jTlIYjvS16XOpsfvYCTmtEHV10K.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A516" title="buenos vecinos"><span><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A517" title="buenos vecinos 2"><span><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A518" title="baywatch"><span><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A519" title="volver al futuro"><span><img src="https://image.tmdb.org/t/p/w185/acNRGwBz22E2m5OEWOhS8RiqiXM.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A520" title="volver al futuro 2"><span><img src="https://image.tmdb.org/t/p/w185/ygKImi2jzm0j00W3JXBxvxdUM8n.jpg" width="110px" height="140px"></span></a></div>
+<div class="poster" data-name="comedia"><div class="fav-star">☆</div><a href="go:A521" title="volver al futuro 3"><span><img src="https://image.tmdb.org/t/p/w185/wjT0eZtsU3A3OvqGmr37XyPf3Ey.jpg" width="110px" height="140px"></span></a></div>
+
+
+
+
+
+
     
-    /* =====================================================
+    
+
+
+======================
    ⭐ LISTA DE TOP 10 ⭐
-===================================================== */
+====================== 
 
-<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A541" title=" tron ares 2 "><span><img src="https://image.tmdb.org/t/p/w185/vV8BRsa5h88RsmP6fpqKDzGElt7.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A540" title=" telefono negro 2 "><span><img src="https://image.tmdb.org/t/p/w185/gNIQ1DScjwKjmXhMIRyfZp6JdtB.jpg" width="110px" height="140px"></span></a></div>
-<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A538" title="el conjuro 4"><span><img src="https://image.tmdb.org/t/p/w185/n9CXtIFdpxIqqsmEdD7CO7gb4X3.jpg" width="110px" height="140px"></span></a></div>
+
+<!-- ===== TOP 1 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A410" title=" "><span><img src="https://image.tmdb.org/t/p/w185/qs97eZZPAA1pbtWxU1t0v9djtCH.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 2 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A407" title=" "><span><img src="https://image.tmdb.org/t/p/w185/j7QbUVvN9qY4ygqDKgWA9dnuEo0.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 3 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A411" title=" "><span><img src="https://image.tmdb.org/t/p/w185/cn4PNK6FQnaUDDqu1vhfqZAZd39.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 4 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A497" title=" "><span><img src="https://image.tmdb.org/t/p/w185/yu24fXpro7jx4XFlgEWwElW1kgW.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 5 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A413" title=" "><span><img src="https://image.tmdb.org/t/p/w185/yKIG63pXN89EfbTA7yKpwxAU1rf.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 6 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A400" title=" "><span><img src="https://image.tmdb.org/t/p/w185/rZYYmjgyF5UP1AVsvhzzDOFLCwG.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 7 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A397" title=" "><span><img src="https://image.tmdb.org/t/p/w185/ynT06XivgBDkg7AtbDbX1dJeBGY.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 8 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A375" title=" "><span><img src="https://image.tmdb.org/t/p/w185/69LMkzR76BHqjQ43LW0KJo1g8RB.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 9 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A72" title=" "><span><img src="https://image.tmdb.org/t/p/w185/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg" width="110px" height="140px"></span></a></div>
+
+
+<!-- ===== TOP 10 ===== -->
+
+<div class="poster" data-name="top10"><div class="fav-star">☆</div><a href="go:A83" title=" "><span><img src="https://image.tmdb.org/t/p/w185/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg" width="110px" height="140px"></span></a></div>
 
 
     
@@ -5936,5 +7031,372 @@ window.addEventListener(
     
 </script>
 
+    
+    
+   <script>
+
+    
+    
+/* =====================================================
+   🔔 CONFIGURACIÓN DEL AVISO
+   ===================================================== */
+
+/*
+   true  = mostrar aviso al entrar
+   false = no mostrar aviso
+*/
+
+const AVISO_ACTIVO = false;
+
+
+/* TÍTULO DEL AVISO */
+
+const AVISO_TITULO = "AVISO";
+
+    
+/* MENSAJE DEL AVISO */
+
+const AVISO_MENSAJE = `
+    
+ Mantenimiento en 3 dias estar pendientes
+    
+● mantenimientos en server
+● mejoras en el codigo
+● correcciones de errores
+● estabilidad para dispositivos gama baja o media.
+   
+
+    
+`;
+    
+/* =====================================================
+   MOSTRAR AVISO AUTOMÁTICAMENTE
+   ===================================================== */
+
+function mostrarAviso(){
+
+    if(!AVISO_ACTIVO){
+        return;
+    }
+
+    const modal =
+        document.getElementById("avisoModal");
+
+    const titulo =
+        document.getElementById("avisoModalTitulo");
+
+    const texto =
+        document.getElementById("avisoModalTexto");
+
+
+    if(!modal){
+        return;
+    }
+
+
+    if(titulo){
+        titulo.textContent = AVISO_TITULO;
+    }
+
+
+    if(texto){
+        texto.textContent = AVISO_MENSAJE;
+    }
+
+
+    modal.classList.add("show");
+
+}
+
+
+/* =====================================================
+   CERRAR AVISO
+   ===================================================== */
+
+function cerrarAviso(){
+
+    const modal =
+        document.getElementById("avisoModal");
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.remove("show");
+
+}
+
+
+/* =====================================================
+   MOSTRAR AL ENTRAR A LA PÁGINA
+   ===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        mostrarAviso();
+
+    }
+);
+
+
+    
+   /* =====================================================
+   👤 SELECCIONAR PERFIL
+   ===================================================== */
+
+function seleccionarPerfil(icono){
+
+    localStorage.setItem(
+        "perfilSeleccionado",
+        icono
+    );
+
+    /* Actualizar avatar del menú inmediatamente */
+
+    const imagen =
+        document.getElementById("perfilMenuImagen");
+
+    const avatares = {
+
+        perfil1:
+        "https://img.magnific.com/vetores-premium/expressao-facial-de-personagens-de-desenhos-animados-de-monstros-engracados-ilustracao-de-criatura-bonita-e-feliz_6996-5507.jpg",
+
+        perfil2:
+        "https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-assustador-com-um-olho-e-oculos-vector-halloween-ilustracao-de-monstro_6996-6248.jpg",
+
+        perfil3:
+        "https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-com-muitos-olhos-ilustracao-de-monstro-vetorial-de-halloween-otimo-para-design-de-embalagem_6996-6232.jpg",
+
+        perfil4:
+        "https://img.magnific.com/vetores-premium/monstro-verde-chorando-expressao-facial-de-personagem-ilustracao-de-desenho-animado-vetorial_338371-2143.jpg",
+
+        perfil5:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOkXAToWd5vbP8-qRV4UzVpdR759jNaXAis6WEcPhz-A&s=10",
+
+        perfil6:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtql0k-JYl9Wi_B2jSHeby9rDIukwvG0Rpcdfcby2qqw&s=10"
+
+    };
+
+    if(imagen && avatares[icono]){
+
+        imagen.src = avatares[icono];
+
+    }
+
+    /* Cerrar selector */
+
+    const overlay =
+        document.getElementById("perfilOverlay");
+
+    if(overlay){
+
+        overlay.style.display = "none";
+
+    }
+
+}
+    
+    /* =====================================================
+   🔄 CAMBIAR PERFIL
+   ===================================================== */
+
+function cambiarPerfil(){
+
+    const overlay =
+        document.getElementById("perfilOverlay");
+
+    if(overlay){
+
+        overlay.style.display = "flex";
+
+    }
+
+}
+    
+    /* =====================================================
+   👤 MOSTRAR PERFIL EN EL MENÚ LATERAL
+   ===================================================== */
+
+function mostrarPerfilEnMenu(){
+
+    const perfil =
+        localStorage.getItem("perfilSeleccionado");
+
+    const imagen =
+        document.getElementById("perfilMenuImagen");
+
+    if(!perfil || !imagen){
+        return;
+    }
+
+    const avatares = {
+
+        perfil1:
+        "https://img.magnific.com/vetores-premium/expressao-facial-de-personagens-de-desenhos-animados-de-monstros-engracados-ilustracao-de-criatura-bonita-e-feliz_6996-5507.jpg",
+
+        perfil2:
+        "https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-assustador-com-um-olho-e-oculos-vector-halloween-ilustracao-de-monstro_6996-6248.jpg",
+
+        perfil3:
+        "https://img.magnific.com/vetores-premium/cara-de-monstro-de-desenho-animado-com-muitos-olhos-ilustracao-de-monstro-vetorial-de-halloween-otimo-para-design-de-embalagem_6996-6232.jpg",
+
+        perfil4:
+        "https://img.magnific.com/vetores-premium/monstro-verde-chorando-expressao-facial-de-personagem-ilustracao-de-desenho-animado-vetorial_338371-2143.jpg",
+
+        perfil5:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOkXAToWd5vbP8-qRV4UzVpdR759jNaXAis6WEcPhz-A&s=10",
+
+        perfil6:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtql0k-JYl9Wi_B2jSHeby9rDIukwvG0Rpcdfcby2qqw&s=10"
+
+    };
+
+    if(avatares[perfil]){
+
+        imagen.src = avatares[perfil];
+
+    }
+
+}
+
+
+/* Cargar el avatar guardado */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        mostrarPerfilEnMenu();
+
+    }
+);
+
+/* Comprobar si ya existe un perfil */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const perfil =
+        localStorage.getItem("perfilSeleccionado");
+
+    const overlay =
+        document.getElementById("perfilOverlay");
+
+if(perfil && overlay){
+    overlay.style.display = "none";
+}
+
+});
+    
+  /* =====================================================
+   🗑️ LIMPIAR CACHÉ
+   ===================================================== */
+
+function limpiarCache(){
+
+    const overlay =
+        document.getElementById("limpiarCacheOverlay");
+
+    if(overlay){
+
+        overlay.classList.add("show");
+
+    }
+
+}
+
+
+/* Cerrar ventana */
+
+function cerrarLimpiarCache(){
+
+    const overlay =
+        document.getElementById("limpiarCacheOverlay");
+
+    if(overlay){
+
+        overlay.classList.remove("show");
+
+    }
+
+}
+
+
+/* Confirmar limpieza */
+
+function confirmarLimpiarCache(){
+
+    localStorage.clear();
+
+    sessionStorage.clear();
+
+    location.reload();
+
+}
+    
+</script>  
+    
+    
+   <!-- =====================================================
+     🗑️ MODAL LIMPIAR CACHÉ
+     ===================================================== -->
+
+<div id="limpiarCacheOverlay" class="limpiar-cache-overlay">
+
+    <div class="limpiar-cache-box">
+
+        <div class="limpiar-cache-icon">
+            🗑️
+        </div>
+
+        <div class="limpiar-cache-title">
+            Limpiar caché
+        </div>
+
+        <div class="limpiar-cache-text">
+
+    ¿Quieres eliminar todos los datos
+    guardados de Flix TV?
+
+    <br><br>
+
+    Eso significa que también se eliminará:
+
+    <br><br>
+
+    👤 Perfil seleccionado<br>
+    ⭐ Favoritos<br>
+    🎬 Vistos recientes<br>
+    ⏱️ Progreso de reproducción
+
+    <br><br>
+
+    Esta acción no se puede deshacer.
+
+</div>
+
+        <div class="limpiar-cache-botones">
+
+            <button
+                class="limpiar-cache-cancelar"
+                onclick="cerrarLimpiarCache()">
+                Cancelar
+            </button>
+
+            <button
+                class="limpiar-cache-confirmar"
+                onclick="confirmarLimpiarCache()">
+                Limpiar
+            </button>
+
+        </div>
+
+    </div>
+
+</div> 
+    
+    
 </body>
 </html>
