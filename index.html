@@ -7,7 +7,7 @@
 
     const ua = navigator.userAgent || "";
 
-    if(!ua.includes("FlixTVApp/1.0")){
+    if(!ua.includes("")){
 
         window.location.replace(
             "https://www.google.com"
@@ -23,7 +23,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>Stark</title>
+<title>FLIX TV</title>
     
     <script>
 if(localStorage.getItem("perfilSeleccionado")){
@@ -2605,6 +2605,56 @@ CATEGORÍAS
 </div>
 
 
+ <button class="side-menu-item"
+onclick="menuCategoria('estrenos')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="16 0 416 512"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M128 0C110.3 0 96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128l0 48 448 0 0-48c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32zM0 224L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192-448 0z"/>
+
+</svg>
+
+</span>
+
+<span>Estrenos</span>
+
+</button>
+    
+    
+ <button class="side-menu-item"
+onclick="menuCategoria('anadidos-recientes')">
+
+<span class="side-menu-icon">
+
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 512 512"
+width="23"
+height="23"
+fill="currentColor">
+
+<path
+d="M91.8 32C59.9 32 32.9 55.4 28.4 86.9L.6 281.2c-.4 3-.6 6-.6 9.1L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-125.7c0-3-.2-6.1-.6-9.1L483.6 86.9C479.1 55.4 452.1 32 420.2 32L91.8 32zm0 64l328.5 0 27.4 192-59.9 0c-12.1 0-23.2 6.8-28.6 17.7l-14.3 28.6c-5.4 10.8-16.5 17.7-28.6 17.7l-120.4 0c-12.1 0-23.2-6.8-28.6-17.7l-14.3-28.6c-5.4-10.8-16.5-17.7-28.6-17.7L64.3 288 91.8 96z"/>
+
+</svg>
+
+</span>
+
+<span>Añadidos recientes</span>
+
+</button>   
+    
+    
+   
+    
 <button class="side-menu-item"
 onclick="menuCategoria('accion')">
 
@@ -2796,7 +2846,7 @@ INFORMACION DE LA APP
      INFORMACIÓN LEGAL
      ===================================================== -->
 
-<a href="go:D1" class="side-menu-item" style="text-decoration: none;">
+<a href="go:A" class="side-menu-item" style="text-decoration: none;">
     <span class="side-menu-icon">
 
         <svg
@@ -2818,7 +2868,7 @@ INFORMACION DE LA APP
     
     
 
-<a href="go:D2" class="side-menu-item" style="text-decoration: none;">
+<a href="go:A" class="side-menu-item" style="text-decoration: none;">
     <span class="side-menu-icon">
 
         <svg
@@ -2838,7 +2888,7 @@ INFORMACION DE LA APP
     <span>AVISO LEGAL</span>
 </a>
 
-<a href="go:D3" class="side-menu-item" style="text-decoration: none;">
+<a href="go:A" class="side-menu-item" style="text-decoration: none;">
     <span class="side-menu-icon">
 
         <svg
