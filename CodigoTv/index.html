@@ -1,1 +1,2065 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flix TV</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    background: #080808;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================
+   CABECERA
+========================= */
+
+header {
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    padding: 0 45px;
+    gap: 25px;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.logo span {
+    color: #00ff00;
+}
+
+/* LUPA */
+
+.search-toggle {
+    width: 45px;
+    height: 45px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.search-toggle svg {
+    width: 28px;
+    height: 28px;
+}
+
+.search-toggle:focus {
+    border-color: white;
+    background: #222;
+}
+
+/* NAVEGACIÓN */
+
+.header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 20px;
+    white-space: nowrap;
+    outline: none;
+}
+
+nav a:focus,
+nav a.activo {
+    color: white;
+    transform: scale(1.05);
+}
+
+/* =========================
+   CATÁLOGO
+========================= */
+
+main {
+    padding: 20px 45px 50px;
+}
+
+.peliculas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    padding: 8px 5px 25px;
+}
+
+.pelicula {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #181818;
+    outline: none;
+    border: 3px solid transparent;
+    transition: transform .12s ease-out,
+                border-color .12s ease-out;
+}
+
+.pelicula img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pelicula:focus {
+    transform: scale(1.04);
+    border-color: white;
+    box-shadow: 0 0 14px rgba(255,255,255,.2);
+    z-index: 10;
+}
+
+.sin-resultados {
+    display: none;
+    text-align: center;
+    color: #aaa;
+    font-size: 19px;
+    padding: 60px 10px;
+}
+
+/* =========================
+   PANTALLA DE BÚSQUEDA
+========================= */
+
+#searchScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #080808;
+    display: none;
+    flex-direction: column;
+    padding: 25px 45px;
+    overflow-y: auto;
+}
+
+#searchScreen.abierta {
+    display: flex;
+}
+
+/* PARTE SUPERIOR */
+
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+    flex-shrink: 0;
+}
+
+.search-title {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.search-title span {
+    color: #00ff00;
+}
+
+.search-close {
+    width: 45px;
+    height: 45px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: #181818;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-close:focus {
+    border-color: white;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.search-content {
+    display: grid;
+    grid-template-columns: 380px minmax(0, 1fr);
+    gap: 45px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* =========================
+   TECLADO VIRTUAL
+========================= */
+
+.keyboard-panel {
+    min-width: 0;
+}
+
+.search-label {
+    color: #aaa;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.search-display {
+    width: 100%;
+    min-height: 55px;
+    background: #181818;
+    border: 2px solid #444;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    margin-bottom: 20px;
+    font-size: 22px;
+    overflow: hidden;
+}
+
+#searchText {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.key {
+    min-height: 53px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background: #252525;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    transition: background .1s ease;
+}
+
+.key:focus {
+    background: #e50914;
+    border-color: white;
+    transform: scale(1.04);
+    z-index: 2;
+}
+
+.key:active {
+    background: #b20710;
+}
+
+.key.special {
+    background: #333;
+    font-size: 14px;
+}
+
+.key.special:focus {
+    background: #e50914;
+}
+
+.key.space {
+    grid-column: span 3;
+}
+
+/* =========================
+   RESULTADOS
+========================= */
+
+.results-panel {
+    min-width: 0;
+    overflow-y: auto;
+}
+
+.results-title {
+    font-size: 23px;
+    margin-bottom: 20px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 20px;
+    padding: 5px;
+}
+
+.result-poster {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    background: #181818;
+    outline: none;
+    transition: transform .12s ease;
+}
+
+.result-poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.result-poster:focus {
+    border-color: white;
+    transform: scale(1.04);
+    box-shadow: 0 0 15px rgba(255,255,255,.2);
+    z-index: 5;
+}
+
+.result-name {
+    display: block;
+    color: white;
+    font-size: 14px;
+    margin-top: 7px;
+    text-align: center;
+}
+
+.no-search-results {
+    display: none;
+    color: #aaa;
+    font-size: 18px;
+    padding: 30px 5px;
+}
+
+/* =========================
+   CELULARES
+========================= */
+
+@media (max-width: 600px) {
+
+    header {
+        min-height: auto;
+        padding: 18px 18px 12px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 29px;
+    }
+
+    .search-toggle {
+        width: 38px;
+        height: 38px;
+    }
+
+    .search-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .header-content {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    nav {
+        width: 100%;
+        gap: 25px;
+        overflow-x: auto;
+        padding: 5px 2px 10px;
+        scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    nav a {
+        font-size: 15px;
+    }
+
+    main {
+        padding: 15px 12px 35px;
+    }
+
+    .peliculas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        padding: 5px 2px 20px;
+    }
+
+    .pelicula {
+        border-radius: 7px;
+        border-width: 2px;
+    }
+
+    /* BÚSQUEDA MÓVIL */
+
+    #searchScreen {
+        padding: 15px;
+    }
+
+    .search-header {
+        margin-bottom: 20px;
+    }
+
+    .search-title {
+        font-size: 24px;
+    }
+
+    .search-content {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .keyboard {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .key {
+        min-height: 42px;
+        font-size: 16px;
+    }
+
+    .key.special {
+        font-size: 11px;
+    }
+
+    .key.space {
+        grid-column: span 3;
+    }
+
+    .search-display {
+        min-height: 45px;
+        font-size: 18px;
+        margin-bottom: 14px;
+    }
+
+    .results-title {
+        font-size: 19px;
+        margin-bottom: 12px;
+    }
+
+    .results-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+/* =========================
+   TABLETS
+========================= */
+
+@media (min-width: 601px) and (max-width: 1024px) {
+
+    header {
+        padding: 0 30px;
+        gap: 20px;
+    }
+
+    .logo {
+        font-size: 32px;
+    }
+
+    nav {
+        gap: 20px;
+    }
+
+    nav a {
+        font-size: 18px;
+    }
+
+    main {
+        padding: 20px 30px 40px;
+    }
+
+    .peliculas {
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        gap: 20px;
+    }
+
+    .search-content {
+        grid-template-columns: 310px minmax(0, 1fr);
+        gap: 25px;
+    }
+
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+        gap: 15px;
+    }
+}
+
+/* =========================
+   SMART TV
+========================= */
+
+@media (min-width: 1200px) {
+
+    header {
+        min-height: 110px;
+        padding: 0 65px;
+        gap: 30px;
+    }
+
+    .logo {
+        font-size: 42px;
+    }
+
+    nav {
+        gap: 35px;
+    }
+
+    nav a {
+        font-size: 23px;
+    }
+
+    .search-toggle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .search-toggle svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    main {
+        padding: 25px 65px 60px;
+    }
+
+    .peliculas {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 25px;
+        padding: 10px 5px 30px;
+    }
+
+    #searchScreen {
+        padding: 35px 65px;
+    }
+
+    .search-header {
+        margin-bottom: 35px;
+    }
+
+    .search-title {
+        font-size: 38px;
+    }
+
+    .search-content {
+        grid-template-columns: 430px minmax(0, 1fr);
+        gap: 55px;
+    }
+
+    .search-display {
+        min-height: 65px;
+        font-size: 27px;
+    }
+
+    .keyboard {
+        gap: 12px;
+    }
+
+    .key {
+        min-height: 65px;
+        font-size: 25px;
+    }
+
+    .key.special {
+        font-size: 17px;
+    }
+
+    .results-title {
+        font-size: 28px;
+    }
+
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+        gap: 24px;
+    }
+}
+
+@media (min-width: 1600px) {
+
+    .peliculas {
+        grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+        gap: 30px;
+    }
+
+    .search-content {
+        grid-template-columns: 480px minmax(0, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     CABECERA
+========================= -->
+
+<header id="cabecera">
+
+    <div class="logo">
+        FLIX <span>TV</span>
+    </div>
+
+    <button
+        class="search-toggle"
+        id="searchToggle"
+        aria-label="Buscar películas"
+        tabindex="0">
+
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+
+        </svg>
+
+    </button>
+
+    <div class="header-content">
+
+        <nav id="menuCategorias">
+
+            <a href="#" data-filtro="todas" tabindex="0" class="activo">TODAS</a>
+            <a href="#" data-filtro="series" tabindex="0">SERIES</a>
+            <a href="#" data-filtro="accion" tabindex="0">ACCION</a>
+            <a href="#" data-filtro="terror" tabindex="0">TERROR</a>
+            <a href="#" data-filtro="infantiles" tabindex="0">INFANTILES</a>
+            <a href="#" data-filtro="romance" tabindex="0">ROMANCE</a>
+            <a href="#" data-filtro="comedia" tabindex="0">COMEDIA</a>
+            <a href="#" data-filtro="animes" tabindex="0">ANIMES</a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+<!-- =========================
+     CATÁLOGO
+========================= -->
+
+<main id="catalogo">
+
+    <section>
+
+        <div class="peliculas" id="movieGallery"></div>
+
+        <div class="sin-resultados" id="sinResultados">
+            No se encontraron películas.
+        </div>
+
+    </section>
+
+</main>
+
+<!-- =========================
+     BASE CENTRAL DE PELÍCULAS
+========================= -->
+
+<div id="basePeliculas" hidden>
+
+    
+    
+    
+    
+    
+    
+     <a href="go:A542" data-categoria="accion" data-nombre="el abismo secreto"><img src="https://image.tmdb.org/t/p/w185/3s0jkMh0YUhIeIeioH3kt2X4st4.jpg"></a>
+ <a href="go:A541" data-categoria="accion" data-nombre="tron ares 2"><img src="https://image.tmdb.org/t/p/w185/vV8BRsa5h88RsmP6fpqKDzGElt7.jpg"></a>
+ <a href="go:A540" data-categoria="terror" data-nombre="telefono negro 2"><img src="https://image.tmdb.org/t/p/w185/gNIQ1DScjwKjmXhMIRyfZp6JdtB.jpg"></a>
+ <a href="go:A538" data-categoria="terror" data-nombre="el conjuro 4"><img src="https://image.tmdb.org/t/p/w185/n9CXtIFdpxIqqsmEdD7CO7gb4X3.jpg"></a>
+ <a href="go:A535" data-categoria="series" data-nombre="alien planeta tierra"><img src="https://image.tmdb.org/t/p/w185/yueXS3q8BtoWekcHOATFHicLl3e.jpg"></a>
+ <a href="go:A534" data-categoria="romance" data-nombre="culpa nuestra"><img src="https://image.tmdb.org/t/p/w185/6kmi6vmp6iOn4KzI7WfnVtAeJhU.jpg"></a>
+ <a href="go:A522" data-categoria="animes" data-nombre="lord of mysteries"><img src="https://image.tmdb.org/t/p/w185/dkY73BH8fM37NZpYtsJayuxFUZu.jpg"></a>
+ <a href="go:A467" data-categoria="terror" data-nombre="la hora de la desaparicion"><img src="https://image.tmdb.org/t/p/w185/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg"></a>
+ <a href="go:A466" data-categoria="accion" data-nombre="los 4 fantasticos primeros pasos"><img src="https://image.tmdb.org/t/p/w185/ckfiXWGEMWrUP53cc6QyHijLlhl.jpg"></a>
+ <a href="go:A523" data-categoria="animes" data-nombre="kaiju numero 8"><img src="https://image.tmdb.org/t/p/w185/z0Sv8woHs7hgLlbQeYKoQV1FDp9.jpg"></a>
+ <a href="go:A471" data-categoria="terror" data-nombre="trust"><img src="https://image.tmdb.org/t/p/w185/n9GS1mUAVMiC3gBn9rb8jrDoK4D.jpg"></a>
+ <a href="go:A413" data-categoria="accion" data-nombre="F1 la pelicula"><img src="https://image.tmdb.org/t/p/w185/yKIG63pXN89EfbTA7yKpwxAU1rf.jpg"></a>
+ <a href="go:A411" data-categoria="terror" data-nombre="exterminio la evolucion"><img src="https://image.tmdb.org/t/p/w185/hVKHzr4GwSw0FepqhqQ0DDiYHNY.jpg"></a>
+ <a href="go:A410" data-categoria="accion" data-nombre="rescate implacable"><img src="https://image.tmdb.org/t/p/w185/aG50Ad3UV8cCQWpNWSHHUqgKGNB.jpg"></a>
+ <a href="go:A421" data-categoria="accion" data-nombre="thunderbolts"><img src="https://image.tmdb.org/t/p/w185/zLbhKNJGDSfBCXFNtypM7ZuPTaW.jpg"></a>
+ <a href="go:A412" data-categoria="accion" data-nombre="karate kid leyendas"><img src="https://image.tmdb.org/t/p/w185/5LB5GJzcaEBEb3IhjqnYNsqY5Zs.jpg"></a>
+ <a href="go:A468" data-categoria="romance" data-nombre="culpa mia londres"><img src="https://image.tmdb.org/t/p/w185/b7kLNR6Ol8QbAN5z1f08qoIEFGB.jpg"></a>
+ <a href="go:A469" data-categoria="infantiles" data-nombre="los tipos malos 2"><img src="https://image.tmdb.org/t/p/w185/mZmnKDhIS2yNmtfzde5vtdCYzBF.jpg"></a>
+ <a href="go:A409" data-categoria="infantiles" data-nombre="elio"><img src="https://image.tmdb.org/t/p/w185/w2ARwtc1zoh0pyfwmyhpZHwuXgK.jpg"></a>
+ <a href="go:A408" data-categoria="accion" data-nombre="amenaza en el aire"><img src="https://image.tmdb.org/t/p/w185/8T6nkYb4W8BIeafmFffyfsRciTL.jpg"></a>
+ <a href="go:A407" data-categoria="accion" data-nombre="capitan america un nuevo mundo"><img src="https://image.tmdb.org/t/p/w185/xVwP4GCbEfO66JSSyonnAhU3Fad.jpg"></a>
+ <a href="go:A405" data-categoria="infantiles" data-nombre="como entrenar a tu dragon live action"><img src="https://image.tmdb.org/t/p/w185/41dfWUWtg1kUZcJYe6Zk6ewxzMu.jpg"></a>
+ <a href="go:A404" data-categoria="terror" data-nombre="megan 2.0"><img src="https://image.tmdb.org/t/p/w185/oekamLQrwlJjRNmfaBE4llIvkir.jpg"></a>
+ <a href="go:A415" data-categoria="animes" data-nombre="demon slayer castillo infinito"><img src="https://image.tmdb.org/t/p/w185/sUsVimPdA1l162FvdBIlmKBlWHx.jpg"></a>
+ <a href="go:A414" data-categoria="accion" data-nombre="contraataque"><img src="https://image.tmdb.org/t/p/w185/kxnFdLJhi37ZVFDCL1ka0yeQVU5.jpg"></a>
+ <a href="go:A403" data-categoria="accion" data-nombre="jurassic world renace"><img src="https://image.tmdb.org/t/p/w185/2sbGd7kDhMicDkT097FR9a2JyGU.jpg"></a>
+ <a href="go:A402" data-categoria="accion" data-nombre="superman"><img src="https://image.tmdb.org/t/p/w185/fvUJb08yatV2b3NUSwuYdQKYoFd.jpg"></a>
+ <a href="go:A401" data-categoria="infantiles" data-nombre="los pitufos 2025"><img src="https://image.tmdb.org/t/p/w185/zBdQclxQnEDOhDOjkKgKPW6jEHh.jpg"></a>
+ <a href="go:A400" data-categoria="infantiles" data-nombre="una pelicula de minecratf"><img src="https://image.tmdb.org/t/p/w185/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg"></a>
+ <a href="go:A399" data-categoria="accion" data-nombre="Riesgo bajo cero venganza / nobody"><img src="https://image.tmdb.org/t/p/w185/4go0vKTZOtvnzc2Tfr0p4K6Qoy6.jpg"></a>
+ <a href="go:A537" data-categoria="terror" data-nombre="el ritual"><img src="https://image.tmdb.org/t/p/w185/9022CYEGqYETCeXN1oE3uwYJWub.jpg"></a>
+ <a href="go:A398" data-categoria="accion" data-nombre="nadie 2 / nobody"><img src="https://image.tmdb.org/t/p/w185/veNa8xu5EadO5N67matLM1MMcD5.jpg"></a>
+ <a href="go:A397" data-categoria="comedia" data-nombre="happy gilmore 2"><img src="https://image.tmdb.org/t/p/w185/ynT06XivgBDkg7AtbDbX1dJeBGY.jpg"></a>
+ <a href="go:A396" data-categoria="infantiles" data-nombre="lilo y stitch"><img src="https://image.tmdb.org/t/p/w185/Y6pjszkKQUZ5uBbiGg7KWiCksJ.jpg"></a>
+ <a href="go:A395" data-categoria="accion" data-nombre="mision imposible sentencia final"><img src="https://image.tmdb.org/t/p/w185/haOjJGUV00dKlZaJWgjM1UD1cJV.jpg"></a>
+ <a href="go:A394" data-categoria="terror" data-nombre="destino final 6"><img src="https://image.tmdb.org/t/p/w185/f0156SDAw1GfrdZnSbSwkOst9aO.jpg"></a>
+ <a href="go:A406" data-categoria="infantiles" data-nombre="mufasa el rey leon"><img src="https://image.tmdb.org/t/p/w185/lk4NNdeQrb6zbRSogDSdE6qmjk8.jpg"></a>
+ <a href="go:A536" data-categoria="accion" data-nombre="tren bala"><img src="https://image.tmdb.org/t/p/w185/rlpRAsmO1WGPKg86qjOC2u0aZzQ.jpg"></a>
+ <a href="go:A446" data-categoria="romance" data-nombre="yo antes de ti"><img src="https://image.tmdb.org/t/p/w185/5a1WZVJP5cvJjcPLRMi4TNphLng.jpg"></a>
+ <a href="go:A539" data-categoria="infantiles" data-nombre="moana 2"><img src="https://image.tmdb.org/t/p/w185/8TvGHArrS47RES046An1NcD9s3E.jpg"></a>
+ <a href="go:A1" data-categoria="accion" data-nombre="Bad boys 4 hasta la muerte"><img src="https://image.tmdb.org/t/p/w185/v3mNrzuCfnrnRYtVbw6Tbj9h9hX.jpg"></a>
+ <a href="go:A2" data-categoria="accion" data-nombre="Furiosa de la saga mad max"><img src="https://image.tmdb.org/t/p/w185/hstQNWXBkZUVMH7VB3VqDDhX6cX.jpg"></a>
+ <a href="go:A3" data-categoria="accion" data-nombre="Beekeeper / beekeper /sentencia de muerte"><img src="https://image.tmdb.org/t/p/w185/lINM7cYGwWY6pl7aQXazrfNpw3S.jpg"></a>
+ <a href="go:A4" data-categoria="accion" data-nombre="Creed 3 / III"><img src="https://image.tmdb.org/t/p/w185/pe2hq4LAMPAN2VetxS4SoQcC30j.jpg"></a>
+<a href="go:A5" data-categoria="accion" data-nombre="guerra mundial z / war world z"><img src="https://image.tmdb.org/t/p/w185/4byy44MYVawAzApUlwInklsj0mL.jpg"></a>
+<a href="go:A6" data-categoria="accion" data-nombre="Avengers endgame / vengadores endgame / marvel"><img src="https://image.tmdb.org/t/p/w185/br6krBFpaYmCSglLBWRuhui7tPc.jpg"></a>
+<a href="go:A7" data-categoria="accion" data-nombre="Shang chi y la leyenda de los diez anillos/ marvel"><img src="https://image.tmdb.org/t/p/w185/aEUYugjHTxWEPmn8zacTTwQQPT0.jpg"></a>
+<a href="go:A8" data-categoria="accion" data-nombre="Top Gun maverick"><img src="https://image.tmdb.org/t/p/w185/bA1XVOT1UHszYrWmCDkq3yN1ROy.jpg"></a>
+<a href="go:A9" data-categoria="accion" data-nombre="Operacion kandahar / escape bajo fuego"><img src="https://image.tmdb.org/t/p/w185/f5I5mk0nZzVBRJmeG6kl8aHdAgm.jpg"></a>
+<a href="go:A10" data-categoria="accion" data-nombre="el justicero 3 / the equalizer 3"><img src="https://image.tmdb.org/t/p/w185/eJKmexmCLwuxOxlAURSMnBVkfmY.jpg"></a>
+<a href="go:A11" data-categoria="accion" data-nombre="el reino del planeta de los simios"><img src="https://image.tmdb.org/t/p/w185/2131HjmrcP7yW1lP17RbHHvs1z9.jpg"></a>
+<a href="go:A12" data-categoria="accion" data-nombre="Tron legacy / tron el legado"><img src="https://image.tmdb.org/t/p/w185/m3tkTgatN1IuwKGAFnsiLakRQLh.jpg"></a>
+<a href="go:A13" data-categoria="accion" data-nombre="Maze runner 1 / corredor de laberinto"><img src="https://image.tmdb.org/t/p/w185/2uwLI4wSyB0uZoZsCocUvesyX7x.jpg"></a>
+<a href="go:A14" data-categoria="accion" data-nombre="Sin escape / golpe de estado"><img src="https://image.tmdb.org/t/p/w185/5lD3a5DP7LRqBvDjduELvqK9xJo.jpg"></a>
+<a href="go:A15" data-categoria="accion" data-nombre="El Gángster, El Policia y El Diablo"><img src="https://image.tmdb.org/t/p/w185/bljsIiyPLhtdO46YS0mX4ao2R94.jpg"></a>
+<a href="go:A16" data-categoria="accion" data-nombre="Avatar 2 el sentido del agua / camino de agua"><img src="https://image.tmdb.org/t/p/w185/bqOqQ2Tawum3eHKNrc94P4EeaZB.jpg"></a>
+<a href="go:A17" data-categoria="accion" data-nombre="chappie / robot"><img src="https://image.tmdb.org/t/p/w185/6zmKkfSvo4tBtvGSjn5PofWIvP9.jpg"></a>
+<a href="go:A18" data-categoria="accion" data-nombre="el duro / Road house"><img src="https://image.tmdb.org/t/p/w185/kdefKfrKIqwfwUWuPmTY4fMEr1Q.jpg"></a>
+<a href="go:A19" data-categoria="accion" data-nombre="La guerra del mañana"><img src="https://image.tmdb.org/t/p/w185/tzp6VzED2TBc02bkYoYnQa6r2OK.jpg"></a>
+<a href="go:A20" data-categoria="accion" data-nombre="Godzilla y kong el nuevo imperio"><img src="https://image.tmdb.org/t/p/w185/lluGBHiORAC74piEPbCaITpdv2U.jpg"></a>
+<a href="go:A21" data-categoria="terror" data-nombre="Un lugar en silencio 1 / un lugar tranquilo 1"><img src="https://image.tmdb.org/t/p/w185/up1Awcd25rJHDy267K1IYNSslne.jpg"></a>
+<a href="go:A22" data-categoria="terror" data-nombre="Un lugar en silencio dia 1 / Un lugar tranquilo dia 1"><img src="https://image.tmdb.org/t/p/w185/1JuWdGdR0kGJuQWEwYkhx4MlOFt.jpg"></a>
+<a href="go:A23" data-categoria="terror" data-nombre="tarot de la muerte"><img src="https://image.tmdb.org/t/p/w185/r8kgyBIT5umT330gISJH5hqRhhy.jpg"></a>
+<a href="go:A24" data-categoria="terror" data-nombre="It eso / payaso it 1"><img src="https://image.tmdb.org/t/p/w185/zSo9i3K3ZC1r35XaTyrh8SkFxRU.jpg"></a>
+<a href="go:A25" data-categoria="terror" data-nombre="el aro 2 / the ring 2 / la señal"><img src="https://image.tmdb.org/t/p/w185/eAaFemSoU1dfpxDvdl9WLkmKYW2.jpg"></a>
+<a href="go:A26" data-categoria="terror" data-nombre="Estacion zombie / train to busan"><img src="https://image.tmdb.org/t/p/w185/gQDPQxUNep5TPgFPRRORAWFQueQ.jpg"></a>
+<a href="go:A27" data-categoria="terror" data-nombre="insidious la puerta roja"><img src="https://image.tmdb.org/t/p/w185/im4yhz8A9LvXgu1nBPSIBtaBIf6.jpg"></a>
+<a href="go:A28" data-categoria="terror" data-nombre="La cabaña en el bosque"><img src="https://image.tmdb.org/t/p/w185/40Sjxp3rXLC3UV2Wbgxxu4HwMJK.jpg"></a>
+<a href="go:A29" data-categoria="terror" data-nombre="Five nights af Freddys"><img src="https://image.tmdb.org/t/p/w185/e6vO5pYAJT7A4W4KGNhWuHP5eHg.jpg"></a>
+<a href="go:A30" data-categoria="terror" data-nombre="saw x"><img src="https://image.tmdb.org/t/p/w185/nzVkXj1IX0BNoYzpTVogtkcCStf.jpg"></a>
+<a href="go:A31" data-categoria="terror" data-nombre="La monja 2"><img src="https://image.tmdb.org/t/p/w185/hbP1KNvyNX8av2sVsOix1za9T4C.jpg"></a>
+<a href="go:A32" data-categoria="terror" data-nombre="Vigilantes"><img src="https://image.tmdb.org/t/p/w185/rdspkGeXrprR2GxQqlRSHCJl617.jpg"></a>
+<a href="go:A33" data-categoria="terror" data-nombre="ruega por nosotros"><img src="https://image.tmdb.org/t/p/w185/llHklmHQEDwTgbwGrPvQ5ouSy2k.jpg"></a>
+<a href="go:A34" data-categoria="terror" data-nombre="telefono negro / black phone"><img src="https://image.tmdb.org/t/p/w185/1D2R2wIgbTyXTPzmyJIKSbVN9wG.jpg"></a>
+<a href="go:A35" data-categoria="terror" data-nombre="Strangers los extraños 1"><img src="https://image.tmdb.org/t/p/w185/1rTRllZNEAX30dTxYL1hONR6gPj.jpg"></a>
+<a href="go:A36" data-categoria="terror" data-nombre="Atrapados en el abismo / profundo"><img src="https://image.tmdb.org/t/p/w185/4RzKDZ881gWYzEa0nhczimOY35D.jpg"></a>
+<a href="go:A37" data-categoria="terror" data-nombre="Pasajero 666"><img src="https://image.tmdb.org/t/p/w185/im1sYcEskurUCIknzAcytaLoPzE.jpg"></a>
+<a href="go:A38" data-categoria="terror" data-nombre="mama"><img src="https://image.tmdb.org/t/p/w185/9nYzxKmVlMKEhzUHnQBz326OBWR.jpg"></a>
+<a href="go:A39" data-categoria="terror" data-nombre="Slenderman"><img src="https://image.tmdb.org/t/p/w185/huSncs4RyvQDBmHjBBYHSBYJbSJ.jpg"></a>
+<a href="go:A40" data-categoria="terror" data-nombre="No vayas a colgar / no cuelgues"><img src="https://image.tmdb.org/t/p/w185/oQW9ZZe681McgrCzjbTSemSJEU2.jpg"></a>
+<a href="go:A41" data-categoria="romance" data-nombre="Atraves de mi ventana"><img src="https://image.tmdb.org/t/p/w185/3F5MkMadQOWiZNVaNuOuw6UaK7a.jpg"></a>
+<a href="go:A42" data-categoria="romance" data-nombre="culpa mia"><img src="https://image.tmdb.org/t/p/w185/1jvCVdlgInyItAUEvvvCakm1Yxz.jpg"></a>
+<a href="go:A43" data-categoria="romance" data-nombre="Atraves del mar"><img src="https://image.tmdb.org/t/p/w185/hisRiTK0zCP1sXtlCSrmFRVOVlz.jpg"></a>
+<a href="go:A44" data-categoria="romance" data-nombre="Stand de los besos 1 / mi primer beso 1"><img src="https://image.tmdb.org/t/p/w185/eVRw197B6UOR27oPeHQSQQShTsL.jpg"></a>
+<a href="go:A45" data-categoria="romance" data-nombre="Stand de los besos 2 / mi primer beso 2"><img src="https://image.tmdb.org/t/p/w185/cwCR4d9sB98eeiXr76K0wpJsKhk.jpg"></a>
+<a href="go:A46" data-categoria="romance" data-nombre="Stand de los besos 3 / mi primer beso 3"><img src="https://image.tmdb.org/t/p/w185/jdD6Rd8XMXPFZmCXLKWPthd1HsV.jpg"></a>
+<a href="go:A47" data-categoria="romance" data-nombre="After aquí acaba todo"><img src="https://image.tmdb.org/t/p/w185/jO3VGQi5sHIj2BGS963g1F74yCq.jpg"></a>
+<a href="go:A48" data-categoria="romance" data-nombre="After aquí empieza todo"><img src="https://image.tmdb.org/t/p/w185/5kZxlS9vLExy3hZA5GfNFg8oJgZ.jpg"></a>
+<a href="go:A49" data-categoria="romance" data-nombre="After almas perdidas"><img src="https://image.tmdb.org/t/p/w185/cAvUp7ngPyuhx1nLjmCOTCBNo91.jpg"></a>
+<a href="go:A50" data-categoria="romance" data-nombre="El titanic"><img src="https://image.tmdb.org/t/p/w185/VMOt5scbGmBKDvkfHjZN6Ki54i.jpg"></a>
+<a href="go:A51" data-categoria="romance" data-nombre="Toda una vida en un año"><img src="https://image.tmdb.org/t/p/w185/xGDbQI7Gtgurt9W5ez6Tim2lpS2.jpg"></a>
+<a href="go:A52" data-categoria="romance" data-nombre="A dos metros de ti"><img src="https://image.tmdb.org/t/p/w185/4F5LggLzv2VIa0MJT2ETN8bWtr2.jpg"></a>
+<a href="go:A53" data-categoria="romance" data-nombre="sex appeal"><img src="https://image.tmdb.org/t/p/w185/fqa0Q0G4NXOixgxTsBOsIxDyfEc.jpg"></a>
+<a href="go:A54" data-categoria="romance" data-nombre="Violet y finch"><img src="https://image.tmdb.org/t/p/w185/v5e9v5m8qXYklTpqThbNRStlgS3.jpg"></a>
+<a href="go:A55" data-categoria="romance" data-nombre="Mi novio es un zombie / memorias de un zombie"><img src="https://image.tmdb.org/t/p/w185/adO9vyTFs02uAQRDbDE2akKrhfg.jpg"></a>
+<a href="go:A56" data-categoria="romance" data-nombre="La idea de tenerte / la idea de ti"><img src="https://image.tmdb.org/t/p/w185/gDwozlXGEg1bvszDlfEMbLRvPgR.jpg"></a>
+<a href="go:A57" data-categoria="romance" data-nombre="Cualquiera menos tu / con todos menos contigo"><img src="https://image.tmdb.org/t/p/w185/gvpU4eMgDC6LpWLxnqGW3uMFDx3.jpg"></a>
+<a href="go:A58" data-categoria="romance" data-nombre="Entre dos mundos / entre la vida y la muerte"><img src="https://image.tmdb.org/t/p/w185/jnzGZhk3KdqZHmJ6HUcZxPyB8aZ.jpg"></a>
+<a href="go:A59" data-categoria="romance" data-nombre="Pequeño Manhattan / Abc del amor"><img src="https://image.tmdb.org/t/p/w185/uphY0n0Nm47l4MHzqYNoaZJuzBJ.jpg"></a>
+<a href="go:A60" data-categoria="romance" data-nombre="La cita perfecta"><img src="https://image.tmdb.org/t/p/w185/XJyP0OnaSbmNLpEdyPLAz6oRCF.jpg"></a>
+<a href="go:A61" data-categoria="infantiles" data-nombre="Mi villano favorito 4 / Gru 4 / minions"><img src="https://image.tmdb.org/t/p/w185/iE9Pi1hkiLUm88uF7o9L9Yzl4lW.jpg"></a>
+<a href="go:A62" data-categoria="infantiles" data-nombre="Rango"><img src="https://image.tmdb.org/t/p/w185/99Dpm7Ep8OelbNyEVBlln50EHGj.jpg"></a>
+<a href="go:A63" data-categoria="infantiles" data-nombre="Spiderman cruzando el multiverso"><img src="https://image.tmdb.org/t/p/w185/qqXTerrQYwg9pIMhb1GFbxa3WUz.jpg"></a>
+<a href="go:A64" data-categoria="infantiles" data-nombre="Jefe bebe"><img src="https://image.tmdb.org/t/p/w185/vigQXmK1tHQGPzRGj4GObnrEMm1.jpg"></a>
+<a href="go:A65" data-categoria="infantiles" data-nombre="Cars 1"><img src="https://image.tmdb.org/t/p/w185/wOqJQy2zqdmWdqlO9eK6RDP0Eoo.jpg"></a>
+<a href="go:A66" data-categoria="infantiles" data-nombre="Rio 1"><img src="https://image.tmdb.org/t/p/w185/oTDXscP9yo4EwjCYdXuW4g54cbN.jpg"></a>
+<a href="go:A67" data-categoria="infantiles" data-nombre="Moana / vaiana"><img src="https://image.tmdb.org/t/p/w185/a4Jj3Tk2AZvmUYWx0H92HGfktKo.jpg"></a>
+<a href="go:A68" data-categoria="infantiles" data-nombre="Buscando a nemo"><img src="https://image.tmdb.org/t/p/w185/jPhak722pNGxQIXSEfeWIUqBrO5.jpg"></a>
+<a href="go:A69" data-categoria="infantiles" data-nombre="Monster inc SA"><img src="https://image.tmdb.org/t/p/w185/jTE3BLVCpYaR71L2U8SHV22HvEr.jpg"></a>
+<a href="go:A70" data-categoria="infantiles" data-nombre="Bolt"><img src="https://image.tmdb.org/t/p/w185/9WS6Hcph9hhfu0lSaW4PODQryDA.jpg"></a>
+<a href="go:A71" data-categoria="infantiles" data-nombre="Hotel Transilvania transformania"><img src="https://image.tmdb.org/t/p/w185/xNF8AxJc966FWk4SYqXxGHaZLHZ.jpg"></a>
+<a href="go:A72" data-categoria="infantiles" data-nombre="Kung fu panda 4"><img src="https://image.tmdb.org/t/p/w185/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg"></a>
+<a href="go:A73" data-categoria="infantiles" data-nombre="Spiderman un nuevo universo"><img src="https://image.tmdb.org/t/p/w185/xRMZikjAHNFebD1FLRqgDZeGV4a.jpg"></a>
+<a href="go:A74" data-categoria="infantiles" data-nombre="Aviones / dostin fumigavion"><img src="https://image.tmdb.org/t/p/w185/6S5JjRheyl3oyLmJVcxcQ8yqDU3.jpg"></a>
+<a href="go:A75" data-categoria="infantiles" data-nombre="Los increíbles 2"><img src="https://image.tmdb.org/t/p/w185/7uintpyNlSF32hj5Bua85VuAp2R.jpg"></a>
+<a href="go:A76" data-categoria="infantiles" data-nombre="Zootopia"><img src="https://image.tmdb.org/t/p/w185/9LRFNLthb0jfWC0HUDUWjYgpP9F.jpg"></a>
+<a href="go:A77" data-categoria="infantiles" data-nombre="Shrek 1"><img src="https://image.tmdb.org/t/p/w185/o04jZs5SXhbvhqO4981W7KJXOWZ.jpg"></a>
+<a href="go:A78" data-categoria="infantiles" data-nombre="Garfield la pelicula / fuera de casa"><img src="https://image.tmdb.org/t/p/w185/6QR2FOCQr41gSduN70WulRIhJb7.jpg"></a>
+<a href="go:A79" data-categoria="infantiles" data-nombre="Toy story 4"><img src="https://image.tmdb.org/t/p/w185/yF1vPDuHVrAUMX5dy1tVMbAjkEL.jpg"></a>
+<a href="go:A80" data-categoria="infantiles" data-nombre="Emojis la pelicula"><img src="https://image.tmdb.org/t/p/w185/k4oufeiJoVPFu0lbnjIf8SQq51Q.jpg"></a>
+<a href="go:A81" data-categoria="series" data-nombre="Estamos muertos"><img src="https://image.tmdb.org/t/p/w185/z8uCc246KwiODy1M4Jc7MeimB96.jpg"></a>
+<a href="go:A82" data-categoria="series" data-nombre="Peaky blinders"><img src="https://image.tmdb.org/t/p/w185/se86cWSwdSftjJH8OStW7Yu3ZPC.jpg"></a>
+<a href="go:A83" data-categoria="series" data-nombre="the las of us / the last of us"><img src="https://image.tmdb.org/t/p/w185/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg"></a>
+<a href="go:A84" data-categoria="series" data-nombre="reacher"><img src="https://image.tmdb.org/t/p/w185/r3M676oPdEBwjpjHAUAoEWobcBM.jpg"></a>
+<a href="go:A85" data-categoria="series" data-nombre="merlina / miercoles / wednesday"><img src="https://image.tmdb.org/t/p/w185/wFvfqUNUSxjT3zDOKhryKiV9YEt.jpg"></a>
+<a href="go:A86" data-categoria="series" data-nombre="euphoria"><img src="https://image.tmdb.org/t/p/w185/99d6KB1KMbeIVaUfYGor1e5dlbn.jpg"></a>
+<a href="go:A87" data-categoria="series" data-nombre="la casa del dragón / house of the dragon"><img src="https://image.tmdb.org/t/p/w185/z2yahl2uefxDCl0nogcRBstwruJ.jpg"></a>
+<a href="go:A88" data-categoria="series" data-nombre="agente nocturno"><img src="https://image.tmdb.org/t/p/w185/uYNgC4Zd9NMcpMVug9NTgeIqfTy.jpg"></a>
+<a href="go:A89" data-categoria="series" data-nombre="el juego del calamar / squid game"><img src="https://image.tmdb.org/t/p/w185/74qMRUy0lwkBBi39vsQVerIDkHj.jpg"></a>
+<a href="go:A90" data-categoria="series" data-nombre="misa de media noche"><img src="https://image.tmdb.org/t/p/w185/4ZQiVDFQgGO791f9pAcsPUeOtFe.jpg"></a>
+<a href="go:A91" data-categoria="series" data-nombre="eric"><img src="https://image.tmdb.org/t/p/w185/9OV6McrRh1BAnrak3yVP9xYuUId.jpg"></a>
+<a href="go:A92" data-categoria="series" data-nombre="berlín"><img src="https://image.tmdb.org/t/p/w185/g7CXBHbGenMqGo9wnHsK8sBLCJb.jpg"></a>
+<a href="go:A93" data-categoria="animes" data-nombre="baki hanma vs kengan ashura"><img src="https://image.tmdb.org/t/p/w185/etbHJxil0wHvYOCmibzFLsMcl2C.jpg"></a>
+<a href="go:A94" data-categoria="animes" data-nombre="demon slayer / kimetsu no yaiba"><img src="https://image.tmdb.org/t/p/w185/i78pnWKV3VEjJIoSU1td6DVPhqr.jpg"></a>
+<a href="go:A95" data-categoria="animes" data-nombre="black clover la película"><img src="https://image.tmdb.org/t/p/w185/jm2BckEhy1upr4iPpOZ6WTx1tWw.jpg"></a>
+<a href="go:A96" data-categoria="animes" data-nombre="las quintillizas"><img src="https://image.tmdb.org/t/p/w185/9uYC7QQfMyBwd4O8uRSQXHQu3FV.jpg"></a>
+<a href="go:A97" data-categoria="animes" data-nombre="suzume"><img src="https://image.tmdb.org/t/p/w185/yStW1TXF5s7Tbtu9KjIZEaWl6HL.jpg"></a>
+<a href="go:A98" data-categoria="animes" data-nombre="shitara slime"><img src="https://image.tmdb.org/t/p/w185/xITip9n9uMAUA0TU6niMXU2tbh0.jpg"></a>
+<a href="go:A99" data-categoria="animes" data-nombre="konosuba"><img src="https://image.tmdb.org/t/p/w185/5aaAySq2nI9kYQZzom7ymvoN2Kh.jpg"></a>
+<a href="go:A100" data-categoria="animes" data-nombre="violet evergarden"><img src="https://image.tmdb.org/t/p/w185/yNrfz5Mc7IFszxAbivV1Kq0gZrW.jpg"></a>
+<a href="go:A101" data-categoria="animes" data-nombre="your name"><img src="https://image.tmdb.org/t/p/w185/q719jXXEzOoYaps6babgKnONONX.jpg"></a>
+<a href="go:A102" data-categoria="animes" data-nombre="spy x family código blanco"><img src="https://image.tmdb.org/t/p/w185/riv537dUuKib4KXC6Rg7CINs4xO.jpg"></a>
+<a href="go:A103" data-categoria="animes" data-nombre="sword art online progressive"><img src="https://image.tmdb.org/t/p/w185/a8B3bagkYRULdmnhgKMcxXaVcFm.jpg"></a>
+<a href="go:A104" data-categoria="animes" data-nombre="solo leveling la pelicula"><img src="https://image.tmdb.org/t/p/w185/dblIFen0bNZAq8icJXHwrjfymDW.jpg"></a>
+<a href="go:A105" data-categoria="accion" data-nombre="amigos de armas / juego de armas / war dogs"><img src="https://image.tmdb.org/t/p/w185/zbuZYpGlXwkSlOMJ4IbUEHxZ03h.jpg"></a>
+<a href="go:A106" data-categoria="accion" data-nombre="feliz día de tu muerte"><img src="https://image.tmdb.org/t/p/w185/xLu1qmpTCW0qAYCZ3MylNyQ52Lv.jpg"></a>
+<a href="go:A107" data-categoria="accion" data-nombre="el gigante de hierro"><img src="https://image.tmdb.org/t/p/w185/jNYoBF1FtSgYBC1LnVHV6XrwZZt.jpg"></a>
+<a href="go:A108" data-categoria="accion" data-nombre="uncharted"><img src="https://image.tmdb.org/t/p/w185/tlZpSxYuBRoVJBOpUrPdQe9FmFq.jpg"></a>
+<a href="go:A109" data-categoria="accion" data-nombre="alita batle ángel"><img src="https://image.tmdb.org/t/p/w185/xRWht48C2V8XNfzvPehyClOvDni.jpg"></a>
+<a href="go:A110" data-categoria="accion" data-nombre="cazadores en tierras inhóspitas / badland hunters"><img src="https://image.tmdb.org/t/p/w185/jPGbcbMlzGUECukPhkEMVt1Kvs5.jpg"></a>
+<a href="go:A111" data-categoria="accion" data-nombre="twister / tornados 2024"><img src="https://image.tmdb.org/t/p/w185/g7yg6jJj4Z377j5h6S3MBRmjQ7U.jpg"></a>
+<a href="go:A112" data-categoria="accion" data-nombre="el último conjuro"><img src="https://image.tmdb.org/t/p/w185/3HYfBLfywke32i08KibzbugGpKy.jpg"></a>
+<a href="go:A113" data-categoria="accion" data-nombre="i.s.s"><img src="https://image.tmdb.org/t/p/w185/isWYpt5iUrDnDtMVKJ40hUR4Gl9.jpg"></a>
+<a href="go:A114" data-categoria="accion" data-nombre="el señor de la guerra"><img src="https://image.tmdb.org/t/p/w185/les82GdgNILBVP0MyjZFH869Xhz.jpg"></a>
+<a href="go:A115" data-categoria="accion" data-nombre="deadpool vs lobezno"><img src="https://image.tmdb.org/t/p/w185/oIyqK0pUCZn3VTtyX5vf6J1lnwI.jpg"></a>
+<a href="go:A116" data-categoria="accion" data-nombre="guerra civil / civil war"><img src="https://image.tmdb.org/t/p/w185/16uqIeLMLCz5PI7vyyfgr2W0MIX.jpg"></a>
+<a href="go:A117" data-categoria="accion" data-nombre="llaman ala puerta"><img src="https://image.tmdb.org/t/p/w185/4Zna9CvyzaAgejsErmyXmHC64Dd.jpg"></a>
+<a href="go:A118" data-categoria="accion" data-nombre="blue beetle"><img src="https://image.tmdb.org/t/p/w185/iyev5udSI2NecJHpl3EstYeQBJ7.jpg"></a>
+<a href="go:A119" data-categoria="accion" data-nombre="terminator 1"><img src="https://image.tmdb.org/t/p/w185/9KI49SBnwAOzGcMw1onIki7vd2.jpg"></a>
+<a href="go:A120" data-categoria="accion" data-nombre="el especialista resureccion"><img src="https://image.tmdb.org/t/p/w185/y1JPE0tTPFgfxJFSpLgHavWuvnu.jpg"></a>
+<a href="go:A121" data-categoria="accion" data-nombre="rambo / 5"><img src="https://image.tmdb.org/t/p/w185/kTQ3J8oTTKofAVLYnds2cHUz9KO.jpg"></a>
+<a href="go:A122" data-categoria="accion" data-nombre="iron man 1"><img src="https://image.tmdb.org/t/p/w185/zxvi393rrPrpCFomF9kxtFOOGL3.jpg"></a>
+<a href="go:A123" data-categoria="accion" data-nombre="apocalypto"><img src="https://image.tmdb.org/t/p/w185/cRY25Q32kDNPFDkFkxAs6bgCq3L.jpg"></a>
+<a href="go:A124" data-categoria="accion" data-nombre="thor un mundo oscuro / marvel"><img src="https://image.tmdb.org/t/p/w185/gPAmH41VpK5UPaNhAiNJePzrL8z.jpg"></a>
+<a href="go:A125" data-categoria="accion" data-nombre="shazam la furia de los dioses"><img src="https://image.tmdb.org/t/p/w185/xCxwaQeoIr4FcjlPgHfzog0x4B8.jpg"></a>
+<a href="go:A126" data-categoria="accion" data-nombre="megalodon 2"><img src="https://image.tmdb.org/t/p/w185/30MUcuI6p4toyfCV349wZleqG5d.jpg"></a>
+<a href="go:A127" data-categoria="accion" data-nombre="la momia"><img src="https://image.tmdb.org/t/p/w185/aGRMxB5ve2nSKsq8ww6PyUwhWpP.jpg"></a>
+<a href="go:A128" data-categoria="accion" data-nombre="invicto 2 / undisputed ii: last man standing"><img src="https://image.tmdb.org/t/p/w185/dQYWGpcEZ6ZLVoW87tjr2FbgSx8.jpg"></a>
+<a href="go:A129" data-categoria="accion" data-nombre="fractura / fractured"><img src="https://image.tmdb.org/t/p/w185/x70sRlURZdk8yHsctTBilQNKCls.jpg"></a>
+<a href="go:A130" data-categoria="accion" data-nombre="rapidos y furiosos x"><img src="https://image.tmdb.org/t/p/w185/AcwmKWzrJ9tMPjU8jU9XlEpmsmZ.jpg"></a>
+<a href="go:A131" data-categoria="accion" data-nombre="deadpool 1"><img src="https://image.tmdb.org/t/p/w185/3E53WEZJqP6aM84D8CckXx4pIHw.jpg"></a>
+<a href="go:A132" data-categoria="accion" data-nombre="godzilla vs kong"><img src="https://image.tmdb.org/t/p/w185/pgqgaUx1cJb5oZQQ5v0tNARCeBp.jpg"></a>
+<a href="go:A133" data-categoria="accion" data-nombre="ong bak 2"><img src="https://image.tmdb.org/t/p/w185/sGyB8kVPQsofyQV1T0jE2d6k4q4.jpg"></a>
+<a href="go:A134" data-categoria="accion" data-nombre="gigantes de acero / acero puro / real steel"><img src="https://image.tmdb.org/t/p/w185/ubHhEiVQfE0UMa2NQRrzCiXhhZg.jpg"></a>
+<a href="go:A135" data-categoria="accion" data-nombre="ong bak 1"><img src="https://image.tmdb.org/t/p/w185/spREee22GTx3oN9gqziy4sFTkW1.jpg"></a>
+<a href="go:A136" data-categoria="accion" data-nombre="triple 9"><img src="https://image.tmdb.org/t/p/w185/q2kIq9yzEkOVhl1aeo0alJHtdfz.jpg"></a>
+<a href="go:A137" data-categoria="accion" data-nombre="rapidos y furiosos reto tokio"><img src="https://image.tmdb.org/t/p/w185/qcVQ4yBdvCRWUtwCkQZyl0D5DNs.jpg"></a>
+<a href="go:A138" data-categoria="accion" data-nombre="viaje al centro de la tierra"><img src="https://image.tmdb.org/t/p/w185/q2EeJI0U2j0fMPtXNCyskbKH1mZ.jpg"></a>
+<a href="go:A139" data-categoria="accion" data-nombre="contagio of fear / contagio de miedo"><img src="https://image.tmdb.org/t/p/w185/hIuTxfAcALibR1BedHRU6GufA46.jpg"></a>
+<a href="go:A140" data-categoria="accion" data-nombre="escuadrón suicida / suicide squad"><img src="https://image.tmdb.org/t/p/w185/9ymhU7NclJr29MpZnBQbJurYbuc.jpg"></a>
+<a href="go:A141" data-categoria="accion" data-nombre="jurassic world el reino caído / fallen kingdom"><img src="https://image.tmdb.org/t/p/w185/6AnLLWvYkBTaOXxEJ2LKjvYvUSC.jpg"></a>
+<a href="go:A142" data-categoria="accion" data-nombre="deadpool 2"><img src="https://image.tmdb.org/t/p/w185/fgPTa4IS07Pygz0Q1WJnRgOP7r7.jpg"></a>
+<a href="go:A143" data-categoria="accion" data-nombre="venom 2"><img src="https://image.tmdb.org/t/p/w185/srF7rdGwVVhTICJmcdscJSOigEP.jpg"></a>
+<a href="go:A144" data-categoria="accion" data-nombre="thor amor y trueno"><img src="https://image.tmdb.org/t/p/w185/4gHWDa9hngo4RJy4BImChkMHooi.jpg"></a>
+<a href="go:A145" data-categoria="accion" data-nombre="john wick 2"><img src="https://image.tmdb.org/t/p/w185/yIa04BbZMO4pIZ1cvnYB4cZVakd.jpg"></a>
+<a href="go:A146" data-categoria="accion" data-nombre="mad max furia en la carretera"><img src="https://image.tmdb.org/t/p/w185/fnY0VRsb31A5RLVCBjuR6EFUlo2.jpg"></a>
+<a href="go:A147" data-categoria="accion" data-nombre="yo robot / mr robot"><img src="https://image.tmdb.org/t/p/w185/juwDCRwheIQjNGk4roVMAsTkU3W.jpg"></a>
+<a href="go:A148" data-categoria="accion" data-nombre="proyecto extracción / hidden strike"><img src="https://image.tmdb.org/t/p/w185/wqwDKolEd9lhrPGWwqTCpwJc2aT.jpg"></a>
+<a href="go:A149" data-categoria="accion" data-nombre="pandora"><img src="https://image.tmdb.org/t/p/w185/elTrkTm5GjynK3H26cpOZsWDYjy.jpg"></a>
+<a href="go:A150" data-categoria="accion" data-nombre="geo tormenta / geostorm"><img src="https://image.tmdb.org/t/p/w185/4rJGCqrO8MSPdokdMoJB5sxeZ4i.jpg"></a>
+<a href="go:A151" data-categoria="accion" data-nombre="venom"><img src="https://image.tmdb.org/t/p/w185/p4if93blsrhU5NUlHxUlEySTPak.jpg"></a>
+<a href="go:A152" data-categoria="accion" data-nombre="john wick 1"><img src="https://image.tmdb.org/t/p/w185/d7YxLE6ohg7TnDLYr6DEvyAxnC8.jpg"></a>
+<a href="go:A153" data-categoria="accion" data-nombre="misión de rescate 2 / tyler rake 2"><img src="https://image.tmdb.org/t/p/w185/8OctnTGzLXlg8ii5ZPZpKtOV7cq.jpg"></a>
+<a href="go:A154" data-categoria="accion" data-nombre="mision imposible 3"><img src="https://image.tmdb.org/t/p/w185/vKGYCpmQyV9uHybWDzXuII8Los5.jpg"></a>
+<a href="go:A155" data-categoria="accion" data-nombre="john cárter entre dos mundos"><img src="https://image.tmdb.org/t/p/w185/lCxz1Yus07QCQQCb6I0Dr3Lmqpx.jpg"></a>
+<a href="go:A156" data-categoria="accion" data-nombre="spectral"><img src="https://image.tmdb.org/t/p/w185/ptW67F2eMTF2AruIG197obOGGOE.jpg"></a>
+<a href="go:A157" data-categoria="accion" data-nombre="john wick 4"><img src="https://image.tmdb.org/t/p/w185/3BcrJT9AHR9SKerlY3WQAXgisfu.jpg"></a>
+<a href="go:A158" data-categoria="accion" data-nombre="the amazing spiderman 2"><img src="https://image.tmdb.org/t/p/w185/dGjoPttcbKR5VWg1jQuNFB247KL.jpg"></a>
+<a href="go:A159" data-categoria="accion" data-nombre="ant man quantumania"><img src="https://image.tmdb.org/t/p/w185/qnqGbB22YJ7dSs4o6M7exTpNxPz.jpg"></a>
+<a href="go:A160" data-categoria="accion" data-nombre="resident evil apocalipsis"><img src="https://image.tmdb.org/t/p/w185/yzNQSLlZb7NAkA4C5uADfNDJ7hm.jpg"></a>
+<a href="go:A161" data-categoria="accion" data-nombre="spiderman lejos de casa"><img src="https://image.tmdb.org/t/p/w185/o59zDVJDIehGcWZsMUGU5SN0V0D.jpg"></a>
+<a href="go:A162" data-categoria="accion" data-nombre="spiderman sin camino a casa"><img src="https://image.tmdb.org/t/p/w185/8Ww5OYw6z8jJNTGcNXoiBswphzc.jpg"></a>
+<a href="go:A163" data-categoria="accion" data-nombre="resident evil 4 ultratumba ressurreccion"><img src="https://image.tmdb.org/t/p/w185/j7obkD5UQUydpBOBRpToLWIWkwq.jpg"></a>
+<a href="go:A164" data-categoria="accion" data-nombre="la guerra de los mundos el ataque"><img src="https://image.tmdb.org/t/p/w185/h0xF7q5k07BRVJz9Z3A8dGdbpLR.jpg"></a>
+<a href="go:A165" data-categoria="accion" data-nombre="estación zombi 2 / peninsula"><img src="https://image.tmdb.org/t/p/w185/fWurWMli9bK9rNEUlPK1tITog5A.jpg"></a>
+<a href="go:A166" data-categoria="accion" data-nombre="free guy"><img src="https://image.tmdb.org/t/p/w185/xmbU4JTUm8rsdtn7Y3Fcm30GpeT.jpg"></a>
+<a href="go:A167" data-categoria="accion" data-nombre="atlas"><img src="https://image.tmdb.org/t/p/w185/qFTsoeMg1gGL5OTG0jecBAqlrlM.jpg"></a>
+<a href="go:A168" data-categoria="accion" data-nombre="the amazing spiderman 1"><img src="https://image.tmdb.org/t/p/w185/fSbqPbqXa7ePo8bcnZYN9AHv6zA.jpg"></a>
+<a href="go:A169" data-categoria="accion" data-nombre="duna 1"><img src="https://image.tmdb.org/t/p/w185/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"></a>
+<a href="go:A170" data-categoria="accion" data-nombre="duna 2 / parte 2"><img src="https://image.tmdb.org/t/p/w185/xCHmhHeO7aOCMlzcNukGH6Q7EiD.jpg"></a>
+<a href="go:A171" data-categoria="accion" data-nombre="baby driver / el aprendiz del crimen"><img src="https://image.tmdb.org/t/p/w185/tYzFuYXmT8LOYASlFCkaPiAFAl0.jpg"></a>
+<a href="go:A172" data-categoria="accion" data-nombre="megalodon 1"><img src="https://image.tmdb.org/t/p/w185/wGdXR0Oca2cjQrZeAkzPWKNsD08.jpg"></a>
+<a href="go:A173" data-categoria="accion" data-nombre="hombre en llamas / el fuego de la venganza"><img src="https://image.tmdb.org/t/p/w185/4dK4HJ20zBhfDcA5eHM9ueofRSv.jpg"></a>
+<a href="go:A174" data-categoria="accion" data-nombre="camino entre las tumbas / caminando"><img src="https://image.tmdb.org/t/p/w185/nb0L57p0r25ehV46trx86537ByP.jpg"></a>
+<a href="go:A175" data-categoria="accion" data-nombre="los ilusionistas 2 / los jinetes / ahora me ves 2"><img src="https://image.tmdb.org/t/p/w185/9Orn6qHO5zXL6FcOmHKd1tcm7CK.jpg"></a>
+<a href="go:A176" data-categoria="accion" data-nombre="sisu"><img src="https://image.tmdb.org/t/p/w185/pnQYjDxqZ3C6reI8N0MfNi4NMkZ.jpg"></a>
+<a href="go:A177" data-categoria="accion" data-nombre="el ejército de los muertos"><img src="https://image.tmdb.org/t/p/w185/4jnqLxUxWXKme5IlsOTveU53QNJ.jpg"></a>
+<a href="go:A178" data-categoria="accion" data-nombre="seguridad nacional 2003"><img src="https://image.tmdb.org/t/p/w185/kSUI6xl9mHLRGxRgmJTJ4WbftID.jpg"></a>
+<a href="go:A179" data-categoria="accion" data-nombre="scary movie 2"><img src="https://image.tmdb.org/t/p/w185/7Eb1JWK0Cb0rbfsYjwfc9g0PbQH.jpg"></a>
+<a href="go:A180" data-categoria="accion" data-nombre="era una vez en hollywood"><img src="https://image.tmdb.org/t/p/w185/abGUZXIPQa2nIa4J88WTxdygWKs.jpg"></a>
+<a href="go:A181" data-categoria="accion" data-nombre="soy leyenda"><img src="https://image.tmdb.org/t/p/w185/pO1SrJgf5BumqcIRkYviSGIFdmX.jpg"></a>
+<a href="go:A182" data-categoria="accion" data-nombre="el aprendiz del brujo"><img src="https://image.tmdb.org/t/p/w185/oDis2UZbitaypC81nzgHsX6R04P.jpg"></a>
+<a href="go:A184" data-categoria="terror" data-nombre="dracula mar de sangre"><img src="https://image.tmdb.org/t/p/w185/5TU7BRyCaZtZXZposeHEAiFRPxJ.jpg"></a>
+<a href="go:A185" data-categoria="terror" data-nombre="bird box barcelona"><img src="https://image.tmdb.org/t/p/w185/3rlU3gwaKobcdrmIBTRfyGcE6ew.jpg"></a>
+<a href="go:A186" data-categoria="terror" data-nombre="megan"><img src="https://image.tmdb.org/t/p/w185/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg"></a>
+<a href="go:A187" data-categoria="terror" data-nombre="winnie the pooh: blood and honey / sangre y miel"><img src="https://image.tmdb.org/t/p/w185/lfetuG7lq3MVRt6jb1kfX7Va2H.jpg"></a>
+<a href="go:A188" data-categoria="terror" data-nombre="scream 6"><img src="https://image.tmdb.org/t/p/w185/wDWwtvkRRlgTiUr6TyLSMX8FCuZ.jpg"></a>
+<a href="go:A189" data-categoria="terror" data-nombre="la huerfana el origen"><img src="https://image.tmdb.org/t/p/w185/1xOSjSzY4k2MLRZ1phzYb0VJYaS.jpg"></a>
+<a href="go:A190" data-categoria="terror" data-nombre="bird box a ciegas"><img src="https://image.tmdb.org/t/p/w185/rGfGfgL2pEPCfhIvqHXieXFn7gp.jpg"></a>
+<a href="go:A191" data-categoria="terror" data-nombre="terrifier 2"><img src="https://image.tmdb.org/t/p/w185/mUEojN1bfXS8mk4D6Pf0Q1JYwMJ.jpg"></a>
+<a href="go:A192" data-categoria="terror" data-nombre="noche sin paz"><img src="https://image.tmdb.org/t/p/w185/hqBeKurpfqoV5msTH5XttGLwFUv.jpg"></a>
+<a href="go:A193" data-categoria="terror" data-nombre="el exorcismo de dios"><img src="https://image.tmdb.org/t/p/w185/aSfvsaIdtF5eXf8IsvIYdzhI3XL.jpg"></a>
+<a href="go:A194" data-categoria="terror" data-nombre="annabelle 1"><img src="https://image.tmdb.org/t/p/w185/yLsuU2P2SpDYFwtZQ7dtfVAf6TE.jpg"></a>
+<a href="go:A195" data-categoria="terror" data-nombre="annabelle 2"><img src="https://image.tmdb.org/t/p/w185/y0ORPgx46CTrd19bC03Bo8D8tUH.jpg"></a>
+<a href="go:A196" data-categoria="terror" data-nombre="annabelle 3"><img src="https://image.tmdb.org/t/p/w185/3ZZB2UHGK2iqj4XYgmivkeCgGJn.jpg"></a>
+<a href="go:A197" data-categoria="terror" data-nombre="la purga 3"><img src="https://image.tmdb.org/t/p/w185/2eVnqEQy4n98ujEdFkdddYEgpqW.jpg"></a>
+<a href="go:A198" data-categoria="terror" data-nombre="the boy 1 / el niño 1"><img src="https://image.tmdb.org/t/p/w185/kW2vgzhyWXQu5UxNzebPokipBqH.jpg"></a>
+<a href="go:A199" data-categoria="terror" data-nombre="the boy 2 / el niño 2"><img src="https://image.tmdb.org/t/p/w185/hiGQ0Eae8hLQIQWJ1RvwtrhNT4i.jpg"></a>
+<a href="go:A200" data-categoria="terror" data-nombre="hablame"><img src="https://image.tmdb.org/t/p/w185/rS8fjd6dYcf64v3ZhAE6fKrxoaF.jpg"></a>
+<a href="go:A201" data-categoria="terror" data-nombre="la oscura separación"><img src="https://image.tmdb.org/t/p/w185/45QrllTjfFQ4qMywA3YjQkd88yi.jpg"></a>
+<a href="go:A202" data-categoria="terror" data-nombre="baba yaga"><img src="https://image.tmdb.org/t/p/w185/sQF8UV3LrYtELqcJluckTOl9q4D.jpg"></a>
+<a href="go:A203" data-categoria="terror" data-nombre="alíen el octavo pasajero"><img src="https://image.tmdb.org/t/p/w185/56tGM7W7wszcuLU2CqfdHryXu0H.jpg"></a>
+<a href="go:A204" data-categoria="terror" data-nombre="la masacre de texas"><img src="https://image.tmdb.org/t/p/w185/AkqrXCpEydbWKakViyy8DVV5n8x.jpg"></a>
+<a href="go:A205" data-categoria="terror" data-nombre="la maldicion / the grudge"><img src="https://image.tmdb.org/t/p/w185/2fptCAZsBwvbSQ6QBGyqby6pwi3.jpg"></a>
+<a href="go:A206" data-categoria="terror" data-nombre="avenida cloverfield / calle cloverfield 10 "><img src="https://image.tmdb.org/t/p/w185/ksLwEavVceUxYyF8LOjTewmpTp4.jpg"></a>
+<a href="go:A207" data-categoria="terror" data-nombre="rec 1"><img src="https://image.tmdb.org/t/p/w185/2efS9dKJvH0fKoWbgYEdC905GYG.jpg"></a>
+<a href="go:A208" data-categoria="terror" data-nombre="rec 2"><img src="https://image.tmdb.org/t/p/w185/i7wr12YmZfJxXv2R6ksvSffyhAT.jpg"></a>
+<a href="go:A209" data-categoria="terror" data-nombre="presencias del mal"><img src="https://image.tmdb.org/t/p/w185/aLbL9fsxUbnrI4ZMW0jY0zkoOvP.jpg"></a>
+<a href="go:A210" data-categoria="terror" data-nombre="el titere / silencio desde el mal"><img src="https://image.tmdb.org/t/p/w185/rvcUVdATIHKZt7BSSttUkKbeBXN.jpg"></a>
+<a href="go:A211" data-categoria="terror" data-nombre="amanecer de los muertos"><img src="https://image.tmdb.org/t/p/w185/usIWLtJIPxEJuqe3OQElUEKpf11.jpg"></a>
+<a href="go:A212" data-categoria="terror" data-nombre="constantine"><img src="https://image.tmdb.org/t/p/w185/9bIvXIAf2i7NRMnrGowMhJJzPuY.jpg"></a>
+<a href="go:A213" data-categoria="terror" data-nombre="el faro"><img src="https://image.tmdb.org/t/p/w185/uatQKdDuwUFW1zTAISZcnDOqjjE.jpg"></a>
+<a href="go:A214" data-categoria="terror" data-nombre="vigilantes"><img src="https://image.tmdb.org/t/p/w185/bYUERLWkxFAZlj4OfLPy3sFq9qW.jpg"></a>
+<a href="go:A215" data-categoria="terror" data-nombre="en la hierba alta"><img src="https://image.tmdb.org/t/p/w185/hBq8SkRduhzF8B4nwBNbEE1zuOp.jpg"></a>
+<a href="go:A216" data-categoria="terror" data-nombre="gonjiam hospital maldito"><img src="https://image.tmdb.org/t/p/w185/KPrZ8lbgbMD7gr1pkMKoNbtcCK.jpg"></a>
+<a href="go:A217" data-categoria="terror" data-nombre="arrastrame al infierno"><img src="https://image.tmdb.org/t/p/w185/l7RuQEkg2yTF04mHrE7kBKf7S3A.jpg"></a>
+<a href="go:A218" data-categoria="terror" data-nombre="legion de angeles"><img src="https://image.tmdb.org/t/p/w185/39vqW5mUZtX0artpqeY4CoIJ4sl.jpg"></a>
+<a href="go:A219" data-categoria="terror" data-nombre="el manicomio"><img src="https://image.tmdb.org/t/p/w185/khNZDcR7ftoM74dQUtCDWvDp5KT.jpg"></a>
+<a href="go:A220" data-categoria="terror" data-nombre="no mires"><img src="https://image.tmdb.org/t/p/w185/uwiNswgjQy6PgLBLVtF8I2AT2mH.jpg"></a>
+<a href="go:A221" data-categoria="terror" data-nombre="1922"><img src="https://image.tmdb.org/t/p/w185/q4FQOiSRhTLWulHl5Vpg37FMArH.jpg"></a>
+<a href="go:A222" data-categoria="terror" data-nombre="la cura siniestra"><img src="https://image.tmdb.org/t/p/w185/wR0uOInQjDUUYzFAQCuZXN6vYrO.jpg"></a>
+<a href="go:A223" data-categoria="terror" data-nombre="alien abduccion"><img src="https://image.tmdb.org/t/p/w185/ycHxr4JiUN6HPQOVJ1dmBNe4nIb.jpg"></a>
+<a href="go:A224" data-categoria="terror" data-nombre="asi en la tierra como en el infierno"><img src="https://image.tmdb.org/t/p/w185/t979TJIaqOdZBokMWqMHZrfJLzW.jpg"></a>
+<a href="go:A225" data-categoria="terror" data-nombre="terror en silent hill 2"><img src="https://image.tmdb.org/t/p/w185/vKmgfYy1LEClcifcTJdBBoopRDe.jpg"></a>
+<a href="go:A226" data-categoria="terror" data-nombre="terror en silent hill 1"><img src="https://image.tmdb.org/t/p/w185/7mexPK2xZCNYrRDrNkw5tzcPkxU.jpg"></a>
+<a href="go:A227" data-categoria="terror" data-nombre="eliminar amigo 2"><img src="https://image.tmdb.org/t/p/w185/dQM2LDOmolIGt7WzcHl6ZSUAdci.jpg"></a>
+<a href="go:A228" data-categoria="terror" data-nombre="el atrapa sueños"><img src="https://image.tmdb.org/t/p/w185/3F4rrXcrS0XN5vQ5PRMvxg0yLou.jpg"></a>
+<a href="go:A229" data-categoria="terror" data-nombre="ven a jugar"><img src="https://image.tmdb.org/t/p/w185/9lwliMeRlnMZDYVsjoabTlFRLaQ.jpg"></a>
+<a href="go:A230" data-categoria="terror" data-nombre="juguetes de terror"><img src="https://image.tmdb.org/t/p/w185/nlu8YdfUNRrxonk1fvgr2jyXkBm.jpg"></a>   
+<a href="go:A231" data-categoria="terror" data-nombre="la piramide"><img src="https://image.tmdb.org/t/p/w185/a2N5St0TCmyJy2F8IwPlo2lEbiJ.jpg"></a>
+<a href="go:A232" data-categoria="terror" data-nombre="extincion"><img src="https://image.tmdb.org/t/p/w185/PEcT8Klq6bZ1jbvhtxGzsrbCba.jpg"></a>
+<a href="go:A233" data-categoria="terror" data-nombre="del otro lado de la puerta"><img src="https://image.tmdb.org/t/p/w185/hOZItBnneK6BbzFUlWzqsaIt6xn.jpg"></a>
+<a href="go:A234" data-categoria="terror" data-nombre="contagio en alta mar"><img src="https://image.tmdb.org/t/p/w185/101kemQtied9Ny7SjC4i0oGFvKV.jpg"></a>
+<a href="go:A235" data-categoria="terror" data-nombre="te veo"><img src="https://image.tmdb.org/t/p/w185/uSRGkkGrE6ugEp8J3Q4H7dYqixj.jpg"></a>
+<a href="go:A236" data-categoria="terror" data-nombre="ala verga con los zombies / zombie camp / campamento zombies"><img src="https://image.tmdb.org/t/p/w185/qxYhEeYxRb4MDwTCnCR6QD82gb1.jpg"></a>
+<a href="go:A237" data-categoria="terror" data-nombre="el telefono del señor harrigans"><img src="https://image.tmdb.org/t/p/w185/aERrzPJyUYAhmbies50dMz21W4u.jpg"></a>
+<a href="go:A238" data-categoria="terror" data-nombre="nop"><img src="https://image.tmdb.org/t/p/w185/k2VcJW03s9tQEIy4PlQS576CXDX.jpg"></a>
+<a href="go:A239" data-categoria="terror" data-nombre="la purga por siempre"><img src="https://image.tmdb.org/t/p/w185/zWiXxOTM3NeYcj3dzbtoGqIIJPz.jpg"></a>
+<a href="go:A240" data-categoria="terror" data-nombre="sonrie"><img src="https://image.tmdb.org/t/p/w185/mNd2W2aEtLBoiSljVT5THbe4RCv.jpg"></a>
+<a href="go:A241" data-categoria="terror" data-nombre="el visitante"><img src="https://image.tmdb.org/t/p/w185/5ckk0dggJYpGhuoZ18VylEXVu1P.jpg"></a>
+<a href="go:A242" data-categoria="terror" data-nombre="vivo / #vivo"><img src="https://image.tmdb.org/t/p/w185/tmGOSFUjCjWJ6ASxfCbCjEyamx.jpg"></a>
+<a href="go:A243" data-categoria="terror" data-nombre="zombieland 1"><img src="https://image.tmdb.org/t/p/w185/bsQZDSRHrRkkLWC1PgMT89dr9xA.jpg"></a>
+<a href="go:A244" data-categoria="terror" data-nombre="el despertar de los muertos"><img src="https://image.tmdb.org/t/p/w185/pl3gEKM12J93WrUoAXkZNHzTiRR.jpg"></a>
+<a href="go:A245" data-categoria="terror" data-nombre="zombieland 2"><img src="https://image.tmdb.org/t/p/w185/mIUGQ89isLNj4IRujDsXrZFIZCQ.jpg"></a>
+<a href="go:A246" data-categoria="terror" data-nombre="la hora de tu muerte"><img src="https://image.tmdb.org/t/p/w185/jYwCTKSmvAey3PDvrj7TCZuso5q.jpg"></a>
+<a href="go:A247" data-categoria="terror" data-nombre="día del juicio final"><img src="https://image.tmdb.org/t/p/w185/ltVbyAXDVXLrfkYCZLzM9GPSoA2.jpg"></a>
+<a href="go:A248" data-categoria="terror" data-nombre="anaconda 1"><img src="https://image.tmdb.org/t/p/w185/uj0ZYr2ZvAFT0uPuBdaLb9yYZQv.jpg"></a>
+<a href="go:A249" data-categoria="terror" data-nombre="gemelo siniestro"><img src="https://image.tmdb.org/t/p/w185/1q0FiJOpVX4EoZngtl8XQK9ggrz.jpg"></a>
+<a href="go:A250" data-categoria="terror" data-nombre="anaconda 2"><img src="https://image.tmdb.org/t/p/w185/p18mhFJ9Wk5S9Bvs5w8hAGcOdZr.jpg"></a>
+<a href="go:A251" data-categoria="terror" data-nombre="turno de día"><img src="https://image.tmdb.org/t/p/w185/kKcsME7Bjlo9EvKp51MkgQ8tgQD.jpg"></a>
+<a href="go:A252" data-categoria="terror" data-nombre="la morgue / la autopsia de jane doe"><img src="https://image.tmdb.org/t/p/w185/2IecKV3c7AiOlQTFiRW1aDKC02O.jpg"></a>
+<a href="go:A253" data-categoria="terror" data-nombre="la bestia"><img src="https://image.tmdb.org/t/p/w185/s7xRJ3HfYuZfldXD4YODurbCYtS.jpg"></a>
+<a href="go:A254" data-categoria="terror" data-nombre="la invitacion"><img src="https://image.tmdb.org/t/p/w185/oHVR6249rkhCJkdBc7vk166KLMF.jpg"></a>
+<a href="go:A255" data-categoria="terror" data-nombre="jeepers creepers"><img src="https://image.tmdb.org/t/p/w185/tAurRQhvQnoBlYVQK1ks6Rf2MNv.jpg"></a>
+<a href="go:A256" data-categoria="infantiles" data-nombre="wifi ralph"><img src="https://image.tmdb.org/t/p/w185/1K6YdJqNDjapI21ZNQMbD35blkw.jpg"></a>
+<a href="go:A257" data-categoria="infantiles" data-nombre="los increibles 1"><img src="https://image.tmdb.org/t/p/w185/al1jusd4T7JPatZlj4BuYkDDOzr.jpg"></a>
+<a href="go:A258" data-categoria="infantiles" data-nombre="isla larva la pelicula"><img src="https://image.tmdb.org/t/p/w185/uHdxICUIRGoJjK67aOp3ykvL8ZW.jpg"></a>
+<a href="go:A259" data-categoria="infantiles" data-nombre="valiente / brave / indomable"><img src="https://image.tmdb.org/t/p/w185/1zchaxDvlMVzzIKAfREWuqJVJIM.jpg"></a>
+<a href="go:A260" data-categoria="infantiles" data-nombre="las locuras del emperador"><img src="https://image.tmdb.org/t/p/w185/latMqJxTsmeDIv7oTUTpUMfbl58.jpg"></a>       
+<a href="go:A261" data-categoria="infantiles" data-nombre="intensamente 1 / inside out / del reves inside out"><img src="https://image.tmdb.org/t/p/w185/ewEX6VcVohyrQ52usZb1XovN1Bj.jpg"></a>
+<a href="go:A262" data-categoria="infantiles" data-nombre="aladin"><img src="https://image.tmdb.org/t/p/w185/trnyoKkkvvjZvRvCMrNDtSf25nH.jpg"></a>
+<a href="go:A263" data-categoria="infantiles" data-nombre="como entrenar a tu dragon 1"><img src="https://image.tmdb.org/t/p/w185/8ekxsUORMAsfmSc8GzHmG8gWPbp.jpg"></a>
+<a href="go:A264" data-categoria="infantiles" data-nombre="como entrenar a tu dragon 2"><img src="https://image.tmdb.org/t/p/w185/bXcRw7FL8QzUZOvY2fZdwDv5ymQ.jpg"></a>
+<a href="go:A265" data-categoria="infantiles" data-nombre="como entrenar a tu dragon 3"><img src="https://image.tmdb.org/t/p/w185/5YzBwkRI19ZPL82e8mJxLWZJ6hn.jpg"></a>
+<a href="go:A266" data-categoria="infantiles" data-nombre="como entrenar a tu dragon 4"><img src="https://image.tmdb.org/t/p/w185/n12wESAYZNqa88h4EzdD25bJRYR.jpg"></a>
+<a href="go:A267" data-categoria="infantiles" data-nombre="onward / unidos"><img src="https://image.tmdb.org/t/p/w185/pucg0VlSfIafkuevrqtcMj6XcOX.jpg"></a>
+<a href="go:A268" data-categoria="infantiles" data-nombre="espias a escondidas"><img src="https://image.tmdb.org/t/p/w185/wg4CRxx04UbIOip2j7bMzIP5i20.jpg"></a>
+<a href="go:A269" data-categoria="infantiles" data-nombre="deathroke caballeros y dragones"><img src="https://image.tmdb.org/t/p/w185/nCJGThrH249sLUAzIS80xM7BEKz.jpg"></a>
+<a href="go:A270" data-categoria="infantiles" data-nombre="primal"><img src="https://image.tmdb.org/t/p/w185/9jIatSC61s5Y3d5Q63yIeZFvP7u.jpg"></a>
+<a href="go:A271" data-categoria="infantiles" data-nombre="chiken little"><img src="https://image.tmdb.org/t/p/w185/AsDUBjrECTVstxCSGvPbwpA0I0M.jpg"></a>
+<a href="go:A272" data-categoria="infantiles" data-nombre="wall-e"><img src="https://image.tmdb.org/t/p/w185/fLXLNDsOBZxpNleWF9Z4hubxBUQ.jpg"></a>
+<a href="go:A273" data-categoria="infantiles" data-nombre="el gato con botas el ultimo deseo"><img src="https://image.tmdb.org/t/p/w185/b5Jb7GoQaqIXy4VEdnQa0UrQZI.jpg"></a>
+<a href="go:A274" data-categoria="infantiles" data-nombre="atlantis el imperio perdido"><img src="https://image.tmdb.org/t/p/w185/uR7AKWMDTwyAub5r4QoPPiJImvx.jpg"></a>
+<a href="go:A275" data-categoria="infantiles" data-nombre="los croods 1"><img src="https://image.tmdb.org/t/p/w185/sqnr0R1WeOJD91zw7Ogh3w9ukGy.jpg"></a>
+<a href="go:A276" data-categoria="infantiles" data-nombre="scooby du animada"><img src="https://image.tmdb.org/t/p/w185/zD8LFCoOPe4ooBTkedl1sGSYRGO.jpg"></a>
+<a href="go:A277" data-categoria="infantiles" data-nombre="shrek 3"><img src="https://image.tmdb.org/t/p/w185/2ogCqOTY7VlKcOHzELeLP71BGLJ.jpg"></a>
+<a href="go:A278" data-categoria="infantiles" data-nombre="shrek 4"><img src="https://image.tmdb.org/t/p/w185/11K03KebrdD8nUlGFJX3rSL3KHK.jpg"></a>
+<a href="go:A279" data-categoria="infantiles" data-nombre="shrek 2"><img src="https://image.tmdb.org/t/p/w185/knRt4E8KyfwEv0SVu9LsLvD28IQ.jpg"></a>
+<a href="go:A280" data-categoria="infantiles" data-nombre="toy story 1"><img src="https://image.tmdb.org/t/p/w185/jvn7wy3RSNEXnFSXLpH2of2LcV6.jpg"></a>
+<a href="go:A281" data-categoria="infantiles" data-nombre="toy story 2"><img src="https://image.tmdb.org/t/p/w185/xVhEI1WCgNCCa5I86AqiwuZoog3.jpg"></a>
+<a href="go:A282" data-categoria="infantiles" data-nombre="toy story 3"><img src="https://image.tmdb.org/t/p/w185/AbbXspMOwdvwWZgVN0nabZq03Ec.jpg"></a>
+<a href="go:A283" data-categoria="infantiles" data-nombre="rio 2"><img src="https://image.tmdb.org/t/p/w185/xx1k3kCfIs95eAMa1pglXv74cRp.jpg"></a>
+<a href="go:A284" data-categoria="infantiles" data-nombre="numero 9"><img src="https://image.tmdb.org/t/p/w185/hRzsKmr3NxRIbKwr4myGKylMaXB.jpg"></a>
+<a href="go:A285" data-categoria="infantiles" data-nombre="la era del hielo 1"><img src="https://image.tmdb.org/t/p/w185/qhpwT5YmS2Y3oyXGK9BdoGKXIQI.jpg"></a>
+<a href="go:A286" data-categoria="infantiles" data-nombre="la era del hielo 2"><img src="https://image.tmdb.org/t/p/w185/gs84R3mH9dUz56jvE6KcosRSNub.jpg"></a>
+<a href="go:A287" data-categoria="infantiles" data-nombre="la era del hielo 3"><img src="https://image.tmdb.org/t/p/w185/vZ5AZyX9aMuq1ZbzXfCrm0mSvwn.jpg"></a>
+<a href="go:A288" data-categoria="infantiles" data-nombre="la era del hielo 4"><img src="https://image.tmdb.org/t/p/w185/iwib3jxIbKRNMPsuByrRWoV7dkN.jpg"></a>
+<a href="go:A289" data-categoria="infantiles" data-nombre="la era del hielo 5 choque de mundos"><img src="https://image.tmdb.org/t/p/w185/atny2pOR1h0emUjhI7wWquftAFb.jpg"></a>
+<a href="go:A290" data-categoria="infantiles" data-nombre="coco"><img src="https://image.tmdb.org/t/p/w185/fewd6rP8UJF2tpSKv2n9E1GLQj3.jpg"></a>            
+<a href="go:A291" data-categoria="infantiles" data-nombre="ratatuille / ratatouille"><img src="https://image.tmdb.org/t/p/w185/nGUelOVetiRpY2wTBMHTbrTIGYC.jpg"></a>
+<a href="go:A292" data-categoria="infantiles" data-nombre="home no hay lugar como el hogar"><img src="https://image.tmdb.org/t/p/w185/Armg3cyAsawMovDubF1YK5fVrRr.jpg"></a>
+<a href="go:A293" data-categoria="infantiles" data-nombre="los pingüinos de madagascar"><img src="https://image.tmdb.org/t/p/w185/fNYuRLCmTpIyjq4Zrp7YeBB1QEA.jpg"></a>
+<a href="go:A294" data-categoria="infantiles" data-nombre="hotel transilvania 2"><img src="https://image.tmdb.org/t/p/w185/zx7XQFf0wOQAEiJeBPr0w052Yw9.jpg"></a>
+<a href="go:A295" data-categoria="infantiles" data-nombre="hotel transilvania 3"><img src="https://image.tmdb.org/t/p/w185/ggP9OUjqCJSyYRpHpL48tIE6qwC.jpg"></a>
+<a href="go:A296" data-categoria="infantiles" data-nombre="kung fu panda 1"><img src="https://image.tmdb.org/t/p/w185/qfVZpfEEmpKm0ukRs4A8ZGjnawK.jpg"></a>
+<a href="go:A297" data-categoria="infantiles" data-nombre="kung fu panda 2"><img src="https://image.tmdb.org/t/p/w185/aNji9U9SPTecmoqGippQUBEyouy.jpg"></a>
+<a href="go:A298" data-categoria="infantiles" data-nombre="kung fu panda 3"><img src="https://image.tmdb.org/t/p/w185/sgAgaZKVXvhHQ2BmUFAoLPUEv6b.jpg"></a>
+<a href="go:A299" data-categoria="infantiles" data-nombre="aviones 2"><img src="https://image.tmdb.org/t/p/w185/pZbuCIMWulgQEWdZDzga3n6L8LW.jpg"></a>
+<a href="go:A300" data-categoria="infantiles" data-nombre="frozen una aventura congelada"><img src="https://image.tmdb.org/t/p/w185/gPtWAIpnpF5LF0WxMc4e9t51TeB.jpg"></a>
+<a href="go:A301" data-categoria="infantiles" data-nombre="las aventuras del sr pebody y sherman"><img src="https://image.tmdb.org/t/p/w185/jslyF6EUJcU47cGhY2zc1S8TmLx.jpg"></a>
+<a href="go:A302" data-categoria="infantiles" data-nombre="away"><img src="https://image.tmdb.org/t/p/w185/ksxwLRirKQhyqiqL70sfQrZEOhx.jpg"></a>
+<a href="go:A303" data-categoria="infantiles" data-nombre="grandes heroes super giro"><img src="https://image.tmdb.org/t/p/w185/9GcwnETsh24AKZ2wIamJIy80ts4.jpg"></a>
+<a href="go:A304" data-categoria="infantiles" data-nombre="las aventuras del capitan calzoncillos"><img src="https://image.tmdb.org/t/p/w185/zTUEB0XR3quV1trwbzt9OoYDVQg.jpg"></a>
+<a href="go:A305" data-categoria="infantiles" data-nombre="cars 2"><img src="https://image.tmdb.org/t/p/w185/6mVvjymPpuzE0VYAWAUCBxBAQVW.jpg"></a>
+<a href="go:A306" data-categoria="infantiles" data-nombre="cars 3"><img src="https://image.tmdb.org/t/p/w185/jJ8TnHvWHaVadW5JJjGYsM07j9i.jpg"></a>
+<a href="go:A307" data-categoria="infantiles" data-nombre="ralph el demoledor"><img src="https://image.tmdb.org/t/p/w185/lTpE4JQ2C09NicqvDhwi70IRz62.jpg"></a>
+<a href="go:A308" data-categoria="infantiles" data-nombre="mascotas 2"><img src="https://image.tmdb.org/t/p/w185/dqGsG2uNV9JGgrfODbTafPUukci.jpg"></a>
+<a href="go:A309" data-categoria="infantiles" data-nombre="el viaje de arlo / un gran dinosaurio"><img src="https://image.tmdb.org/t/p/w185/1WKI6PM79XjK2LVS1B4yoG3wNHw.jpg"></a>
+<a href="go:A310" data-categoria="infantiles" data-nombre="up una aventura de altura"><img src="https://image.tmdb.org/t/p/w185/vSdpOU6rDK7IpmOD7iAvlZdMUCc.jpg"></a>
+<a href="go:A311" data-categoria="infantiles" data-nombre="pajaro loco la película"><img src="https://image.tmdb.org/t/p/w185/3fe4fVFJ2QzwKHOo24QwkpuA6OI.jpg"></a>
+<a href="go:A312" data-categoria="infantiles" data-nombre="mi villano favorito"><img src="https://image.tmdb.org/t/p/w185/7ml02WwUzz4jlZJdiEI4ZIYHj1J.jpg"></a>
+<a href="go:A313" data-categoria="infantiles" data-nombre="monster university"><img src="https://image.tmdb.org/t/p/w185/4rLfeHGIyDEQsqR22iajGSLFNME.jpg"></a>
+<a href="go:A314" data-categoria="infantiles" data-nombre="turbo"><img src="https://image.tmdb.org/t/p/w185/lDARMqluCrWaFgybY9KHLY96L3n.jpg"></a>
+<a href="go:A315" data-categoria="infantiles" data-nombre="los minions"><img src="https://image.tmdb.org/t/p/w185/nmqLwaTfgyWLQWbYd82w159cAqJ.jpg"></a>
+<a href="go:A316" data-categoria="infantiles" data-nombre="el grinch"><img src="https://image.tmdb.org/t/p/w185/eCHNCoat9L0Q3p4XjBQqV2Zn7Ux.jpg"></a>
+<a href="go:A317" data-categoria="infantiles" data-nombre="lluvia de hamburguesas 2"><img src="https://image.tmdb.org/t/p/w185/l1o3J00LWiPOklNzi4elOh30xL8.jpg"></a>
+<a href="go:A318" data-categoria="infantiles" data-nombre="bob esponja al rescate"><img src="https://image.tmdb.org/t/p/w185/fi2pg2mtAZwhq3qVuAs6PztjnHT.jpg"></a>
+<a href="go:A319" data-categoria="infantiles" data-nombre="el extraño mundo de jack"><img src="https://image.tmdb.org/t/p/w185/sPAPFeEi820pZtm2Y77tv8vQJnM.jpg"></a>
+<a href="go:A320" data-categoria="infantiles" data-nombre="ferdinand"><img src="https://image.tmdb.org/t/p/w185/nYj1UJRIxBaNDB9uhsUrvrMTbBG.jpg"></a>
+<a href="go:A321" data-categoria="infantiles" data-nombre="la fiesta de las salchichas"><img src="https://image.tmdb.org/t/p/w185/4YiHAxavhMLaBqOzx7ZirmOwNkD.jpg"></a>
+<a href="go:A322" data-categoria="romance" data-nombre="el diario de noah"><img src="https://image.tmdb.org/t/p/w185/tpYGO4BC1EGy5strj15xy1vB3jP.jpg"></a>
+<a href="go:A323" data-categoria="romance" data-nombre="como si fuera la primera vez"><img src="https://image.tmdb.org/t/p/w185/uSmbFFjAG086HgBjcSaGXqhuhWz.jpg"></a>
+<a href="go:A324" data-categoria="romance" data-nombre="quien quiere ser millonario"><img src="https://image.tmdb.org/t/p/w185/ub7iEniSi23Ms3RcF551Sozb1MH.jpg"></a>
+<a href="go:A325" data-categoria="romance" data-nombre="hasta que te encontre"><img src="https://image.tmdb.org/t/p/w185/kFhnAQv0ntMlVE4EtYeBzOGWO1w.jpg"></a>
+<a href="go:A326" data-categoria="romance" data-nombre="la chica de al lado / la vecina de al lado"><img src="https://image.tmdb.org/t/p/w185/lpFkU7VmWvtBOf6FnWV3bCLoXVW.jpg"></a>
+<a href="go:A327" data-categoria="romance" data-nombre="ascenso"><img src="https://image.tmdb.org/t/p/w185/rlrmLtl8MiQ2b1oMu9AL8ME9Alv.jpg"></a>
+<a href="go:A328" data-categoria="romance" data-nombre="focus maestro de la estafa"><img src="https://image.tmdb.org/t/p/w185/2eDOdZd2KsLtgf6fpWdKJgjswsF.jpg"></a>
+<a href="go:A329" data-categoria="romance" data-nombre="jefa por accidente"><img src="https://image.tmdb.org/t/p/w185/ufNSy3LTqNfqu3lp5o6cjouZXSD.jpg"></a>
+<a href="go:A330" data-categoria="romance" data-nombre="17 otra vez"><img src="https://image.tmdb.org/t/p/w185/hbvp398CBCgO6gArDkKuqeO4WXJ.jpg"></a>
+<a href="go:A331" data-categoria="romance" data-nombre="musica amigos y fiesta"><img src="https://image.tmdb.org/t/p/w185/4iUAMj3iieLAVyKSkhOy0rSAomV.jpg"></a>
+<a href="go:A332" data-categoria="romance" data-nombre="una esposa de mentira"><img src="https://image.tmdb.org/t/p/w185/gOHWm21Gg9OqUS2jVhia5ZFacUM.jpg"></a>
+<a href="go:A333" data-categoria="romance" data-nombre="la propuesta"><img src="https://image.tmdb.org/t/p/w185/7pSdQ7KngvmwtqAgdGFTl5W4fWE.jpg"></a>
+<a href="go:A334" data-categoria="romance" data-nombre="50 sombras muy oscuras"><img src="https://image.tmdb.org/t/p/w185/eXxEz9GNVzbSUFvO5cEbpVsJbpw.jpg"></a>
+<a href="go:A335" data-categoria="romance" data-nombre="maravilloso desastre"><img src="https://image.tmdb.org/t/p/w185/6OD0yBusMHXSQDdVFSrTlcFc3PO.jpg"></a>
+<a href="go:A336" data-categoria="romance" data-nombre="tengo ganas de ti"><img src="https://image.tmdb.org/t/p/w185/z13I3sWzOoKBDAEpJ7iK9bSznQn.jpg"></a>
+<a href="go:A337" data-categoria="romance" data-nombre="tres metros sobre el cielo"><img src="https://image.tmdb.org/t/p/w185/1s88rmiX1ohLqzSJsGLy20K2oh7.jpg"></a>
+<a href="go:A338" data-categoria="romance" data-nombre="500 dias con ella"><img src="https://image.tmdb.org/t/p/w185/3ZKBGqeNcommoWBs0IkGPTvNAOk.jpg"></a>
+<a href="go:A339" data-categoria="romance" data-nombre="el es asi / alguien como el"><img src="https://image.tmdb.org/t/p/w185/gTboh2Tf7zKlXWJk4UdOL1G8ki7.jpg"></a>
+<a href="go:A340" data-categoria="romance" data-nombre="romper el circulo"><img src="https://image.tmdb.org/t/p/w185/e0S9UXyuHE1JAoHZmyqRJISpyoS.jpg"></a>
+<a href="go:A341" data-categoria="romance" data-nombre="la otra cara de la luna"><img src="https://image.tmdb.org/t/p/w185/cDtJXZrmKxe8sZuALkLXNogRwiN.jpg"></a>
+<a href="go:A342" data-categoria="romance" data-nombre="cuando te encuentre"><img src="https://image.tmdb.org/t/p/w185/cvNI7Jgxe6sCmkSL9KwVtvfOeEG.jpg"></a>
+<a href="go:A343" data-categoria="romance" data-nombre="el diario de la princesa 1"><img src="https://image.tmdb.org/t/p/w185/s4DYhsEnziYlJy91bbxv1ZhTJFG.jpg"></a>
+<a href="go:A344" data-categoria="romance" data-nombre="el diario de la princesa 2"><img src="https://image.tmdb.org/t/p/w185/i6QA4hKcfbVSXt7H7KGCbdT4Mr9.jpg"></a>
+<a href="go:A345" data-categoria="romance" data-nombre="desafiantes"><img src="https://image.tmdb.org/t/p/w185/wvJbx3pg1EUatQgazl34ylIh5cD.jpg"></a>
+<a href="go:A346" data-categoria="romance" data-nombre="destinos opuestos"><img src="https://image.tmdb.org/t/p/w185/kb6IzkcovQTupxpQsEelMqrVO8W.jpg"></a>
+<a href="go:A347" data-categoria="romance" data-nombre="la teoria del todo"><img src="https://image.tmdb.org/t/p/w185/sVKeuoy82eR02iMIqRAepqMCoag.jpg"></a>
+<a href="go:A348" data-categoria="romance" data-nombre="juego de gemelas"><img src="https://image.tmdb.org/t/p/w185/9y2hFxWxtZfO1WrYUu5cjWNc9QD.jpg"></a>
+<a href="go:A349" data-categoria="romance" data-nombre="amor a media noche"><img src="https://image.tmdb.org/t/p/w185/jDNSClwYEVwmXfJgYDERvuALlXT.jpg"></a>
+<a href="go:A350" data-categoria="romance" data-nombre="el gran gatsby"><img src="https://image.tmdb.org/t/p/w185/fnViTJJt6pUq44QGBhk4FJqr82o.jpg"></a>
+<a href="go:A351" data-categoria="romance" data-nombre="fabricantes de lagrimas"><img src="https://image.tmdb.org/t/p/w185/i91SgC0uQa3fb68foFS3zgaMUuD.jpg"></a>
+<a href="go:A352" data-categoria="romance" data-nombre="conoces a joe black"><img src="https://image.tmdb.org/t/p/w185/z2jzFfXTXnZ7oytCiIEieSXDb1b.jpg"></a>
+<a href="go:A353" data-categoria="romance" data-nombre="clouds"><img src="https://image.tmdb.org/t/p/w185/3KHej2PybAotpllXTsSx1xm4qnF.jpg"></a>
+<a href="go:A354" data-categoria="animes" data-nombre="fuufu ijou koibito miman / mas que una pareja pero no amantes"><img src="https://image.tmdb.org/t/p/w185/6EAdTgsmJbXxTCEV8uEUDDHDkjB.jpg"></a>
+<a href="go:A355" data-categoria="series" data-nombre="presunto inocente"><img src="https://image.tmdb.org/t/p/w185/6jYbbIs9D6OWkFnerqyMZ9YCHRI.jpg"></a>
+<a href="go:A356" data-categoria="series" data-nombre="fallout"><img src="https://image.tmdb.org/t/p/w185/AnsSKR9LuK0T9bAOcPVA3PUvyWj.jpg"></a>
+<a href="go:A357" data-categoria="series" data-nombre="from"><img src="https://image.tmdb.org/t/p/w185/jfw5WoRnPGJQrDdaSOB5QqpjytC.jpg"></a>
+<a href="go:A358" data-categoria="series" data-nombre="king the land"><img src="https://image.tmdb.org/t/p/w185/oqpzn6xcqqZpk3DB3z3sT6UFkZp.jpg"></a>
+<a href="go:A359" data-categoria="series" data-nombre="monarch el legado de los monstruos"><img src="https://image.tmdb.org/t/p/w185/8ZSrqUsa1JN9FkIQU8iTFOMw4D5.jpg"></a>
+<a href="go:A360" data-categoria="series" data-nombre="loki"><img src="https://image.tmdb.org/t/p/w185/oJdVHUYrjdS2IqiNztVIP4GPB1p.jpg"></a>
+<a href="go:A361" data-categoria="series" data-nombre="the witcher"><img src="https://image.tmdb.org/t/p/w185/zrPpUlehQaBf8YX2NrVrKK8IEpf.jpg"></a>
+<a href="go:A362" data-categoria="series" data-nombre="superman y lois"><img src="https://image.tmdb.org/t/p/w185/vlv1gn98GqMnKHLSh0dNciqGfBl.jpg"></a>
+<a href="go:A363" data-categoria="series" data-nombre="sex education"><img src="https://image.tmdb.org/t/p/w185/4Bph0hhnDH6dpc0SZIV522bLm4P.jpg"></a>
+<a href="go:A364" data-categoria="series" data-nombre="chucky"><img src="https://image.tmdb.org/t/p/w185/7KbhQpg6OV2o58SoulRbEtK9HYT.jpg"></a>
+<a href="go:A365" data-categoria="series" data-nombre="1899"><img src="https://image.tmdb.org/t/p/w185/qmpUDEgZawIlDU5HP3IJ9HjnpI3.jpg"></a>
+<a href="go:A366" data-categoria="series" data-nombre="jefreey dahmer"><img src="https://image.tmdb.org/t/p/w185/vlUMBgKO1HOwPMJwHnHzr99BHwN.jpg"></a>
+<a href="go:A367" data-categoria="series" data-nombre="gravity falls"><img src="https://image.tmdb.org/t/p/w185/9p4QW6YxqTw2w1qaal0384cJQB5.jpg"></a>
+<a href="go:A368" data-categoria="accion" data-nombre="venom 3 el ultimo baile"><img src="https://image.tmdb.org/t/p/w185/bHB8Fv28cOk5sNxRwWaLoT6Pnrv.jpg"></a>
+<a href="go:A369" data-categoria="terror" data-nombre="terrifier 3"><img src="https://image.tmdb.org/t/p/w185/nLaO7NUipz1KdYmXy4uf9Snpl8V.jpg"></a>
+<a href="go:A370" data-categoria="romance" data-nombre="joker 2"><img src="https://image.tmdb.org/t/p/w185/aciP8Km0waTLXEYf5ybFK5CSUxl.jpg"></a>
+<a href="go:A371" data-categoria="infantiles" data-nombre="robot salvaje"><img src="https://image.tmdb.org/t/p/w185/sDoXpaKZmrzCSJH63zZvQQ9A7VK.jpg"></a>
+<a href="go:A372" data-categoria="accion" data-nombre="alien romulus"><img src="https://image.tmdb.org/t/p/w185/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg"></a>
+<a href="go:A373" data-categoria="infantiles" data-nombre="intensamente 2"><img src="https://image.tmdb.org/t/p/w185/25bcRmQOMUdAgWF9AkxvlJDKRiq.jpg"></a>
+<a href="go:A374" data-categoria="series" data-nombre="pablo escobar el patron del mal"><img src="https://image.tmdb.org/t/p/w185/5u02bo70uzUFpEV9Pd0lFkLA9Es.jpg"></a>
+<a href="go:A375" data-categoria="series" data-nombre="el chacal"><img src="https://image.tmdb.org/t/p/w185/qfQ3G5bwQrBLkhClNF2nnxJpzR0.jpg"></a>
+<a href="go:A376" data-categoria="series" data-nombre="chespiritosinquererqueriendo"><img src="https://image.tmdb.org/t/p/w185/bLyhzXAWvOn0L17NbCYP2aZ4sPt.jpg"></a>
+<a href="go:A377" data-categoria="series" data-nombre="suits"><img src="https://image.tmdb.org/t/p/w185/9mHddTgEFfAaW3KU3nK6oas7jPH.jpg"></a>
+<a href="go:A378" data-categoria="series" data-nombre="tulsa king"><img src="https://image.tmdb.org/t/p/w185/7pPmaSMKk1VVQH0oS7tceROYcZa.jpg"></a>
+<a href="go:A379" data-categoria="series" data-nombre="chernobyl"><img src="https://image.tmdb.org/t/p/w185/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg"></a>
+<a href="go:A380" data-categoria="series" data-nombre="one piece"><img src="https://image.tmdb.org/t/p/w185/rVX05xRKS5JhEYQFObCi4lAnZT4.jpg"></a>
+<a href="go:A381" data-categoria="series" data-nombre="avatar la leyenda de aang"><img src="https://image.tmdb.org/t/p/w185/e1TsV9JZeLvY6lEoq9llPcnuc68.jpg"></a>
+<a href="go:A382" data-categoria="series" data-nombre="the walking dead daryl dixon"><img src="https://image.tmdb.org/t/p/w185/AjnMXY6DH3nTDLYxdqksAH9Ft3n.jpg"></a>
+<a href="go:A383" data-categoria="series" data-nombre="the walking dead dead city"><img src="https://image.tmdb.org/t/p/w185/wq3vuQzQgbS83zX3malAFWMsSwX.jpg"></a>
+<a href="go:A384" data-categoria="series" data-nombre="fubar"><img src="https://image.tmdb.org/t/p/w185/6fM34tcGFp3A0csyxJJomknZB4b.jpg"></a>
+<a href="go:A385" data-categoria="series" data-nombre="the walking dead"><img src="https://image.tmdb.org/t/p/w185/ng3cMtxYKt1OSQYqFlnKWnVsqNO.jpg"></a>
+<a href="go:A386" data-categoria="animes" data-nombre="solo leveling serie"><img src="https://image.tmdb.org/t/p/w185/a7i9OdTUo9jZ1XoraCRIQNJ6ACX.jpg"></a>
+<a href="go:A387" data-categoria="animes" data-nombre="spy x family"><img src="https://image.tmdb.org/t/p/w185/gHZqglFWJTFwx6rnTq4vkPRnuxu.jpg"></a>
+<a href="go:A388" data-categoria="animes" data-nombre="demon slayer / kimetsu no yaiba"><img src="https://image.tmdb.org/t/p/w185/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg"></a>
+<a href="go:A389" data-categoria="animes" data-nombre="las quintillisas"><img src="https://image.tmdb.org/t/p/w185/vzUO8Lomn90wOw5Vhrqo23lpVV8.jpg"></a>
+<a href="go:A390" data-categoria="animes" data-nombre="tensei shitara slime datta ken"><img src="https://image.tmdb.org/t/p/w185/pzujcdPAoH361NObVrtbA7zACE7.jpg"></a>
+<a href="go:A391" data-categoria="animes" data-nombre="alya sometimes hides her feelings in russian"><img src="https://image.tmdb.org/t/p/w185/hfnzByZIRj6rx8xaxzS2zDilei1.jpg"></a>
+<a href="go:A392" data-categoria="animes" data-nombre="mushoku tensei"><img src="https://image.tmdb.org/t/p/w185/fHXI3fJN0ZOVw2OmLmY2t9VgV83.jpg"></a>
+<a href="go:A393" data-categoria="series" data-nombre="mr robot"><img src="https://image.tmdb.org/t/p/w185/kv1nRqgebSsREnd7vdC2pSGjpLo.jpg"></a>
+<a href="go:A416" data-categoria="accion" data-nombre="terminator 2"><img src="https://image.tmdb.org/t/p/w185/10xtoK2SFv6ADIeWxr3mcrjko72.jpg"></a>
+<a href="go:A417" data-categoria="accion" data-nombre="terminator 3"><img src="https://image.tmdb.org/t/p/w185/8BVkb4QLETn8Tvyl3eHsaE4Hs6x.jpg"></a>
+<a href="go:A418" data-categoria="accion" data-nombre="terminator salvacion"><img src="https://image.tmdb.org/t/p/w185/gw6JhlekZgtKUFlDTezq3j5JEPK.jpg"></a>
+<a href="go:A419" data-categoria="accion" data-nombre="terminator genesis"><img src="https://image.tmdb.org/t/p/w185/5N5PnUoywvOduFb4Qw6HD2LkMtu.jpg"></a>
+<a href="go:A420" data-categoria="accion" data-nombre="terminator destino oscuro"><img src="https://image.tmdb.org/t/p/w185/k7PuHoj2oE7nEHExwliF2FSXFnr.jpg"></a>
+<a href="go:A422" data-categoria="terror" data-nombre="exterminio 1/ 28 dias despues"><img src="https://image.tmdb.org/t/p/w185/tGy6qJsqQvl7ZqEF2cinwFeWGWW.jpg"></a>
+<a href="go:A423" data-categoria="terror" data-nombre="exterminio 2 / 28 semanas despues"><img src="https://image.tmdb.org/t/p/w185/t5O7QkiKyKcCE3UihKsAjlJ9aF8.jpg"></a>
+<a href="go:A424" data-categoria="accion" data-nombre="jurassic park"><img src="https://image.tmdb.org/t/p/w185/h831eszSFmEyr94WKcgscqPIRbh.jpg"></a>
+<a href="go:A425" data-categoria="accion" data-nombre="jurassic park 2"><img src="https://image.tmdb.org/t/p/w185/80pXV9DEd81rBGqmlPBLbvr6h9a.jpg"></a>
+<a href="go:A426" data-categoria="accion" data-nombre="jurassic park 3"><img src="https://image.tmdb.org/t/p/w185/5GM4Nqc79PFE3IOqNKwmOxAWkX1.jpg"></a>
+<a href="go:A427" data-categoria="accion" data-nombre="jurassic world"><img src="https://image.tmdb.org/t/p/w185/lWhnr4ehIiRMudbF6YCEViatbaN.jpg"></a>
+<a href="go:A428" data-categoria="accion" data-nombre="jurassic world dominion"><img src="https://image.tmdb.org/t/p/w185/jbAvCACjLf1ZG0unB2tdmx5HAf1.jpg"></a>
+<a href="go:A429" data-categoria="accion" data-nombre="avatar"><img src="https://image.tmdb.org/t/p/w185/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg"></a>
+<a href="go:A430" data-categoria="accion" data-nombre="destino final 1"><img src="https://image.tmdb.org/t/p/w185/i8mX18nqIYQSXNMnDLeRlGfKMaG.jpg"></a>
+<a href="go:A431" data-categoria="accion" data-nombre="destino final 2"><img src="https://image.tmdb.org/t/p/w185/w1dJluO5aKK7Puz7qNXoQeUh4Cb.jpg"></a>
+<a href="go:A432" data-categoria="accion" data-nombre="destino final 3"><img src="https://image.tmdb.org/t/p/w185/3PEVkIBOii1fxQxaQ0iKODGnBUp.jpg"></a>
+<a href="go:A433" data-categoria="accion" data-nombre="destino final 4"><img src="https://image.tmdb.org/t/p/w185/1UUqqfAw6YTa2tJqPrFJWwA0Imu.jpg"></a>
+<a href="go:A434" data-categoria="accion" data-nombre="destino final 5"><img src="https://image.tmdb.org/t/p/w185/nA1ZpbVO34BQupmLpzi0uY6x3J5.jpg"></a>
+<a href="go:A435" data-categoria="accion" data-nombre="mision imposible 1"><img src="https://image.tmdb.org/t/p/w185/xCpmxw3UUjv4PGzbIPOHeoKAV0l.jpg"></a>
+<a href="go:A436" data-categoria="accion" data-nombre="mision imposible 2"><img src="https://image.tmdb.org/t/p/w185/mskE3W88cjMRrnKQye8pjmJu3O1.jpg"></a>
+<a href="go:A437" data-categoria="accion" data-nombre="mision imposible 4"><img src="https://image.tmdb.org/t/p/w185/eLku3cT1DDf9wXuX6hpWS3OLbX0.jpg"></a>
+<a href="go:A438" data-categoria="accion" data-nombre="mision imposible 5"><img src="https://image.tmdb.org/t/p/w185/ww0IX7Xla6tHgrwYSupfXcksV3n.jpg"></a>
+<a href="go:A439" data-categoria="accion" data-nombre="mision imposible 6"><img src="https://image.tmdb.org/t/p/w185/6fSdqrkkhSHi2hD6WFTi2LF43Al.jpg"></a>
+<a href="go:A440" data-categoria="accion" data-nombre="mision imposible 7 sentencia mortal"><img src="https://image.tmdb.org/t/p/w185/exULwCJOesU2v05CWNXmx8G5Ed9.jpg"></a>
+<a href="go:A441" data-categoria="comedia" data-nombre="happy gilmore"><img src="https://image.tmdb.org/t/p/w185/epFP29rGrLPseuKxpz3mGKr23Do.jpg"></a>
+<a href="go:A442" data-categoria="accion" data-nombre="top gun"><img src="https://image.tmdb.org/t/p/w185/xUuHj3CgmZQ9P2cMaqQs4J0d4Zc.jpg"></a>
+<a href="go:A443" data-categoria="accion" data-nombre="batman vs superman el origen de la justicia"><img src="https://image.tmdb.org/t/p/w185/mS3t9puIjLKgoex82cu9d6G0835.jpg"></a>
+<a href="go:A444" data-categoria="accion" data-nombre="la liga de la justicia de zack snyder"><img src="https://image.tmdb.org/t/p/w185/ys9eIkMAn5TVmsldLuAsrR7Nkfw.jpg"></a>
+<a href="go:A445" data-categoria="accion" data-nombre="el hombre de acero / superman"><img src="https://image.tmdb.org/t/p/w185/5JW44QGgpEWx4aWXM0uVSi2xtrI.jpg"></a>
+<a href="go:A447" data-categoria="accion" data-nombre="el hombre araña / spiderman"><img src="https://image.tmdb.org/t/p/w185/gh4cZbhZxyTbgxQPxD0dOudNPTn.jpg"></a>
+<a href="go:A448" data-categoria="accion" data-nombre="el hombre araña 2 / spiderman 2"><img src="https://image.tmdb.org/t/p/w185/aGuvNAaaZuWXYQQ6N2v7DeuP6mB.jpg"></a>
+<a href="go:A449" data-categoria="accion" data-nombre="el hombre araña 3 / spiderman 3"><img src="https://image.tmdb.org/t/p/w185/qFmwhVUoUSXjkKRmca5yGDEXBIj.jpg"></a>
+<a href="go:A450" data-categoria="accion" data-nombre="rapidos y furiosos 1 / fast furios"><img src="https://image.tmdb.org/t/p/w185/zFR949B0hxdgi0vljf8tCJiZ65z.jpg"></a>
+<a href="go:A451" data-categoria="accion" data-nombre="rapidos y furiosos 2 / fast furios"><img src="https://image.tmdb.org/t/p/w185/8o3Py5qAgOUm0seWHmxpLwQmb1L.jpg"></a>
+<a href="go:A452" data-categoria="accion" data-nombre="rapidos y furiosos 4 / fast furios"><img src="https://image.tmdb.org/t/p/w185/bBioDtcG94rhvWnBE45yPUdgExi.jpg"></a>
+<a href="go:A453" data-categoria="accion" data-nombre="rapidos y furiosos 5 / fast furios"><img src="https://image.tmdb.org/t/p/w185/mtRhCiT4hZzaP6c3DJqec1Jjm0i.jpg"></a>
+<a href="go:A454" data-categoria="accion" data-nombre="rapidos y furiosos 6 / fast furios"><img src="https://image.tmdb.org/t/p/w185/8883pxkiVDQOC1PorvWiBKN3Yyu.jpg"></a>
+<a href="go:A455" data-categoria="accion" data-nombre="rapidos y furiosos 7 / fast furios"><img src="https://image.tmdb.org/t/p/w185/jP0DU7uNkpnelNvH1LI3MCHEFgz.jpg"></a>
+<a href="go:A456" data-categoria="accion" data-nombre="rapidos y furiosos 8 / fast furios"><img src="https://image.tmdb.org/t/p/w185/q0iFgE8Ad8AAeabKor4czkWiuRL.jpg"></a>
+<a href="go:A457" data-categoria="accion" data-nombre="rapidos y furiosos 9 / fast furios"><img src="https://image.tmdb.org/t/p/w185/aGAbQMMfhFogEX8rzh5t98aeHoG.jpg"></a>
+<a href="go:A458" data-categoria="accion" data-nombre="rapidos y furiosos x (10) / fast furios"><img src="https://image.tmdb.org/t/p/w185/AcwmKWzrJ9tMPjU8jU9XlEpmsmZ.jpg"></a>
+<a href="go:A459" data-categoria="accion" data-nombre="rapidos y furiosos hobbs y shaw / fast furios"><img src="https://image.tmdb.org/t/p/w185/jo7coSoPKpflDQNkJ6ucKXniNMq.jpg"></a>
+<a href="go:A460" data-categoria="accion" data-nombre="hombres de negro 1"><img src="https://image.tmdb.org/t/p/w185/gkcT1QmvspJ34rKgFUvv0ho0VrD.jpg"></a>
+<a href="go:A461" data-categoria="accion" data-nombre="hombres de negro 2"><img src="https://image.tmdb.org/t/p/w185/zX1Hi0j7Yn4jv2eDHyIMlHP8lDb.jpg"></a>
+<a href="go:A462" data-categoria="accion" data-nombre="hombres de negro 3"><img src="https://image.tmdb.org/t/p/w185/tgS52JXKh04tODt43ieT2pZsLE6.jpg"></a>
+<a href="go:A463" data-categoria="accion" data-nombre="hombres de negro 4 internacional"><img src="https://image.tmdb.org/t/p/w185/8ckkLm4VmKvQAkYF20H5IqW4GNh.jpg"></a>
+<a href="go:A464" data-categoria="animes" data-nombre="death note"><img src="https://image.tmdb.org/t/p/w185/tCZFfYTIwrR7n94J6G14Y4hAFU6.jpg"></a>
+<a href="go:A465" data-categoria="animes" data-nombre="chainsaw man"><img src="https://image.tmdb.org/t/p/w185/npdB6eFzizki0WaZ1OvKcJrWe97.jpg"></a>
+<a href="go:A470" data-categoria="infantiles" data-nombre="los tipos malos "><img src="https://image.tmdb.org/t/p/w185/czxHSOXyKd6zEvIOvUTxAwqOjcK.jpg"></a>
+<a href="go:A472" data-categoria="comedia" data-nombre="son como niños 1"><img src="https://image.tmdb.org/t/p/w185/poUK5Gg7IkPokaBTjadzjPfJgKw.jpg"></a>
+<a href="go:A473" data-categoria="comedia" data-nombre="son como niños 2 "><img src="https://image.tmdb.org/t/p/w185/dPYfCNERtVySmPmEHbfSXTyFg3v.jpg"></a>
+<a href="go:A476" data-categoria="comedia" data-nombre="que paso ayer 3"><img src="https://image.tmdb.org/t/p/w185/1goOfrB3ZRnoJenHHIDqiskMi9q.jpg"></a>
+<a href="go:A475" data-categoria="comedia" data-nombre="que paso ayer 2"><img src="https://image.tmdb.org/t/p/w185/dzaVnS19yDTkkGZRlf89sND75i7.jpg"></a>
+<a href="go:A474" data-categoria="comedia" data-nombre="que paso ayer  "><img src="https://image.tmdb.org/t/p/w185/kZaaJQEi7n3mrBct1H3l2g45Ijb.jpg"></a>
+<a href="go:A477" data-categoria="comedia" data-nombre="mi pobre angelito "><img src="https://image.tmdb.org/t/p/w185/rFi0qLi5q9oB6znNaGysAQRjSLQ.jpg"></a>
+<a href="go:A478" data-categoria="comedia" data-nombre="mi pobre angelito  2"><img src="https://image.tmdb.org/t/p/w185/48Wa6L2QzY47nWqtRCgiqYlecc9.jpg"></a>
+<a href="go:A479" data-categoria="comedia" data-nombre="mi pobre angelito  3"><img src="https://image.tmdb.org/t/p/w185/fSGpthbpPjtWN8d9xa3e3hOZuu8.jpg"></a>
+<a href="go:A480" data-categoria="comedia" data-nombre="mi pobre angelito  4"><img src="https://image.tmdb.org/t/p/w185/m98P4uFAe5EfKPavhN1Jbcx4i2D.jpg"></a>
+<a href="go:A481" data-categoria="comedia" data-nombre="mi pobre angelito  5"><img src="https://image.tmdb.org/t/p/w185/eDIxrCFPuVCwOVPFFZdzxPIc5gI.jpg"></a>
+<a href="go:A482" data-categoria="comedia" data-nombre="mi pobre angelito  6"><img src="https://image.tmdb.org/t/p/w185/hUFvrrAEZC57aJ79u28HPYChjQa.jpg"></a>
+<a href="go:A483" data-categoria="comedia" data-nombre="y donde estan las rubias"><img src="https://image.tmdb.org/t/p/w185/Al8wUCFEYrIUTiOJJvqtAnf4ywm.jpg"></a>
+<a href="go:A484" data-categoria="comedia" data-nombre="irene yo y mi otro yo"><img src="https://image.tmdb.org/t/p/w185/6DpK8Jq0WoUeJB09GQmGoZa19g4.jpg"></a>
+<a href="go:A485" data-categoria="comedia" data-nombre="proyecto x"><img src="https://image.tmdb.org/t/p/w185/owF9NIcQOPFAOjp2pni8BsVlnRq.jpg"></a>
+<a href="go:A486" data-categoria="comedia" data-nombre="mi abuelo es un peligro"><img src="https://image.tmdb.org/t/p/w185/7r9pn1g3lY95DjiwzxpmNqlJzeO.jpg"></a>
+<a href="go:A487" data-categoria="comedia" data-nombre="ese es mi hijo / desmadre de padre"><img src="https://image.tmdb.org/t/p/w185/cjIWPGHQDxmaFLbmn4HUHRunC2f.jpg"></a>
+<a href="go:A488" data-categoria="comedia" data-nombre="las vacaciones de mr bean"><img src="https://image.tmdb.org/t/p/w185/67boPPEDTXpLi7X18SGKzV45A1T.jpg"></a>
+<a href="go:A489" data-categoria="accion" data-nombre="bad boys 1"><img src="https://image.tmdb.org/t/p/w185/7qUOFhepnfazNOAwKK1vcHe9O0o.jpg"></a>
+<a href="go:A490" data-categoria="accion" data-nombre="bad boys 2"><img src="https://image.tmdb.org/t/p/w185/yg3UqCPOClHih5p1o1u9R03gke4.jpg"></a>
+<a href="go:A491" data-categoria="accion" data-nombre="bad boys 3"><img src="https://image.tmdb.org/t/p/w185/y95lQLnuNKdPAzw9F9Ab8kJ80c3.jpg"></a>
+<a href="go:A492" data-categoria="accion" data-nombre="transformers "><img src="https://image.tmdb.org/t/p/w185/aS7D2qkMtLWWXnKVVOz9KSWhRJV.jpg"></a>
+<a href="go:A493" data-categoria="accion" data-nombre="transformers 2"><img src="https://image.tmdb.org/t/p/w185/qzEIlhHivIcpKhKVOkb61eBz2Mv.jpg"></a>
+<a href="go:A494" data-categoria="accion" data-nombre="transformers 3"><img src="https://image.tmdb.org/t/p/w185/7667g63UHujNOxNWmcoCNeLEsRM.jpg"></a>
+<a href="go:A495" data-categoria="accion" data-nombre="transformers 4"><img src="https://image.tmdb.org/t/p/w185/2WnlEzbgfRYlrZSoojLhFjXZGI4.jpg"></a>
+<a href="go:A496" data-categoria="accion" data-nombre="transformers 5"><img src="https://image.tmdb.org/t/p/w185/mXEBnMqFwTJCrddVhknCH9fq3fB.jpg"></a>
+<a href="go:A497" data-categoria="accion" data-nombre="transformers 6 el despertar de las bestias"><img src="https://image.tmdb.org/t/p/w185/yu24fXpro7jx4XFlgEWwElW1kgW.jpg"></a>
+<a href="go:A498" data-categoria="accion" data-nombre="transformers uno"><img src="https://image.tmdb.org/t/p/w185/a2RkdhXTWL2li8UQfgwLicjlmme.jpg"></a>
+<a href="go:A499" data-categoria="infantiles" data-nombre="sonic"><img src="https://image.tmdb.org/t/p/w185/A7hhUj9Fq6E6FhGsENJTCmnCmt4.jpg"></a>
+<a href="go:A500" data-categoria="infantiles" data-nombre="sonic 2"><img src="https://image.tmdb.org/t/p/w185/sJiHVM0A3OXDVxl4Z6a7ihMPHfm.jpg"></a>
+<a href="go:A501" data-categoria="infantiles" data-nombre="sonic 3"><img src="https://image.tmdb.org/t/p/w185/rqvtiGmHubDElsKxlCWPuCTkwPI.jpg"></a>
+<a href="go:A502" data-categoria="comedia" data-nombre="los rompe bodas"><img src="https://image.tmdb.org/t/p/w185/4ggYJCTPg2xs6AEYdce3OeoqRew.jpg"></a>
+<a href="go:A503" data-categoria="comedia" data-nombre="el profesor chiflado 2"><img src="https://image.tmdb.org/t/p/w185/kttIcTsaLmBuDluAeKdtoh31AcE.jpg"></a>
+<a href="go:A504" data-categoria="comedia" data-nombre="jumanji"><img src="https://image.tmdb.org/t/p/w185/m67M2wXLKblJLuJlvF7qaGrGfCa.jpg"></a>
+<a href="go:A505" data-categoria="comedia" data-nombre="jumanji 2"><img src="https://image.tmdb.org/t/p/w185/1uQaSgtHyTN3r2fecL0mSs6geQO.jpg"></a>
+<a href="go:A506" data-categoria="comedia" data-nombre="jumanji 3"><img src="https://image.tmdb.org/t/p/w185/a8R5yw0vShsgHSjeikVcPdkaWAW.jpg"></a>
+<a href="go:A507" data-categoria="comedia" data-nombre="paul"><img src="https://image.tmdb.org/t/p/w185/y3fEPKUbpO1Yym1UyyPbwpp0XhO.jpg"></a>
+<a href="go:A508" data-categoria="comedia" data-nombre="una noche en el museo"><img src="https://image.tmdb.org/t/p/w185/2KnxqvCQnpUUQTXlruNeXq8iPeF.jpg"></a>
+<a href="go:A509" data-categoria="comedia" data-nombre="una noche en el museo 2"><img src="https://image.tmdb.org/t/p/w185/mVF0hEkM5PhUtp7KVzltAlG2ykn.jpg"></a>
+<a href="go:A510" data-categoria="comedia" data-nombre="click"><img src="https://image.tmdb.org/t/p/w185/oL0k5JA53PyoHSZqKb3cNkhwBCE.jpg"></a>
+<a href="go:A511" data-categoria="comedia" data-nombre="supercool /superbad"><img src="https://image.tmdb.org/t/p/w185/2trQoPSKYnDjtWHVfPvPuJz4JkK.jpg"></a>
+<a href="go:A512" data-categoria="comedia" data-nombre="pixeles"><img src="https://image.tmdb.org/t/p/w185/5yQliDYCBFx8LcPUWW09ef6LHBp.jpg"></a>
+<a href="go:A513" data-categoria="comedia" data-nombre="todopoderoso"><img src="https://image.tmdb.org/t/p/w185/eYJCAioZObOiUDz8LMTAqJqmX7R.jpg"></a>
+<a href="go:A514" data-categoria="comedia" data-nombre="un golpe con estilo"><img src="https://image.tmdb.org/t/p/w185/a1whsOKBYQuDI8tWSy8SrrvPiXZ.jpg"></a>
+<a href="go:A515" data-categoria="comedia" data-nombre="el lobo de wall street"><img src="https://image.tmdb.org/t/p/w185/jTlIYjvS16XOpsfvYCTmtEHV10K.jpg"></a>
+<a href="go:A516" data-categoria="comedia" data-nombre="buenos vecinos"><img src="https://image.tmdb.org/t/p/w185/i4XNSun7PHrbNNlTGbb4iGGtW6s.jpg"></a>
+<a href="go:A517" data-categoria="comedia" data-nombre="buenos vecinos 2"><img src="https://image.tmdb.org/t/p/w185/aWAlhF1AR7KzLpPxNIub7cEVQzy.jpg"></a>
+<a href="go:A518" data-categoria="comedia" data-nombre="baywatch"><img src="https://image.tmdb.org/t/p/w185/aPifsnK3ui76Cq7xMDe1AVlrA0k.jpg"></a>
+<a href="go:A519" data-categoria="comedia" data-nombre="volver al futuro"><img src="https://image.tmdb.org/t/p/w185/acNRGwBz22E2m5OEWOhS8RiqiXM.jpg"></a>
+<a href="go:A520" data-categoria="comedia" data-nombre="volver al futuro 2"><img src="https://image.tmdb.org/t/p/w185/ygKImi2jzm0j00W3JXBxvxdUM8n.jpg"></a>
+<a href="go:A521" data-categoria="comedia" data-nombre="volver al futuro 3"><img src="https://image.tmdb.org/t/p/w185/wjT0eZtsU3A3OvqGmr37XyPf3Ey.jpg"></a>
+<a href="go:A524" data-categoria="animes" data-nombre="sakamoto days"><img src="https://image.tmdb.org/t/p/w185/wRpCqsJFyKNuh5FMegNPrhzp2NF.jpg"></a>
+<a href="go:A525" data-categoria="animes" data-nombre="katainaka no ossan , kensei ni naru , de viejo pueblerino a maestro espadachin"><img src="https://image.tmdb.org/t/p/w185/7PWkmn864jAlTYoSX5lNIc5n4ZZ.jpg"></a>
+<a href="go:A526" data-categoria="animes" data-nombre="dandadan"><img src="https://image.tmdb.org/t/p/w185/6qfZAOEUFIrbUH3JvePclx1nXzz.jpg"></a>
+<a href="go:A527" data-categoria="animes" data-nombre="the eminence in shadow"><img src="https://image.tmdb.org/t/p/w185/ar9PIDLfbv1zbcnVwxgT58Kn1f9.jpg"></a>
+<a href="go:A528" data-categoria="animes" data-nombre="attack on titan"><img src="https://image.tmdb.org/t/p/w185/hqRb1wyIVsaMukZElPBUXoJPqrR.jpg"></a>
+<a href="go:A529" data-categoria="animes" data-nombre="jujutsu kaisen"><img src="https://image.tmdb.org/t/p/w185/dG6H80X9zF3nA7NiOAs3gmxO6mc.jpg"></a>
+<a href="go:A530" data-categoria="animes" data-nombre="akame ga kill"><img src="https://image.tmdb.org/t/p/w185/pPpUEVN9229LGwvYwcHNCmX7hxJ.jpg"></a>
+<a href="go:A531" data-categoria="animes" data-nombre="shikimori"><img src="https://image.tmdb.org/t/p/w185/1F9uYsrq9nwSeyfMRYoyJiMm9zt.jpg"></a>
+<a href="go:A532" data-categoria="animes" data-nombre="cyberpunk"><img src="https://image.tmdb.org/t/p/w185/lqcDVZ8pyk08AVftMBildDR3QUK.jpg"></a>
+<a href="go:A533" data-categoria="animes" data-nombre="arifureta"><img src="https://image.tmdb.org/t/p/w185/kB9tdE00Z5zWIJQux1jiYvRyPIC.jpg"></a>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+</div>
+
+<!-- =========================
+     PANTALLA COMPLETA DE BÚSQUEDA
+========================= -->
+
+<div id="searchScreen">
+
+    <div class="search-header">
+
+        <div class="search-title">
+            FLIX <span style="color:#00ff00">TV</span>
+            <span style="color:white;font-weight:normal"> / Buscar</span>
+        </div>
+
+        <button
+            class="search-close"
+            id="searchClose"
+            aria-label="Cerrar búsqueda"
+            tabindex="0">×</button>
+
+    </div>
+
+    <div class="search-content">
+
+        <!-- TECLADO -->
+
+        <div class="keyboard-panel">
+
+            <div class="search-label">
+                Buscar películas y series
+            </div>
+
+            <div class="search-display">
+                <span id="searchText"></span>
+                <span style="color:#e50914">|</span>
+            </div>
+
+            <div class="keyboard" id="virtualKeyboard">
+
+                <button class="key" data-key="A">A</button>
+                <button class="key" data-key="B">B</button>
+                <button class="key" data-key="C">C</button>
+                <button class="key" data-key="D">D</button>
+                <button class="key" data-key="E">E</button>
+
+                <button class="key" data-key="F">F</button>
+                <button class="key" data-key="G">G</button>
+                <button class="key" data-key="H">H</button>
+                <button class="key" data-key="I">I</button>
+                <button class="key" data-key="J">J</button>
+
+                <button class="key" data-key="K">K</button>
+                <button class="key" data-key="L">L</button>
+                <button class="key" data-key="M">M</button>
+                <button class="key" data-key="N">N</button>
+                <button class="key" data-key="O">O</button>
+
+                <button class="key" data-key="P">P</button>
+                <button class="key" data-key="Q">Q</button>
+                <button class="key" data-key="R">R</button>
+                <button class="key" data-key="S">S</button>
+                <button class="key" data-key="T">T</button>
+
+                <button class="key" data-key="U">U</button>
+                <button class="key" data-key="V">V</button>
+                <button class="key" data-key="W">W</button>
+                <button class="key" data-key="X">X</button>
+                <button class="key" data-key="Y">Y</button>
+
+                <button class="key" data-key="Z">Z</button>
+                
+                <button class="key" data-key="1">1</button>
+                <button class="key" data-key="2">2</button>
+                <button class="key" data-key="3">3</button>
+
+                <button class="key" data-key="4">4</button>
+                <button class="key" data-key="5">5</button>
+                <button class="key" data-key="6">6</button>
+                <button class="key" data-key="7">7</button>
+                <button class="key" data-key="8">8</button>
+
+                <button class="key" data-key="9">9</button>
+
+                <button class="key special" data-action="backspace">
+                    ⌫
+                </button>
+
+                <button class="key special" data-action="clear">
+                    LIMPIAR
+                </button>
+
+                <button class="key special space" data-action="space">
+                    ESPACIO
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- RESULTADOS -->
+
+        <div class="results-panel">
+
+            <div class="results-title" id="resultsTitle">
+                Todas las películas
+            </div>
+
+            <div class="results-grid" id="searchResults"></div>
+
+            <div class="no-search-results" id="noSearchResults">
+                No se encontraron resultados.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =====================================
+   ELEMENTOS PRINCIPALES
+===================================== */
+
+const galeria = document.getElementById("movieGallery");
+const base = document.getElementById("basePeliculas");
+
+const searchScreen = document.getElementById("searchScreen");
+const searchToggle = document.getElementById("searchToggle");
+const searchClose = document.getElementById("searchClose");
+
+const searchText = document.getElementById("searchText");
+const searchResults = document.getElementById("searchResults");
+
+const resultsTitle = document.getElementById("resultsTitle");
+const noSearchResults = document.getElementById("noSearchResults");
+
+const botonesCategoria = document.querySelectorAll(
+    "#menuCategorias a"
+);
+
+let categoriaActual = "todas";
+let textoBusqueda = "";
+let buscando = false;
+
+
+/* =====================================
+   CARGAR CATÁLOGO
+===================================== */
+
+function cargarCatalogo() {
+
+    const peliculas = Array.from(
+        base.querySelectorAll("a")
+    );
+
+    galeria.innerHTML = "";
+
+    peliculas.forEach(pelicula => {
+
+        const poster = document.createElement("a");
+
+        poster.className = "pelicula";
+        poster.href = pelicula.getAttribute("href");
+        poster.tabIndex = 0;
+
+        poster.dataset.categoria =
+            pelicula.dataset.categoria || "";
+
+        poster.dataset.nombre =
+            pelicula.dataset.nombre || "";
+
+        const imagen = pelicula.querySelector("img");
+
+        if (imagen) {
+
+            const nuevaImagen = document.createElement("img");
+
+            nuevaImagen.src = imagen.getAttribute("src");
+            nuevaImagen.alt = poster.dataset.nombre || "Película";
+
+            poster.appendChild(nuevaImagen);
+
+        }
+
+        galeria.appendChild(poster);
+
+    });
+
+}
+
+cargarCatalogo();
+
+
+/* =====================================
+   NORMALIZAR TEXTO
+===================================== */
+
+function normalizarTexto(texto) {
+
+    return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+
+}
+
+
+/* =====================================
+   FILTRAR CATÁLOGO
+===================================== */
+
+function filtrarCategoria(categoria) {
+
+    categoriaActual = categoria;
+
+    aplicarFiltros();
+
+    botonesCategoria.forEach(boton => {
+
+        boton.classList.toggle(
+            "activo",
+            boton.dataset.filtro === categoria
+        );
+
+    });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "auto"
+    });
+
+}
+
+function aplicarFiltros() {
+
+    const texto = normalizarTexto(
+        document.getElementById("searchInput")?.value || ""
+    );
+
+    const posters = document.querySelectorAll(
+        "#movieGallery .pelicula"
+    );
+
+    let encontrados = 0;
+
+    posters.forEach(poster => {
+
+        const categoriaCoincide =
+            categoriaActual === "todas" ||
+            poster.dataset.categoria === categoriaActual;
+
+        const nombreCoincide =
+            normalizarTexto(poster.dataset.nombre || "")
+            .includes(texto);
+
+        const mostrar = categoriaCoincide && nombreCoincide;
+
+        poster.style.display = mostrar ? "block" : "none";
+
+        if (mostrar) encontrados++;
+
+    });
+
+    document.getElementById("sinResultados").style.display =
+        encontrados === 0 ? "block" : "none";
+
+}
+
+
+/* =====================================
+   ABRIR Y CERRAR BÚSQUEDA
+===================================== */
+
+function abrirBuscador() {
+
+    buscando = true;
+
+    textoBusqueda = "";
+
+    searchText.textContent = "";
+
+    searchScreen.classList.add("abierta");
+
+    actualizarResultados();
+
+    setTimeout(() => {
+
+        const primeraTecla = document.querySelector(
+            '#virtualKeyboard button[data-key="A"]'
+        );
+
+        primeraTecla?.focus({
+            preventScroll: true
+        });
+
+    }, 100);
+
+}
+
+function cerrarBuscador() {
+
+    buscando = false;
+
+    textoBusqueda = "";
+
+    searchText.textContent = "";
+
+    searchScreen.classList.remove("abierta");
+
+    searchToggle.focus({
+        preventScroll: true
+    });
+
+}
+
+searchToggle.addEventListener("click", abrirBuscador);
+
+searchClose.addEventListener("click", cerrarBuscador);
+
+
+/* =====================================
+   ACTUALIZAR TEXTO DE BÚSQUEDA
+===================================== */
+
+function actualizarTexto() {
+
+    searchText.textContent = textoBusqueda;
+
+}
+
+
+/* =====================================
+   TECLADO VIRTUAL
+===================================== */
+
+function escribirCaracter(caracter) {
+
+    textoBusqueda += caracter;
+
+    actualizarTexto();
+
+    actualizarResultados();
+
+}
+
+function borrarCaracter() {
+
+    textoBusqueda = textoBusqueda.slice(0, -1);
+
+    actualizarTexto();
+
+    actualizarResultados();
+
+}
+
+function limpiarBusqueda() {
+
+    textoBusqueda = "";
+
+    actualizarTexto();
+
+    actualizarResultados();
+
+}
+
+
+/* =====================================
+   EVENTOS DEL TECLADO
+===================================== */
+
+document.querySelectorAll("#virtualKeyboard button").forEach(boton => {
+
+    boton.addEventListener("click", function() {
+
+        const caracter = this.dataset.key;
+        const accion = this.dataset.action;
+
+        if (caracter) {
+
+            escribirCaracter(caracter);
+
+        }
+
+        if (accion === "backspace") {
+
+            borrarCaracter();
+
+        }
+
+        if (accion === "clear") {
+
+            limpiarBusqueda();
+
+        }
+
+        if (accion === "space") {
+
+            escribirCaracter(" ");
+
+        }
+
+        actualizarNavegacion();
+
+    });
+
+});
+
+
+/* =====================================
+   MOSTRAR RESULTADOS
+===================================== */
+
+function actualizarResultados() {
+
+    const peliculas = Array.from(
+        base.querySelectorAll("a")
+    );
+
+    const texto = normalizarTexto(textoBusqueda);
+
+    searchResults.innerHTML = "";
+
+    let encontrados = 0;
+
+    peliculas.forEach(pelicula => {
+
+        const nombre = pelicula.dataset.nombre || "";
+
+        const categoria = pelicula.dataset.categoria || "";
+
+        const categoriaCoincide =
+            categoriaActual === "todas" ||
+            categoria === categoriaActual;
+
+        const nombreCoincide =
+            normalizarTexto(nombre).includes(texto);
+
+        if (!nombreCoincide) return;
+
+        const imagen = pelicula.querySelector("img");
+
+        if (!imagen) return;
+
+        const contenedor = document.createElement("div");
+
+        const poster = document.createElement("a");
+
+        poster.className = "result-poster";
+        poster.href = pelicula.getAttribute("href");
+        poster.tabIndex = 0;
+
+        const nuevaImagen = document.createElement("img");
+
+        nuevaImagen.src = imagen.getAttribute("src");
+        nuevaImagen.alt = nombre;
+
+        poster.appendChild(nuevaImagen);
+
+        const titulo = document.createElement("span");
+
+        titulo.className = "result-name";
+        titulo.textContent = nombre;
+
+        contenedor.appendChild(poster);
+        contenedor.appendChild(titulo);
+
+        searchResults.appendChild(contenedor);
+
+        encontrados++;
+
+    });
+
+    resultsTitle.textContent = textoBusqueda.trim()
+        ? "Resultados de búsqueda"
+        : "Todas las películas";
+
+    noSearchResults.style.display =
+        encontrados === 0 ? "block" : "none";
+
+    actualizarNavegacion();
+
+}
+
+
+/* =====================================
+   CATEGORÍAS
+===================================== */
+
+botonesCategoria.forEach(boton => {
+
+    boton.addEventListener("click", function(e) {
+
+        e.preventDefault();
+
+        filtrarCategoria(this.dataset.filtro);
+
+    });
+
+});
+
+
+/* =====================================
+   NAVEGACIÓN CON CONTROL REMOTO
+===================================== */
+
+let elementosNavegacion = [];
+
+function actualizarNavegacion() {
+
+    elementosNavegacion = Array.from(
+        document.querySelectorAll(
+            '#menuCategorias a, #searchToggle, ' +
+            '#virtualKeyboard button, #searchClose, ' +
+            '#searchResults .result-poster, #movieGallery .pelicula'
+        )
+    )
+    .filter(el => {
+
+        return el.offsetWidth > 0 &&
+               el.offsetHeight > 0 &&
+               el.getClientRects().length > 0;
+
+    })
+    .map(el => {
+
+        const rect = el.getBoundingClientRect();
+
+        return {
+            elemento: el,
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+        };
+
+    });
+
+}
+
+actualizarNavegacion();
+
+window.addEventListener("resize", actualizarNavegacion);
+
+
+/* =====================================
+   MOVIMIENTO CON FLECHAS
+===================================== */
+
+document.addEventListener("keydown", function(e) {
+
+    if (!buscando) {
+
+        const teclas = [
+            "ArrowRight",
+            "ArrowLeft",
+            "ArrowUp",
+            "ArrowDown"
+        ];
+
+        if (!teclas.includes(e.key)) return;
+
+        const actual = document.activeElement;
+
+        if (
+            actual &&
+            actual.tagName === "INPUT"
+        ) return;
+
+        e.preventDefault();
+
+        navegarPorFlechas(e.key);
+
+        return;
+
+    }
+
+    /* PANTALLA DE BÚSQUEDA */
+
+    if (e.key === "Escape" || e.key === "Backspace") {
+
+        e.preventDefault();
+
+        if (e.key === "Escape") {
+
+            cerrarBuscador();
+
+        } else {
+
+            borrarCaracter();
+
+        }
+
+        return;
+
+    }
+
+    if (e.key === "Enter") {
+
+        const actual = document.activeElement;
+
+        if (actual && actual.tagName === "BUTTON") {
+
+            e.preventDefault();
+
+            actual.click();
+
+        }
+
+        return;
+
+    }
+
+    const teclas = [
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowUp",
+        "ArrowDown"
+    ];
+
+    if (teclas.includes(e.key)) {
+
+        e.preventDefault();
+
+        navegarPorFlechas(e.key);
+
+    }
+
+});
+
+
+/* =====================================
+   SISTEMA DE MOVIMIENTO ESPACIAL
+===================================== */
+
+function navegarPorFlechas(tecla) {
+
+    actualizarNavegacion();
+
+    const actual = document.activeElement;
+
+    const origen = elementosNavegacion.find(
+        item => item.elemento === actual
+    );
+
+    if (!origen) {
+
+        const primero = buscando
+            ? document.querySelector('#virtualKeyboard button')
+            : document.querySelector('#menuCategorias a');
+
+        primero?.focus({
+            preventScroll: true
+        });
+
+        return;
+
+    }
+
+    let mejorElemento = null;
+    let menorDistancia = Infinity;
+
+    for (const candidato of elementosNavegacion) {
+
+        if (candidato.elemento === actual) continue;
+
+        const dx = candidato.x - origen.x;
+        const dy = candidato.y - origen.y;
+
+        let valido = false;
+        let distancia = Infinity;
+
+        switch(tecla) {
+
+            case "ArrowRight":
+
+                valido = dx > 8;
+                distancia = dx + Math.abs(dy) * 2.5;
+
+                break;
+
+            case "ArrowLeft":
+
+                valido = dx < -8;
+                distancia = Math.abs(dx) + Math.abs(dy) * 2.5;
+
+                break;
+
+            case "ArrowDown":
+
+                valido = dy > 8;
+                distancia = dy + Math.abs(dx) * 2.5;
+
+                break;
+
+            case "ArrowUp":
+
+                valido = dy < -8;
+                distancia = Math.abs(dy) + Math.abs(dx) * 2.5;
+
+                break;
+
+        }
+
+        if (valido && distancia < menorDistancia) {
+
+            menorDistancia = distancia;
+            mejorElemento = candidato.elemento;
+
+        }
+
+    }
+
+    if (mejorElemento) {
+
+        mejorElemento.focus({
+            preventScroll: true
+        });
+
+    }
+
+}
+
+
+/* =====================================
+   SCROLL INTELIGENTE DEL CATÁLOGO
+===================================== */
+
+document.addEventListener("focusin", function(e) {
+
+    if (buscando) return;
+
+    const elemento = e.target;
+
+    if (
+        !elemento.classList.contains("pelicula") &&
+        !elemento.closest("nav")
+    ) return;
+
+    if (elemento.closest("nav")) {
+
+        window.scrollTo({
+            top: 0,
+            behavior: "auto"
+        });
+
+        return;
+
+    }
+
+    const rect = elemento.getBoundingClientRect();
+
+    if (rect.top < 120) {
+
+        window.scrollTo({
+            top: Math.max(
+                0,
+                window.scrollY + rect.top - 120
+            ),
+            behavior: "auto"
+        });
+
+    }
+
+    else if (rect.bottom > window.innerHeight - 100) {
+
+        window.scrollTo({
+            top:
+                window.scrollY +
+                rect.bottom -
+                (window.innerHeight - 100),
+            behavior: "auto"
+        });
+
+    }
+
+});
+
+
+/* =====================================
+   ENTER EN EL CATÁLOGO
+===================================== */
+
+document.addEventListener("keydown", function(e) {
+
+    if (buscando) return;
+
+    if (e.key === "Enter") {
+
+        const actual = document.activeElement;
+
+        if (actual && actual.classList.contains("pelicula")) {
+
+            e.preventDefault();
+
+            actual.click();
+
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
