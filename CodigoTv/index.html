@@ -533,12 +533,30 @@ main {
         font-size: 42px;
     }
 
+    /* MENÚ DE CATEGORÍAS DESPLAZABLE */
+
+    .header-content {
+        min-width: 0;
+        overflow: hidden;
+    }
+
     nav {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        scroll-behavior: auto;
         gap: 35px;
+    }
+
+    nav::-webkit-scrollbar {
+        display: none;
     }
 
     nav a {
         font-size: 23px;
+        flex-shrink: 0;
     }
 
     .search-toggle {
@@ -562,47 +580,49 @@ main {
     }
 
     #searchScreen {
-        padding: 35px 65px;
+        padding: 20px 65px;
     }
 
     .search-header {
-        margin-bottom: 35px;
+        margin-bottom: 20px;
     }
 
     .search-title {
-        font-size: 38px;
+        font-size: 32px;
     }
 
     .search-content {
-        grid-template-columns: 430px minmax(0, 1fr);
-        gap: 55px;
+        grid-template-columns: 340px minmax(0, 1fr);
+        gap: 35px;
     }
 
     .search-display {
-        min-height: 65px;
-        font-size: 27px;
+        min-height: 50px;
+        font-size: 22px;
+        margin-bottom: 14px;
     }
 
     .keyboard {
-        gap: 12px;
+        gap: 7px;
     }
 
     .key {
-        min-height: 65px;
-        font-size: 25px;
+        min-height: 43px;
+        font-size: 19px;
+        border-radius: 4px;
     }
 
     .key.special {
-        font-size: 17px;
+        font-size: 12px;
     }
 
     .results-title {
-        font-size: 28px;
+        font-size: 25px;
     }
 
     .results-grid {
-        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 18px;
     }
 }
 
@@ -658,14 +678,13 @@ main {
 
         <nav id="menuCategorias">
 
-            <a href="#" data-filtro="todas" tabindex="0" class="activo">TODAS</a>
-            <a href="#" data-filtro="series" tabindex="0">SERIES</a>
-            <a href="#" data-filtro="accion" tabindex="0">ACCION</a>
-            <a href="#" data-filtro="terror" tabindex="0">TERROR</a>
-            <a href="#" data-filtro="infantiles" tabindex="0">INFANTILES</a>
-            <a href="#" data-filtro="romance" tabindex="0">ROMANCE</a>
-            <a href="#" data-filtro="comedia" tabindex="0">COMEDIA</a>
-            <a href="#" data-filtro="animes" tabindex="0">ANIMES</a>
+            <a href="#" data-filtro="todas" tabindex="0" class="activo">Todas</a>
+            <a href="#" data-filtro="series" tabindex="0">series</a>
+            <a href="#" data-filtro="accion" tabindex="0">accion</a>
+            <a href="#" data-filtro="terror" tabindex="0">terror</a>
+            <a href="#" data-filtro="infantiles" tabindex="0">infantiles</a>
+            <a href="#" data-filtro="romance" tabindex="0">romance</a>
+            <a href="#" data-filtro="animes" tabindex="0">animes</a>
 
         </nav>
 
@@ -697,13 +716,7 @@ main {
 
 <div id="basePeliculas" hidden>
 
-    
-    
-    
-    
-    
-    
-     <a href="go:A542" data-categoria="accion" data-nombre="el abismo secreto"><img src="https://image.tmdb.org/t/p/w185/3s0jkMh0YUhIeIeioH3kt2X4st4.jpg"></a>
+    <a href="go:A542" data-categoria="accion" data-nombre="el abismo secreto"><img src="https://image.tmdb.org/t/p/w185/3s0jkMh0YUhIeIeioH3kt2X4st4.jpg"></a>
  <a href="go:A541" data-categoria="accion" data-nombre="tron ares 2"><img src="https://image.tmdb.org/t/p/w185/vV8BRsa5h88RsmP6fpqKDzGElt7.jpg"></a>
  <a href="go:A540" data-categoria="terror" data-nombre="telefono negro 2"><img src="https://image.tmdb.org/t/p/w185/gNIQ1DScjwKjmXhMIRyfZp6JdtB.jpg"></a>
  <a href="go:A538" data-categoria="terror" data-nombre="el conjuro 4"><img src="https://image.tmdb.org/t/p/w185/n9CXtIFdpxIqqsmEdD7CO7gb4X3.jpg"></a>
@@ -1245,15 +1258,22 @@ main {
 <a href="go:A532" data-categoria="animes" data-nombre="cyberpunk"><img src="https://image.tmdb.org/t/p/w185/lqcDVZ8pyk08AVftMBildDR3QUK.jpg"></a>
 <a href="go:A533" data-categoria="animes" data-nombre="arifureta"><img src="https://image.tmdb.org/t/p/w185/kB9tdE00Z5zWIJQux1jiYvRyPIC.jpg"></a>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    <!-- AGREGA AQUÍ TUS DEMÁS PELÍCULAS -->
+
+    <!--
+    <a href="go:A524"
+       data-categoria="animes"
+       data-nombre="sakamoto days">
+        <img src="URL_DEL_POSTER">
+    </a>
+
+    <a href="go:A82"
+       data-categoria="series"
+       data-nombre="peaky blinders">
+        <img src="URL_DEL_POSTER">
+    </a>
+    -->
 
 </div>
 
@@ -1326,7 +1346,7 @@ main {
                 <button class="key" data-key="Y">Y</button>
 
                 <button class="key" data-key="Z">Z</button>
-                
+
                 <button class="key" data-key="1">1</button>
                 <button class="key" data-key="2">2</button>
                 <button class="key" data-key="3">3</button>
@@ -1696,7 +1716,7 @@ function actualizarResultados() {
         const nombreCoincide =
             normalizarTexto(nombre).includes(texto);
 
-        if (!nombreCoincide) return;
+        if (!categoriaCoincide || !nombreCoincide) return;
 
         const imagen = pelicula.querySelector("img");
 
@@ -1995,7 +2015,29 @@ document.addEventListener("focusin", function(e) {
         !elemento.closest("nav")
     ) return;
 
+    /* DESPLAZAMIENTO AUTOMÁTICO
+       DEL MENÚ DE CATEGORÍAS */
+
     if (elemento.closest("nav")) {
+
+        const menu = elemento.closest("nav");
+
+        const elementoRect = elemento.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+
+        if (elementoRect.right > menuRect.right) {
+
+            menu.scrollLeft +=
+                elementoRect.right - menuRect.right + 25;
+
+        }
+
+        if (elementoRect.left < menuRect.left) {
+
+            menu.scrollLeft -=
+                menuRect.left - elementoRect.left + 25;
+
+        }
 
         window.scrollTo({
             top: 0,
@@ -2005,6 +2047,8 @@ document.addEventListener("focusin", function(e) {
         return;
 
     }
+
+    /* SCROLL DEL CATÁLOGO */
 
     const rect = elemento.getBoundingClientRect();
 
